@@ -1,0 +1,8 @@
+parameters:
+    level: 8    # max strict level
+    paths:
+        - app
+        - database/factories
+        - database/seeders
+        - routes
+    reportUnmatchedIgnoredErrors: true  # unused ignored errors
