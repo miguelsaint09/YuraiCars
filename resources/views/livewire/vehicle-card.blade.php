@@ -10,8 +10,6 @@
     <!-- Vehicle Image -->
     @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
         <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="w-full h-48 object-contain rounded-t-lg" alt="{{ $vehicle->name }}" />
-    @else
-        <img src="{{ asset('images/sedan.png') }}" class="w-full h-48 object-contain rounded-t-lg" alt="{{ $vehicle->name }}" />
     @endif
 
     <!-- Vehicle Info -->

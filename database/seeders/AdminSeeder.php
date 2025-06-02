@@ -16,6 +16,7 @@ class AdminSeeder extends Seeder
         User::factory()->admin()->create([
             'email' => 'admin@email.com',
             'password' => bcrypt('admin123'),
+            'status' => 'active',
         ]);
     }
 }

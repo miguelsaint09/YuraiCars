@@ -25,7 +25,9 @@
                     </div>
 
                     <div class="flex gap-x-20 flex-col md:flex-row">
-                        <img src="{{ asset('images/sedan.png') }}" class="flex-1 w-full h-64 object-contain rounded-lg" />
+                        @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
+                            <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="flex-1 w-full h-64 object-contain rounded-lg" alt="{{ $vehicle->name }}" />
+                        @endif
             
                         <div class="flex-1">
                             {{-- <div class="mt-4 flex flex-wrap gap-2">

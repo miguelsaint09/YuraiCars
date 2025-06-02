@@ -24,7 +24,9 @@
                     <div class="max-w-6xl">
                         <div class="flex flex-col md:flex-row gap-x-12 mt-6">
                             <!-- Vehicle Image -->
-                            <img src="{{ asset('images/sedan.png') }}" class="flex-1 w-full h-64 object-cover rounded-lg" />
+                            @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
+                                <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="flex-1 w-full h-64 object-cover rounded-lg" alt="{{ $vehicle->name }}" />
+                            @endif
 
                             <!-- Vehicle Details -->
                             <div class="flex-1">

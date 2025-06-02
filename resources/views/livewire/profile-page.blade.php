@@ -44,6 +44,9 @@
                         @endif
                     </div>
                 </div>
+
+                <!-- Password Change Section -->
+                <livewire:change-password />
             </div>
         </div>
     </div>

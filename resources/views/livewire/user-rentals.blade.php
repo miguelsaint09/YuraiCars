@@ -21,9 +21,11 @@
                 <div class="bg-white dark:bg-zinc-800 p-6 shadow-md rounded-lg">
                     <div class="flex flex-col md:flex-row gap-x-12 gap-y-6">
                         <!-- Vehicle Image -->
-                        <img src="{{ asset('images/sedan.png') }}" 
+                        @if($rental->vehicle->image_url && is_array($rental->vehicle->image_url) && !empty($rental->vehicle->image_url))
+                            <img src="{{ Storage::url($rental->vehicle->image_url[0]) }}" 
                              class="w-48 h-32 object-contain rounded-lg shadow-md" 
-                             alt="Car Image">
+                                 alt="{{ $rental->vehicle->name }}">
+                        @endif
 
                         <!-- Rental Details -->
                         <div class="flex-1">
