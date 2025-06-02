@@ -25,16 +25,22 @@ RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath gd
 # composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# std working dir
-WORKDIR /var/www/html
-COPY . /var/www/html
+# Copy composer files first to leverage Docker cache
+COPY composer.json composer.lock ./
+
+# Install composer dependencies
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copy the rest of the application
+COPY . .
+
+# Run post-install scripts
+RUN composer run-script post-autoload-dump
 
 # permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
-
-RUN composer install --no-dev --optimize-autoloader
 
 # Copy php-fpm config
 COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
