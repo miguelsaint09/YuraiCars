@@ -3,6 +3,9 @@
 # Create nginx runtime directory
 mkdir -p /run/nginx
 
+# Set SERVER_PORT from PORT if not set
+export SERVER_PORT=${SERVER_PORT:-$PORT}
+
 # Run database migrations
 cd /var/www/html
 php artisan migrate --force
