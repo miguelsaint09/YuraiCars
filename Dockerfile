@@ -28,6 +28,9 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Patch ServeCommand.php
+RUN sed -i 's/$port = $port ?: 8000;/$port = (int) ($port ?: 8000);/' vendor/laravel/framework/src/Illuminate/Foundation/Console/ServeCommand.php
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
