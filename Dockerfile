@@ -42,9 +42,9 @@ FROM node:20-alpine as node
 
 WORKDIR /app
 
-# Copy package files and install dependencies first
+# Copy package files and install dependencies
 COPY package*.json ./
-RUN npm ci
+RUN npm install --no-audit --no-fund
 
 # Copy build configuration
 COPY vite.config.js ./
@@ -58,18 +58,26 @@ COPY --from=php /var/www/html/vendor ./vendor
 # Build assets
 RUN NODE_ENV=production npm run build
 
-# Stage 3: Final image
-FROM nginx:alpine
+# Stage 3: Final image with PHP-FPM and Nginx
+FROM php:8.3-fpm-alpine
+
+# Install nginx and required PHP extensions
+RUN apk add --no-cache \
+    nginx \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libzip-dev \
+    icu-dev \
+    postgresql-dev \
+    oniguruma-dev \
+    && docker-php-ext-configure gd \
+    && docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath gd intl
+
+# Set working directory
+WORKDIR /var/www/html
 
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
-
-# Copy PHP-FPM and its configuration
-COPY --from=php /usr/local/bin/php /usr/local/bin/php
-COPY --from=php /usr/local/sbin/php-fpm /usr/local/sbin/php-fpm
-COPY --from=php /usr/local/etc/php /usr/local/etc/php
-COPY --from=php /usr/local/lib/php /usr/local/lib/php
-COPY --from=php /usr/local/etc/php-fpm.d /usr/local/etc/php-fpm.d
 
 # Copy application
 COPY --from=php /var/www/html /var/www/html
@@ -78,6 +86,11 @@ COPY --from=node /app/public/build /var/www/html/public/build
 # Copy start script
 COPY start-nginx.sh /start-nginx.sh
 RUN chmod +x /start-nginx.sh
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
 
 ENV PORT=3000 \
     APP_ENV=production \
