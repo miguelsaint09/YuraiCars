@@ -2,25 +2,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
     "dev": "vite",
-    "prepare": "husky"
+    "build": "vite build",
+    "prepare": "husky install",
+    "format": "prettier --write ."
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.0.9",
-    "axios": "^1.7.4",
-    "concurrently": "^9.0.1",
-    "husky": "^9.1.7",
-    "laravel-vite-plugin": "^1.2.0",
-    "lint-staged": "^15.4.3",
-    "tailwindcss": "^4.0.9",
-    "vite": "^6.0.11"
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.17",
+    "axios": "^1.6.4",
+    "husky": "^8.0.3",
+    "laravel-vite-plugin": "^1.0.0",
+    "lint-staged": "^15.2.2",
+    "postcss": "^8.4.35",
+    "prettier": "^3.2.5",
+    "tailwindcss": "^3.4.1",
+    "vite": "^6.3.5"
   },
   "lint-staged": {
+    "*.{js,css,md,html,json}": [
+      "prettier --write"
+    ],
     "*.php": [
-      "./vendor/bin/pint",
-      "php -d memory_limit=512M ./vendor/bin/phpstan analyse --configuration=phpstan.dev.neon",
-      "./vendor/bin/rector process --dry-run"
+      "./vendor/bin/pint"
     ]
   }
 }

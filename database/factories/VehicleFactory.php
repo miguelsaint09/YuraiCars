@@ -7,6 +7,7 @@ use App\Enums\VehicleFuelType;
 use App\Enums\VehicleMake;
 use App\Enums\VehicleStatus;
 use App\Enums\VehicleTransmission;
+use App\Enums\VehicleFeatures;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -31,20 +32,34 @@ class VehicleFactory extends Factory
             'year' => fake()->numberBetween(2010, 2025),
             'color' => fake()->safeColorName(),
             'category' => fake()->randomElement(VehicleCategory::values()),
-            'image_url' => fake()->optional()->imageUrl(600, 400, 'cars'),
+            'image_url' => fake()->optional()->boolean(80) ? [fake()->imageUrl(600, 400, 'cars')] : null,
             'seats' => fake()->randomElement([2, 4, 5, 7, 8]),
             'luggage_capacity' => fake()->numberBetween(100, 500),
             'transmission' => fake()->randomElement(VehicleTransmission::values()),
             'fuel_type' => fake()->randomElement(VehicleFuelType::values()),
             'price_per_day' => fake()->randomFloat(2, 30, 300), // $30 - $300 per day
-            'mileage' => fake()->numberBetween(5000, 200000) . ' km',
+            'mileage' => fake()->numberBetween(5000, 200000),
             'fuel_efficiency' => fake()->randomElement(['10 km/L', '15 km/L', '20 km/L', '25 km/L']),
             'remarks' => fake()->optional()->sentence(),
             'status' => fake()->randomElement(VehicleStatus::values()),
             'features' => [
-                fake()->randomElement(['Bluetooth', 'GPS', 'Backup Camera', 'Heated Seats', 'Sunroof']),
-                fake()->randomElement(['Apple CarPlay', 'Android Auto', 'Blind Spot Monitoring', 'Leather Seats']),
-                fake()->randomElement(['Cruise Control', 'Lane Assist', 'Adaptive Headlights']),
+                VehicleFeatures::GPS->value,
+                VehicleFeatures::BLUETOOTH->value,
+                fake()->randomElement([
+                    VehicleFeatures::BACKUP_CAMERA->value,
+                    VehicleFeatures::CRUISE_CONTROL->value,
+                    VehicleFeatures::CLIMATE_CONTROL->value
+                ]),
+                fake()->randomElement([
+                    VehicleFeatures::LEATHER_SEATS->value,
+                    VehicleFeatures::SUNROOF->value,
+                    VehicleFeatures::PARKING_SENSORS->value
+                ]),
+                fake()->randomElement([
+                    VehicleFeatures::APPLE_CARPLAY->value,
+                    VehicleFeatures::ANDROID_AUTO->value,
+                    VehicleFeatures::WIFI->value
+                ])
             ],
         ];
     }

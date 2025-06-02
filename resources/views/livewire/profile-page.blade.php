@@ -18,7 +18,7 @@
 
             <!-- Right: Profile Info -->
             <div class="w-full md:w-2/3">
-                <flux:heading size="xl" class="font-semibold mb-6 text-gray-800 dark:text-white"> # modificado
+                <flux:heading size="xl" class="font-semibold mb-6 text-gray-800 dark:text-white">
                     Profile Information
                 </flux:heading>
 
