@@ -98,7 +98,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/bootstrap/cache \
     && mkdir -p /run/nginx
 
-ENV PORT=3000 \
+ENV PORT=8080 \
     APP_ENV=production \
     APP_DEBUG=false \
     LOG_CHANNEL=stderr \

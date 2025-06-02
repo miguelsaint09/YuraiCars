@@ -14,10 +14,10 @@ php artisan view:cache
 php-fpm -D
 
 # Start Laravel development server with explicit host and port
-php artisan serve --host=0.0.0.0 --port=${PORT:-3000} --no-reload
+php artisan serve --host=0.0.0.0 --port=${PORT:-8080} --no-reload
 
 # Update nginx configuration with the PORT from environment variable
-sed -i "s/listen 3000/listen $PORT/g" /etc/nginx/nginx.conf
+sed -i "s/listen 8080/listen $PORT/g" /etc/nginx/nginx.conf
 
 # Start Nginx
 nginx -g "daemon off;" 
