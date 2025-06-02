@@ -23,11 +23,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
-COPY . .
+# Copy composer files first
+COPY composer.json composer.lock ./
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
+
+# Copy application files
+COPY . .
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
@@ -38,18 +41,23 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN sed -i 's/;daemonize = yes/daemonize = no/g' /usr/local/etc/php-fpm.conf
 
 # Stage 2: Build frontend assets
-FROM node:20 as node
+FROM node:20-alpine as node
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
 COPY vite.config.js ./
 COPY postcss.config.cjs ./
 COPY tailwind.config.cjs ./
-COPY resources/ ./resources/
 
+# Copy resources and vendor (needed for Livewire)
+COPY resources/ ./resources/
+COPY --from=php /var/www/html/vendor ./vendor
+
+# Install dependencies and build
 RUN npm ci && \
-    npm run build
+    NODE_ENV=production npm run build
 
 # Stage 3: Final image
 FROM nginx:alpine
