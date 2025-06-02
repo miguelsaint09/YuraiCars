@@ -32,14 +32,21 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy the entire application
+# Copy package files first
+COPY package*.json ./
+COPY vite.config.js postcss.config.js tailwind.config.js ./
+
+# Install npm dependencies
+RUN npm ci
+
+# Copy the rest of the application
 COPY . .
 
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Install and build frontend assets
-RUN npm ci && npm run build
+# Build frontend assets
+RUN npm run build
 
 # permissions
 RUN chown -R www-data:www-data /var/www/html \
