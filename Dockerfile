@@ -1,8 +1,11 @@
 # fpm for fast cgi
 FROM php:8.3-fpm
 
-# i system deps
-RUN apt-get update && apt-get install -y \
+# Install node and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get update && apt-get install -y \
+    nodejs \
+    # PHP and other dependencies
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -17,8 +20,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     icu-devtools \
     pkg-config \
-    nodejs \
-    npm
+    && npm install -g npm@latest
 
 # i extensions
 RUN docker-php-ext-configure intl
@@ -37,7 +39,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 # Install and build frontend assets
-RUN npm ci --omit=dev && npm run build
+RUN npm ci && npm run build
 
 # permissions
 RUN chown -R www-data:www-data /var/www/html \

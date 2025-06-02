@@ -7,18 +7,20 @@
     "prepare": "husky install",
     "format": "prettier --write ."
   },
-  "devDependencies": {
+  "dependencies": {
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.17",
     "axios": "^1.6.4",
-    "husky": "^8.0.3",
     "laravel-vite-plugin": "^1.0.0",
-    "lint-staged": "^15.2.2",
     "postcss": "^8.4.35",
-    "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",
     "vite": "^6.3.5"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
   },
   "lint-staged": {
     "*.{js,css,md,html,json}": [
