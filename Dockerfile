@@ -59,13 +59,19 @@ RUN chown -R www-data:www-data /var/www/html \
 # Copy php-fpm config
 COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
 
+# Copy and make start script executable
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # Set environment variable defaults
 ENV PORT=3000 \
     PHP_FPM_PORT=3000 \
-    FPM_PORT=3000
+    FPM_PORT=3000 \
+    APP_ENV=production \
+    APP_DEBUG=false
 
 # Expose port from environment
 EXPOSE ${PORT}
 
-# Start php-fpm
-CMD ["php-fpm", "-F"]
+# Start using our custom script
+CMD ["/usr/local/bin/start.sh"]
