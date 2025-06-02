@@ -12,15 +12,17 @@ if ($port <= 0) {
     $port = 8000;
 }
 
-// Construir el comando
+echo "Starting server on port {$port}...\n";
+
+// Cambiar al directorio public de Laravel
+chdir(__DIR__ . '/public');
+
+// Iniciar el servidor PHP directamente
 $command = sprintf(
-    'php artisan serve --host=0.0.0.0 --port=%d',
-    $port
+    'php -S 0.0.0.0:%d %s/server.php',
+    $port,
+    __DIR__
 );
 
-// Mostrar información
-echo "Starting Laravel development server on port {$port}...\n";
-echo "Command: {$command}\n";
-
-// Ejecutar el comando
+echo "Executing command: {$command}\n";
 passthru($command); 
