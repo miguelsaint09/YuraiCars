@@ -32,21 +32,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy package files first
-COPY package*.json ./
-COPY vite.config.js postcss.config.js tailwind.config.js ./
-
-# Install npm dependencies
-RUN npm ci
-
-# Copy the rest of the application
+# Copy the entire application
 COPY . .
 
 # Install composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Build frontend assets
-RUN npm run build
+# Install npm dependencies and build assets
+RUN npm ci \
+    && NODE_ENV=production npm run build
 
 # permissions
 RUN chown -R www-data:www-data /var/www/html \
@@ -59,7 +53,8 @@ COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
 # Set environment variable defaults
 ENV PORT=3000 \
     PHP_FPM_PORT=3000 \
-    FPM_PORT=3000
+    FPM_PORT=3000 \
+    NODE_ENV=production
 
 # Expose port from environment
 EXPOSE ${PORT}
