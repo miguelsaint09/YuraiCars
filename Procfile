@@ -1,1 +1,1 @@
-web: php-fpm -y /usr/local/etc/php-fpm.d/www.conf
+web: php artisan serve --host=0.0.0.0 --port=${PORT}
