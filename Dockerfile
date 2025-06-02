@@ -42,8 +42,11 @@ FROM node:20-alpine as node
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and install dependencies first
 COPY package*.json ./
+RUN npm ci
+
+# Copy build configuration
 COPY vite.config.js ./
 COPY postcss.config.cjs ./
 COPY tailwind.config.cjs ./
@@ -52,9 +55,8 @@ COPY tailwind.config.cjs ./
 COPY resources/ ./resources/
 COPY --from=php /var/www/html/vendor ./vendor
 
-# Install dependencies and build
-RUN npm ci && \
-    NODE_ENV=production npm run build
+# Build assets
+RUN NODE_ENV=production npm run build
 
 # Stage 3: Final image
 FROM nginx:alpine
