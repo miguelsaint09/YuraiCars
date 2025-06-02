@@ -1,20 +1,19 @@
 # Use multi-stage build
-FROM php:8.3-fpm as php
+FROM php:8.3-fpm-alpine as php
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libonig-dev \
+    libjpeg-turbo-dev \
     libzip-dev \
+    icu-dev \
+    postgresql-dev \
+    oniguruma-dev \
     zip \
     unzip \
     git \
     curl \
-    libpq-dev \
-    libicu-dev \
-    && docker-php-ext-configure intl \
+    && docker-php-ext-configure gd \
     && docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath gd intl
 
 # Install composer
@@ -33,9 +32,6 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
-
-# Configure php-fpm to not daemonize
-RUN sed -i 's/;daemonize = yes/daemonize = no/g' /usr/local/etc/php-fpm.conf
 
 # Stage 2: Build frontend assets
 FROM node:20-alpine as node
@@ -73,6 +69,12 @@ RUN apk add --no-cache \
     && docker-php-ext-configure gd \
     && docker-php-ext-install pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath gd intl
 
+# Configure PHP-FPM
+RUN echo "pm.max_children = 10" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
+    && echo "pm.start_servers = 2" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
+    && echo "pm.min_spare_servers = 1" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
+    && echo "pm.max_spare_servers = 3" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -90,11 +92,14 @@ RUN chmod +x /start-nginx.sh
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+    && chmod -R 755 /var/www/html/bootstrap/cache \
+    && mkdir -p /run/nginx
 
 ENV PORT=3000 \
     APP_ENV=production \
-    APP_DEBUG=false
+    APP_DEBUG=false \
+    LOG_CHANNEL=stderr \
+    LOG_LEVEL=info
 
 EXPOSE ${PORT}
 
