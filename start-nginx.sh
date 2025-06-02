@@ -3,9 +3,6 @@
 # Create nginx runtime directory
 mkdir -p /run/nginx
 
-# Set SERVER_PORT from PORT if not set
-export SERVER_PORT=${SERVER_PORT:-$PORT}
-
 # Run database migrations
 cd /var/www/html
 php artisan migrate --force
@@ -15,6 +12,9 @@ php artisan view:cache
 
 # Start PHP-FPM
 php-fpm -D
+
+# Start Laravel development server with explicit host and port
+php artisan serve --host=0.0.0.0 --port=${PORT:-3000} --no-reload
 
 # Update nginx configuration with the PORT from environment variable
 sed -i "s/listen 3000/listen $PORT/g" /etc/nginx/nginx.conf

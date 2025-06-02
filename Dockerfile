@@ -99,8 +99,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && mkdir -p /run/nginx
 
 ENV PORT=3000 \
-    SERVER_PORT=3000 \
-    SERVER_HOST=0.0.0.0 \
     APP_ENV=production \
     APP_DEBUG=false \
     LOG_CHANNEL=stderr \
