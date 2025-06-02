@@ -34,8 +34,18 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-RUN composer install
+RUN composer install --no-dev --optimize-autoloader
 
-# ngix will forward request to php-fpm process
-# default port 9000 for php-fpm
-CMD ["php-fpm"]
+# Copy php-fpm config
+COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+
+# Set environment variable defaults
+ENV PORT=3000 \
+    PHP_FPM_PORT=3000 \
+    FPM_PORT=3000
+
+# Expose port from environment
+EXPOSE ${PORT}
+
+# Start php-fpm
+CMD ["php-fpm", "-F"]
