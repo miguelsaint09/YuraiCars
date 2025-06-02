@@ -16,7 +16,9 @@ RUN apt-get update && apt-get install -y \
     bash \
     libicu-dev \
     icu-devtools \
-    pkg-config
+    pkg-config \
+    nodejs \
+    npm
 
 # i extensions
 RUN docker-php-ext-configure intl
@@ -28,18 +30,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files
-COPY composer.json composer.* ./
-
-# Install composer dependencies
-RUN composer update --no-dev && \
-    composer install --no-dev --optimize-autoloader --no-scripts
-
-# Copy the rest of the application
+# Copy the entire application
 COPY . .
 
-# Run post-install scripts
-RUN composer run-script post-autoload-dump
+# Install composer dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Install and build frontend assets
+RUN npm ci --omit=dev && npm run build
 
 # permissions
 RUN chown -R www-data:www-data /var/www/html \
