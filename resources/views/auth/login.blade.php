@@ -1,15 +1,15 @@
-<x-layouts.auth title="Sign In">
+<x-layouts.auth title="Iniciar Sesión">
     <div class="flex min-h-screen">
         <div class="flex-1 flex justify-center items-center">
             <div class="w-80 max-w-80 space-y-6">
                 <div class="flex justify-center opacity-50">
                     <a href="/" class="group flex items-center gap-3">
                         <flux:icon.car-front class="size-8 text-black dark:text-white" />
-                        <span class="text-xl font-semibold text-zinc-800 dark:text-white">Rent a car</span>
+                        <span class="text-xl font-semibold text-zinc-800 dark:text-white">YuraiCars</span>
                     </a>
                 </div>
 
-                <flux:heading class="text-center" size="xl">Welcome back</flux:heading>
+                <flux:heading class="text-center" size="xl">¡Bienvenido de nuevo!</flux:heading>
 
                 <div class="space-y-4">
                     <flux:button class="w-full">
@@ -22,32 +22,32 @@
                             </svg>
                         </x-slot>
 
-                        Continue with Google
+                        Continuar con Google
                     </flux:button>
                 </div>
 
-                <flux:separator text="or" />
+                <flux:separator text="o" />
 
                 <form action="{{ route('login') }}" method="POST" class="flex flex-col gap-6">
                     @csrf
 
-                    <flux:input name="email" label="Email" type="email" placeholder="email@example.com" value="{{ old('email') }}" />
+                    <flux:input name="email" label="Correo Electrónico" type="email" placeholder="correo@ejemplo.com" value="{{ old('email') }}" />
 
                     <flux:field>
                         <div class="mb-3 flex justify-between">
-                            <flux:label>Password</flux:label>
-                            <flux:link href="{{ route('password.request') }}" variant="subtle" class="text-sm">Forgot password?</flux:link>
+                            <flux:label>Contraseña</flux:label>
+                            <flux:link href="{{ route('password.request') }}" variant="subtle" class="text-sm">¿Olvidaste tu contraseña?</flux:link>
                         </div>
-                        <flux:input name="password" type="password" placeholder="Your password" />
+                        <flux:input name="password" type="password" placeholder="Tu contraseña" />
                     </flux:field>
 
-                    <flux:checkbox name="remember" label="Remember me for 30 days" />
+                    <flux:checkbox name="remember" label="Recuérdame por 30 días" />
 
-                    <flux:button type="submit" variant="primary" class="w-full">Sign In</flux:button>
+                    <flux:button type="submit" variant="primary" class="w-full">Iniciar Sesión</flux:button>
                 </form>
 
                 <flux:subheading class="text-center">
-                    First time here? <flux:link href="{{ route('register') }}">Sign up for free</flux:link>
+                    ¿Primera vez aquí? <flux:link href="{{ route('register') }}">Regístrate gratis</flux:link>
                 </flux:subheading>
             </div>
         </div>

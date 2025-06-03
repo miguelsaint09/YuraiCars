@@ -17,7 +17,8 @@ class RentalResource extends Resource
 {
     protected static ?string $model = Rental::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationGroup = 'Rentals';
+    protected static ?string $navigationLabel = 'Alquileres';
+    protected static ?string $navigationGroup = 'Gestión de Alquileres';
 
     public static function form(Form $form): Form
     {
@@ -25,39 +26,40 @@ class RentalResource extends Resource
             ->schema([
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'email')
-                    ->label('Rented By')
+                    ->label('Cliente')
                     ->required(),
 
                 Forms\Components\Select::make('vehicle_id')
                     ->relationship('vehicle', 'name')
-                    ->label('Vehicle')
+                    ->label('Vehículo')
                     ->required(),
 
                 Forms\Components\TextInput::make('pickup_location')
-                    ->label('Pickup Location')
+                    ->label('Lugar de Recogida')
                     ->required(),
 
                 Forms\Components\TextInput::make('dropoff_location')
-                    ->label('Dropoff Location')
+                    ->label('Lugar de Devolución')
+                    ->default('YuraiCars')
                     ->required(),
 
                 Forms\Components\DateTimePicker::make('start_time')
-                    ->label('Start Time')
+                    ->label('Fecha de Inicio')
                     ->required(),
 
                 Forms\Components\DateTimePicker::make('end_time')
-                    ->label('End Time')
+                    ->label('Fecha de Fin')
                     ->required(),
 
                 Forms\Components\Select::make('status')
                     ->options([
-                        'pending' => 'Pending',
-                        'confirmed' => 'Confirmed',
-                        'completed' => 'Completed',
-                        'cancelled' => 'Cancelled',
+                        'pending' => 'Pendiente',
+                        'confirmed' => 'Confirmado',
+                        'completed' => 'Completado',
+                        'cancelled' => 'Cancelado',
                     ])
                     ->required()
-                    ->label('Status'),
+                    ->label('Estado'),
             ]);
     }
 
@@ -66,59 +68,58 @@ class RentalResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('user.email')
-                    ->label('User')
+                    ->label('Cliente')
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('vehicle.name')
-                    ->label('Vehicle')
+                    ->label('Vehículo')
                     ->sortable()
                     ->searchable(),
 
                 TextColumn::make('pickup_location')
-                    ->label('Pickup Location')
+                    ->label('Lugar de Recogida')
                     ->sortable(),
 
                 TextColumn::make('dropoff_location')
-                    ->label('Dropoff Location')
+                    ->label('Lugar de Devolución')
                     ->sortable(),
 
                 TextColumn::make('start_time')
-                    ->label('Start Time')
+                    ->label('Fecha de Inicio')
                     ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('end_time')
-                    ->label('End Time')
+                    ->label('Fecha de Fin')
                     ->dateTime()
                     ->sortable(),
 
                 TextColumn::make('status')
-                    ->label('Status')
+                    ->label('Estado')
                     ->badge(),
 
-                // Payment Details (Join with Payment table)
                 TextColumn::make('payment.amount')
-                    ->label('Amount ($)')
+                    ->label('Monto (DOP)')
                     ->sortable(),
 
                 TextColumn::make('payment.payment_method')
-                    ->label('Payment Method')
+                    ->label('Método de Pago')
                     ->sortable(),
 
                 TextColumn::make('payment.status')
-                    ->label('Payment Status')
+                    ->label('Estado del Pago')
                     ->badge()
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('Ver'),
+                Tables\Actions\EditAction::make()->label('Editar'),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()->label('Eliminar Seleccionados'),
             ]);
     }
 

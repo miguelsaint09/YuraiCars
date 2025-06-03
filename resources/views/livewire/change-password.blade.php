@@ -1,23 +1,22 @@
 <div class="mt-8 border-t border-neutral-200 dark:border-neutral-700 pt-8">
-    <div class="flex justify-between items-center mb-6">
-        <flux:heading size="xl" class="font-semibold text-gray-800 dark:text-white">
-            Security Settings
-        </flux:heading>
-        @if (!$isChangingPassword)
-            <flux:button icon="lock-password-line" wire:click="toggleChangePassword" variant="subtle">Change Password</flux:button>
-        @endif
-    </div>
-
-    @if ($isChangingPassword)
-        <div class="space-y-6">
-            <flux:input type="password" wire:model="current_password" label="Current Password" placeholder="Enter your current password" />
-            <flux:input type="password" wire:model="password" label="New Password" placeholder="Enter your new password" />
-            <flux:input type="password" wire:model="password_confirmation" label="Confirm New Password" placeholder="Confirm your new password" />
-
+    @if (!$isChangingPassword)
+        <div class="flex items-center justify-between">
+            <div>
+                <flux:heading size="lg" class="text-gray-800 dark:text-white">Cambio de Contraseña</flux:heading>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Actualiza tu contraseña de manera segura</p>
+            </div>
+            <flux:button wire:click="toggleChangePassword" variant="subtle">Cambiar Contraseña</flux:button>
+        </div>
+    @else
+        <div class="space-y-4">
+            <flux:heading size="lg" class="text-gray-800 dark:text-white">Cambiar Contraseña</flux:heading>
+            <flux:input wire:model="current_password" type="password" label="Contraseña Actual" required />
+            <flux:input wire:model="password" type="password" label="Nueva Contraseña" required />
+            <flux:input wire:model="password_confirmation" type="password" label="Confirmar Nueva Contraseña" required />
             <div class="flex justify-end gap-4">
-                <flux:button wire:click="changePassword" variant="primary">Update Password</flux:button>
-                <flux:button wire:click="toggleChangePassword" variant="ghost">Cancel</flux:button>
+                <flux:button wire:click="changePassword" variant="primary">Actualizar Contraseña</flux:button>
+                <flux:button wire:click="toggleChangePassword" variant="ghost">Cancelar</flux:button>
             </div>
         </div>
     @endif
-</div> 
+</div>

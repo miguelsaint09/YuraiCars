@@ -4,22 +4,22 @@ namespace App\Enums;
 
 enum VehicleFeatures: string
 {
-    case GPS = 'GPS Navigation';
+    case GPS = 'Navegación GPS';
     case BLUETOOTH = 'Bluetooth';
-    case BACKUP_CAMERA = 'Backup Camera';
-    case CRUISE_CONTROL = 'Cruise Control';
-    case CLIMATE_CONTROL = 'Climate Control';
-    case LEATHER_SEATS = 'Leather Seats';
-    case SUNROOF = 'Sunroof';
-    case PARKING_SENSORS = 'Parking Sensors';
-    case KEYLESS_ENTRY = 'Keyless Entry';
+    case BACKUP_CAMERA = 'Cámara de Retroceso';
+    case CRUISE_CONTROL = 'Control de Crucero';
+    case CLIMATE_CONTROL = 'Control de Clima';
+    case LEATHER_SEATS = 'Asientos de Cuero';
+    case SUNROOF = 'Techo Solar';
+    case PARKING_SENSORS = 'Sensores de Estacionamiento';
+    case KEYLESS_ENTRY = 'Entrada sin Llave';
     case APPLE_CARPLAY = 'Apple CarPlay';
     case ANDROID_AUTO = 'Android Auto';
-    case WIFI = 'Wi-Fi Hotspot';
-    case USB_PORTS = 'USB Ports';
-    case HEATED_SEATS = 'Heated Seats';
-    case BLIND_SPOT = 'Blind Spot Monitor';
-    case LANE_ASSIST = 'Lane Departure Assist';
+    case WIFI = 'Wi-Fi';
+    case USB_PORTS = 'Puertos USB';
+    case HEATED_SEATS = 'Asientos Calefactados';
+    case BLIND_SPOT = 'Monitor de Punto Ciego';
+    case LANE_ASSIST = 'Asistente de Carril';
 
     /**
      * @return array<string, string>
@@ -31,4 +31,4 @@ enum VehicleFeatures: string
             array_column(self::cases(), 'name')
         );
     }
-} 
+}

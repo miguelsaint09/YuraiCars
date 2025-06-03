@@ -7,7 +7,6 @@ use App\Models\Vehicle;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 
 class VehiclesIndex extends Component
 {
@@ -40,18 +39,31 @@ class VehiclesIndex extends Component
 
     public function filterVehicles(): void
     {
-        $query = Vehicle::query()->where('status', VehicleStatus::AVAILABLE->value);
+        $query = Vehicle::query()->where('status', 'available');
 
         if ($this->category !== '') {
-            $query->where('category', $this->category);
+            $query->where('category', match(strtolower($this->category)) {
+                'sedán' => 'Sedan',
+                'camioneta' => 'Truck',
+                default => ucfirst($this->category)
+            });
         }
 
         if ($this->transmission !== '') {
-            $query->where('transmission', strtolower($this->transmission));
+            $query->where('transmission', match(strtolower($this->transmission)) {
+                'automático' => 'automatic',
+                'manual' => 'manual',
+                default => strtolower($this->transmission)
+            });
         }
 
         if ($this->fuelType !== '') {
-            $query->where('fuel_type', strtolower($this->fuelType));
+            $query->where('fuel_type', match(strtolower($this->fuelType)) {
+                'gasolina' => 'petrol',
+                'eléctrico' => 'electric',
+                'híbrido' => 'hybrid',
+                default => strtolower($this->fuelType)
+            });
         }
 
         if (!empty($this->priceMin)) {

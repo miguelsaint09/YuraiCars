@@ -53,17 +53,20 @@ class ShowRental extends Component
                 'vehicle_id' => $vehicle->id,
                 'status' => RentalStatus::SELECTED->value,
                 'pickup_location' => '',
-                'dropoff_location' => '',
+                'dropoff_location' => 'YuraiCars',
                 'start_time' => null,
                 'end_time' => null,
             ]);
+        } else {
+            // Ensure dropoff location is always YuraiCars
+            $existingRental->update(['dropoff_location' => 'YuraiCars']);
         }
 
         $this->onGoingRental = $existingRental;
-
+        
         // Cargar los datos de la reserva
         $this->pickupLocation = $this->onGoingRental->pickup_location ?? '';
-        $this->dropoffLocation = $this->onGoingRental->dropoff_location ?? '';
+        $this->dropoffLocation = $this->onGoingRental->dropoff_location;
         $this->startTime = $this->onGoingRental->start_time;
         $this->endTime = $this->onGoingRental->end_time;
 

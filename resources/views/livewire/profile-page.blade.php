@@ -10,7 +10,7 @@
                 </div>
                 <div class="text-center mt-4">
                     <flux:heading size="xl" class="font-semibold text-gray-800 dark:text-white">
-                        {{ $first_name ? "$first_name $last_name" : 'Welcome!' }}
+                        {{ $first_name ? "$first_name $last_name" : '¡Bienvenido!' }}
                     </flux:heading>
                     <p class="text-gray-600 dark:text-gray-400 mt-2">{{ $user->email }}</p>
                 </div>
@@ -19,7 +19,7 @@
             <!-- Right: Profile Info -->
             <div class="w-full md:w-2/3">
                 <flux:heading size="xl" class="font-semibold mb-6 text-gray-800 dark:text-white">
-                    Profile Information
+                    Información del Perfil
                 </flux:heading>
 
                 @if (session('status'))
@@ -28,19 +28,25 @@
                     </div>
                 @endif
 
+                @if (session('error'))
+                    <div class="text-xs text-center text-red-400 w-full p-2.5 rounded bg-red-100 dark:bg-red-900">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <!-- Profile Form -->
                 <div class="space-y-6">
-                    <flux:input wire:model="first_name" label="First Name" :readonly="!$isEditing" placeholder="Enter first name" />
-                    <flux:input wire:model="last_name" label="Last Name" :readonly="!$isEditing" placeholder="Enter last name" />
-                    <flux:input wire:model="phone" label="Phone" :readonly="!$isEditing" placeholder="Enter phone number" />
-                    <flux:input wire:model="license_number" label="License Number" :readonly="!$isEditing" placeholder="Enter license number" />
-                    <flux:input wire:model="date_of_birth" type="date" label="Date of Birth" :readonly="!$isEditing" />
+                    <flux:input wire:model="first_name" label="Nombre" :readonly="!$isEditing" placeholder="Ingrese su nombre" />
+                    <flux:input wire:model="last_name" label="Apellido" :readonly="!$isEditing" placeholder="Ingrese su apellido" />
+                    <flux:input wire:model="phone" label="Teléfono" :readonly="!$isEditing" placeholder="Ingrese su número de teléfono" />
+                    <flux:input wire:model="license_number" label="Número de Licencia" :readonly="!$isEditing" placeholder="Ingrese su número de licencia" />
+                    <flux:input wire:model="date_of_birth" type="date" label="Fecha de Nacimiento" :readonly="!$isEditing" />
 
                     <div class="flex justify-end gap-4 pt-4 min-h-[40px]">
-                        <flux:button wire:click="saveProfile" variant="primary" class="{{ $isEditing ? '' : 'invisible' }}">Save</flux:button>
-                        <flux:button wire:click="toggleEdit" variant="ghost" class="{{ $isEditing ? '' : 'invisible' }}">Cancel</flux:button>
+                        <flux:button wire:click="saveProfile" variant="primary" class="{{ $isEditing ? '' : 'invisible' }}">Guardar</flux:button>
+                        <flux:button wire:click="toggleEdit" variant="ghost" class="{{ $isEditing ? '' : 'invisible' }}">Cancelar</flux:button>
                         @if (!$isEditing)
-                            <flux:button icon="file-pen-line" wire:click="toggleEdit" variant="subtle">Edit Profile</flux:button>
+                            <flux:button icon="file-pen-line" wire:click="toggleEdit" variant="subtle">Editar Perfil</flux:button>
                         @endif
                     </div>
                 </div>

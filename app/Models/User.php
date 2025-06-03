@@ -7,6 +7,7 @@ namespace App\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Filament\Panel;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -76,5 +77,16 @@ class User extends Authenticatable implements HasName, FilamentUser
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
+    }
+}
+
+class UserPolicy
+{
+    use HandlesAuthorization;
+
+    public function update(User $authUser, User $user)
+    {
+        // Permitir solo si el usuario autenticado es admin o el mismo usuario
+        return $authUser->role === 'admin' || $authUser->id === $user->id;
     }
 }

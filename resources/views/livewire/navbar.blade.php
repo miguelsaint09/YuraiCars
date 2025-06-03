@@ -16,9 +16,9 @@
                 </flux:button>
 
                 <flux:menu>
-                    <flux:menu.item icon="user" href="{{ route('profile') }}">Profile</flux:menu.item>
-                    <flux:menu.item icon="car-front" href="{{ route('profile.rents') }}">Rents</flux:menu.item>
-                    <flux:menu.item icon="log-out" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</flux:menu.item>
+                    <flux:menu.item icon="user" href="{{ route('profile') }}">Perfil</flux:menu.item>
+                    <flux:menu.item icon="car-front" href="{{ route('profile.rents') }}">Alquileres</flux:menu.item>
+                    <flux:menu.item icon="log-out" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar Sesión</flux:menu.item>
                 </flux:menu>
             </flux:dropdown>
 
@@ -27,7 +27,7 @@
             </form>
             @else
             <ul>
-                <li><a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Sign In</a></li>
+                <li><a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Iniciar Sesión</a></li>
             </ul>
             @endauth
             <flux:button x-on:click="open = !open" variant="ghost" icon="menu" />
@@ -35,11 +35,11 @@
 
         <!-- Desktop Menu -->
         <ul class="hidden lg:flex space-x-10">
-            <li><a href="/" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Home</a></li>
-            <li><a href="/rent-a-car" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Rent a car</a></li>
-            <li><a href="/vehicles" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehicles</a></li>
-            <li><a href="/about" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">About</a></li>
-            <li><a href="/contact" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contact</a></li>
+            <li><a href="/" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Inicio</a></li>
+            <li><a href="/rent-a-car" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Alquilar un Auto</a></li>
+            <li><a href="/vehicles" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehículos</a></li>
+            <li><a href="/about" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Nosotros</a></li>
+            <li><a href="/contact" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contacto</a></li>
         </ul>
 
         <!-- Dark Mode Switcher (Desktop) -->
@@ -66,9 +66,9 @@
                 </flux:button>
 
                 <flux:menu>
-                    <flux:menu.item icon="user" href="{{ route('profile') }}">Profile</flux:menu.item>
-                    <flux:menu.item icon="car-front" href="{{ route('profile.rents') }}">Rents</flux:menu.item>
-                    <flux:menu.item icon="log-out" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form-desktop').submit();">Logout</flux:menu.item>
+                    <flux:menu.item icon="user" href="{{ route('profile') }}">Perfil</flux:menu.item>
+                    <flux:menu.item icon="car-front" href="{{ route('profile.rents') }}">Alquileres</flux:menu.item>
+                    <flux:menu.item icon="log-out" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form-desktop').submit();">Cerrar Sesión</flux:menu.item>
                 </flux:menu>
             </flux:dropdown>
 
@@ -77,7 +77,7 @@
             </form>
             @else
                 <ul>
-                    <li><a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Sign In</a></li>
+                    <li><a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Iniciar Sesión</a></li>
                 </ul>
             @endauth
         </div>
@@ -86,11 +86,11 @@
     <!-- Mobile Dropdown -->
     <div class="lg:hidden border-t border-neutral-200 dark:border-neutral-700" x-show="open" x-transition>
         <ul class="bg-white dark:bg-black space-y-2 p-4">
-            <li><a href="/" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Home</a></li>
-            <li><a href="/rent-a-car" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Rent a car</a></li>
-            <li><a href="/vehicles" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehicles</a></li>
-            <li><a href="/about" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">About</a></li>
-            <li><a href="/contact" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contact</a></li>
+            <li><a href="/" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Inicio</a></li>
+            <li><a href="/rent-a-car" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Alquilar un Auto</a></li>
+            <li><a href="/vehicles" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehículos</a></li>
+            <li><a href="/about" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Nosotros</a></li>
+            <li><a href="/contact" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contacto</a></li>
         </ul>
     </div>
 </nav>

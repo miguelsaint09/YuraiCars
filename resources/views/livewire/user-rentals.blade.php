@@ -1,5 +1,5 @@
 <div class="container mx-auto px-6 py-10">
-    <flux:heading size="xl" class="text-gray-900 dark:text-white">My Rentals</flux:heading>
+    <flux:heading size="xl" class="text-gray-900 dark:text-white">YuraiCars - Mis Alquileres</flux:heading>
 
     @if (session('status'))
         <div class="mt-4 p-4 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-lg">
@@ -14,7 +14,7 @@
     @endif
 
     @if($rentals->isEmpty())
-        <p class="mt-6 text-gray-600 dark:text-gray-400">You haven't rented any vehicles yet.</p>
+        <p class="mt-6 text-gray-600 dark:text-gray-400">Aún no has alquilado ningún vehículo.</p>
     @else
         <div class="mt-6 space-y-6">
             @foreach($rentals as $rental)
@@ -36,56 +36,78 @@
 
                             @if($rental->pickup_location)
                                 <div class="mt-2">
-                                    <span class="text-gray-800 dark:text-white font-semibold">Pickup:</span>
+                                    <span class="text-gray-800 dark:text-white font-semibold">Lugar de Recogida:</span>
                                     <span class="text-gray-600 dark:text-gray-300">{{ $rental->pickup_location }}</span>
                                 </div>
                             @endif
 
                             @if($rental->dropoff_location)
                                 <div class="mt-1">
-                                    <span class="text-gray-800 dark:text-white font-semibold">Drop-off:</span>
+                                    <span class="text-gray-800 dark:text-white font-semibold">Lugar de Devolución:</span>
                                     <span class="text-gray-600 dark:text-gray-300">{{ $rental->dropoff_location }}</span>
                                 </div>
                             @endif
 
                             @if($rental->start_time && $rental->end_time)
                                 <div class="mt-1">
-                                    <span class="text-gray-800 dark:text-white font-semibold">Rental Period:</span>
+                                    <span class="text-gray-800 dark:text-white font-semibold">Período de Alquiler:</span>
                                     <span class="text-gray-600 dark:text-gray-300 text-sm">
-                                        {{ \Carbon\Carbon::parse($rental->start_time)->format('M d, h:i A') }} 
+                                        {{ \Carbon\Carbon::parse($rental->start_time)->format('d M, h:i A') }} 
                                         - 
-                                        {{ \Carbon\Carbon::parse($rental->end_time)->format('M d, h:i A') }}
+                                        {{ \Carbon\Carbon::parse($rental->end_time)->format('d M, h:i A') }}
                                     </span>
                                 </div>
                             @endif
 
                             <!-- Status Badge -->
                             <div class="mt-4">
-                                <span class="text-gray-800 dark:text-white font-semibold">Status:</span>
+                                <span class="text-gray-800 dark:text-white font-semibold">Estado:</span>
                                 <flux:badge variant="{{ in_array($rental->status, ['selected', 'pending']) ? 'warning' : ($rental->status === 'completed' ? 'success' : 'info') }}">
-                                    {{ ucfirst($rental->status) }}
+                                    {{ match($rental->status) {
+                                        'selected' => 'Seleccionado',
+                                        'pending' => 'Pendiente',
+                                        'confirmed' => 'Confirmado',
+                                        'approved' => 'Aprobado',
+                                        'rejected' => 'Rechazado',
+                                        'active' => 'Activo',
+                                        'completed' => 'Completado',
+                                        'cancelled' => 'Cancelado',
+                                        default => ucfirst($rental->status)
+                                    } }}
                                 </flux:badge>
                             </div>
                         </div>
 
                         <!-- Payment Info -->
                         <div class="flex-1">
-                            <h4 class="text-lg font-semibold text-gray-800 dark:text-white">Payment Details</h4>
+                            <h4 class="text-lg font-semibold text-gray-800 dark:text-white">Detalles del Pago</h4>
                             @if($rental->payment)
                                 <p class="text-gray-600 dark:text-gray-300">
-                                    <span class="font-semibold">Amount Paid:</span> ${{ number_format($rental->payment->amount, 2) }}
+                                    <span class="font-semibold">Monto Pagado:</span> ${{ number_format($rental->payment->amount, 2) }} DOP
                                 </p>
                                 <p class="text-gray-600 dark:text-gray-300">
-                                    <span class="font-semibold">Payment Method:</span> {{ ucfirst(str_replace('_', ' ', $rental->payment->payment_method)) }}
+                                    <span class="font-semibold">Método de Pago:</span> {{ match($rental->payment->payment_method) {
+                                        'credit_card' => 'Tarjeta de Crédito',
+                                        'debit_card' => 'Tarjeta de Débito',
+                                        'cash' => 'Efectivo',
+                                        default => ucfirst(str_replace('_', ' ', $rental->payment->payment_method))
+                                    } }}
                                 </p>
                                 <p class="text-gray-600 dark:text-gray-300">
-                                    <span class="font-semibold">Status:</span> 
-                                    <flux:badge variant="{{ $rental->payment->status === 'paid' ? 'success' : 'warning' }}">
-                                        {{ ucfirst($rental->payment->status) }}
+                                    <span class="font-semibold">Estado:</span> 
+                                    <flux:badge variant="{{ $rental->payment->status === 'success' ? 'success' : 'warning' }}">
+                                        {{ match($rental->payment->status) {
+                                            'pending' => 'Pendiente',
+                                            'success' => 'Pagado',
+                                            'failed' => 'Fallido',
+                                            'canceled' => 'Cancelado',
+                                            'refunded' => 'Reembolsado',
+                                            default => ucfirst($rental->payment->status)
+                                        } }}
                                     </flux:badge>
                                 </p>
                             @else
-                                <p class="text-red-500">Payment not found.</p>
+                                <p class="text-red-500">Pago no encontrado.</p>
                             @endif
                         </div>
                     </div>
@@ -105,7 +127,7 @@
                                         <line x1="16" y1="17" x2="8" y2="17"/>
                                         <line x1="10" y1="9" x2="8" y2="9"/>
                                     </svg>
-                                    <span class="font-medium">View Details</span>
+                                    <span class="font-medium">Ver Detalles</span>
                                 </button>
                                 <livewire:rental-details :rental-id="$rental->id" :key="$rental->id" />
                             @endif
@@ -114,11 +136,11 @@
                                 <flux:button 
                                     wire:click="deleteRental('{{ $rental->id }}')" 
                                     variant="danger"
-                                    wire:confirm="Are you sure you want to delete this rental?">
-                                    Delete Rental
+                                    wire:confirm="¿Estás seguro de que deseas eliminar este alquiler?">
+                                    Eliminar Alquiler
                                 </flux:button>
                                 <flux:button wire:click="continueBooking('{{ $rental->id }}')" variant="primary">
-                                    Continue Booking
+                                    Continuar Reserva
                                 </flux:button>
                             @endif
                         </div>

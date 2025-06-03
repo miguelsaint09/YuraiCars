@@ -24,32 +24,32 @@
 
                 <!-- Modal header -->
                 <div class="text-center mb-6">
-                    <flux:heading size="xl" class="text-gray-900 dark:text-white">Rental Details</flux:heading>
+                    <flux:heading size="xl" class="text-gray-900 dark:text-white">YuraiCars - Detalles del Alquiler</flux:heading>
                     <p class="text-gray-600 dark:text-gray-400 mt-2">Rental ID: {{ $rental->id }}</p>
                 </div>
 
                 <!-- Modal content -->
-                <div class="space-y-6">
+                <div class="space-y-6 overflow-y-auto max-h-[70vh]">
                     <!-- Customer Information -->
                     <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold mb-4">Customer Information</h3>
-                        <div class="grid grid-cols-2 gap-4">
+                        <h3 class="text-lg font-semibold mb-4">Información del Cliente</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Full Name</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Nombre Completo</p>
                                 <p class="font-medium">{{ $rental->user->profile->first_name }} {{ $rental->user->profile->last_name }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Email</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Correo Electrónico</p>
                                 <p class="font-medium">{{ $rental->user->email }}</p>
                             </div>
                             @if($rental->user->profile)
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Phone</p>
-                                <p class="font-medium">{{ $rental->user->profile->phone ?? 'Not provided' }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Teléfono</p>
+                                <p class="font-medium">{{ $rental->user->profile->phone ?? 'No proporcionado' }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Address</p>
-                                <p class="font-medium">{{ $rental->user->profile->address ?? 'Not provided' }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Dirección</p>
+                                <p class="font-medium">{{ $rental->user->profile->address ?? 'No proporcionada' }}</p>
                             </div>
                             @endif
                         </div>
@@ -57,51 +57,35 @@
 
                     <!-- Vehicle Information -->
                     <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold mb-4">Vehicle Information</h3>
-                        <div class="grid grid-cols-2 gap-4">
+                        <h3 class="text-lg font-semibold mb-4">Información del Vehículo</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Vehicle</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Vehículo</p>
                                 <p class="font-medium">{{ $rental->vehicle->name }} - {{ $rental->vehicle->year }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Category</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Categoría</p>
                                 <p class="font-medium">{{ $rental->vehicle->category }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Transmission</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Transmisión</p>
                                 <p class="font-medium">{{ ucfirst($rental->vehicle->transmission) }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Daily Rate</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Tarifa Diaria</p>
                                 <p class="font-medium">${{ number_format($rental->vehicle->price_per_day, 2) }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Make</p>
-                                <p class="font-medium">{{ $rental->vehicle->make }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Model</p>
-                                <p class="font-medium">{{ $rental->vehicle->model }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">License Plate</p>
-                                <p class="font-medium">{{ $rental->vehicle->license_plate }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Color</p>
-                                <p class="font-medium">{{ $rental->vehicle->color }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Seats</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Asientos</p>
                                 <p class="font-medium">{{ $rental->vehicle->seats }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Fuel Type</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Tipo de Combustible</p>
                                 <p class="font-medium">{{ ucfirst($rental->vehicle->fuel_type) }}</p>
                             </div>
                             @if($rental->vehicle->features)
                             <div class="col-span-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Features</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Características</p>
                                 <div class="flex flex-wrap gap-2 mt-1">
                                     @foreach($rental->vehicle->features as $feature)
                                         <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-md text-sm">
@@ -116,85 +100,99 @@
 
                     <!-- Rental Information -->
                     <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold mb-4">Rental Information</h3>
-                        <div class="grid grid-cols-2 gap-4">
+                        <h3 class="text-lg font-semibold mb-4">Información del Alquiler</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Pickup Location</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Lugar de Recogida</p>
                                 <p class="font-medium">{{ $rental->pickup_location }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Drop-off Location</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Lugar de Devolución</p>
                                 <p class="font-medium">{{ $rental->dropoff_location }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Start Time</p>
-                                <p class="font-medium">{{ \Carbon\Carbon::parse($rental->start_time)->format('M d, Y h:i A') }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Fecha de Inicio</p>
+                                <p class="font-medium">{{ \Carbon\Carbon::parse($rental->start_time)->format('d M, Y h:i A') }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">End Time</p>
-                                <p class="font-medium">{{ \Carbon\Carbon::parse($rental->end_time)->format('M d, Y h:i A') }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Fecha de Fin</p>
+                                <p class="font-medium">{{ \Carbon\Carbon::parse($rental->end_time)->format('d M, Y h:i A') }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Total Days</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Total de Días</p>
                                 <p class="font-medium">{{ \Carbon\Carbon::parse($rental->start_time)->diffInDays(\Carbon\Carbon::parse($rental->end_time)) }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Status</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Estado</p>
                                 <flux:badge variant="{{ $rental->status === 'completed' ? 'success' : 'info' }}">
-                                    {{ ucfirst($rental->status) }}
+                                    {{ match($rental->status) {
+                                        'selected' => 'Seleccionado',
+                                        'pending' => 'Pendiente',
+                                        'confirmed' => 'Confirmado',
+                                        'approved' => 'Aprobado',
+                                        'rejected' => 'Rechazado',
+                                        'active' => 'Activo',
+                                        'completed' => 'Completado',
+                                        'cancelled' => 'Cancelado',
+                                        default => ucfirst($rental->status)
+                                    } }}
                                 </flux:badge>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Created At</p>
-                                <p class="font-medium">{{ $rental->created_at->format('M d, Y h:i A') }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Last Updated</p>
-                                <p class="font-medium">{{ $rental->updated_at->format('M d, Y h:i A') }}</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Payment Information -->
                     <div class="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-lg">
-                        <h3 class="text-lg font-semibold mb-4">Payment Information</h3>
-                        <div class="grid grid-cols-2 gap-4">
+                        <h3 class="text-lg font-semibold mb-4">Información de Pago</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Amount Paid</p>
-                                <p class="font-medium">${{ number_format($rental->payment->amount, 2) }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Monto Pagado</p>
+                                <p class="font-medium">${{ number_format($rental->payment->amount, 2) }} DOP</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Payment Method</p>
-                                <p class="font-medium">{{ ucfirst(str_replace('_', ' ', $rental->payment->payment_method)) }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Método de Pago</p>
+                                <p class="font-medium">{{ match($rental->payment->payment_method) {
+                                    'credit_card' => 'Tarjeta de Crédito',
+                                    'debit_card' => 'Tarjeta de Débito',
+                                    'cash' => 'Efectivo',
+                                    default => ucfirst(str_replace('_', ' ', $rental->payment->payment_method))
+                                } }}</p>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Payment Status</p>
-                                <flux:badge variant="{{ $rental->payment->status === 'paid' ? 'success' : 'warning' }}">
-                                    {{ ucfirst($rental->payment->status) }}
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Estado del Pago</p>
+                                <flux:badge variant="{{ $rental->payment->status === 'success' ? 'success' : 'warning' }}">
+                                    {{ match($rental->payment->status) {
+                                        'pending' => 'Pendiente',
+                                        'success' => 'Pagado',
+                                        'failed' => 'Fallido',
+                                        'canceled' => 'Cancelado',
+                                        'refunded' => 'Reembolsado',
+                                        default => ucfirst($rental->payment->status)
+                                    } }}
                                 </flux:badge>
                             </div>
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Payment Date</p>
-                                <p class="font-medium">{{ $rental->payment->created_at->format('M d, Y h:i A') }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Fecha de Pago</p>
+                                <p class="font-medium">{{ $rental->payment->created_at->format('d M, Y h:i A') }}</p>
                             </div>
                             @if($rental->payment->transaction_id)
                             <div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Transaction ID</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">ID de Transacción</p>
                                 <p class="font-medium">{{ $rental->payment->transaction_id }}</p>
                             </div>
                             @endif
                         </div>
                     </div>
+                </div>
 
-                    <!-- Download Invoice Button -->
-                    <div class="flex justify-end mt-6">
-                        <flux:button wire:click="downloadInvoice" variant="primary">
-                            <flux:icon.document-arrow-down class="size-5 mr-2" />
-                            Download Invoice
-                        </flux:button>
-                    </div>
+                <!-- Download Invoice Button -->
+                <div class="flex justify-end mt-6">
+                    <flux:button wire:click="downloadInvoice" variant="primary">
+                        <flux:icon.document-arrow-down class="size-5 mr-2" />
+                        Descargar Factura
+                    </flux:button>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>

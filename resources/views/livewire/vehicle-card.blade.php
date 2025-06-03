@@ -3,7 +3,7 @@
     <!-- Card Header -->
     <flux:modal.trigger :name="'vehicle-detail-'.$vehicle->id" class="relative p-4">
         <flux:button icon="information-circle" variant="subtle" size="sm" class="absolute top-3 left-3">
-            Details
+            Detalles
         </flux:button>
     </flux:modal.trigger>
 
@@ -19,21 +19,37 @@
         <div class="flex justify-center items-center gap-4 mt-3 text-zinc-600 dark:text-zinc-300">
             <span class="flex items-center gap-1" title="Asientos"><flux:icon.users class="size-5" /> {{ $vehicle->seats }}</span>
             <span class="flex items-center gap-1" title="Capacidad de equipaje"><flux:icon.briefcase class="size-5" /> {{ $vehicle->luggage_capacity }}L</span>
-            <span class="flex items-center gap-1" title="Transmisión"><flux:icon.cog class="size-5" /> {{ ucfirst($vehicle->transmission) }}</span>
-            <span class="flex items-center gap-1" title="Tipo de combustible"><flux:icon.fuel class="size-5" /> {{ ucfirst($vehicle->fuel_type) }}</span>
+            <span class="flex items-center gap-1" title="Transmisión">
+                <flux:icon.cog class="size-5" /> 
+                {{ match($vehicle->transmission) {
+                    'automatic' => 'Automático',
+                    'manual' => 'Manual',
+                    default => ucfirst($vehicle->transmission)
+                } }}
+            </span>
+            <span class="flex items-center gap-1" title="Tipo de combustible">
+                <flux:icon.fuel class="size-5" /> 
+                {{ match($vehicle->fuel_type) {
+                    'petrol' => 'Gasolina',
+                    'diesel' => 'Diesel',
+                    'electric' => 'Eléctrico',
+                    'hybrid' => 'Híbrido',
+                    default => ucfirst($vehicle->fuel_type)
+                } }}
+            </span>
         </div>
 
         <!-- Price & Select Button -->
         <div class="mt-4 border-t pt-4">
-            <div class="text-2xl font-bold text-primary mb-4">${{ number_format($vehicle->price_per_day, 2) }} <span class="text-sm">NZD</span></div>
+            <div class="text-2xl font-bold text-primary mb-4">${{ number_format($vehicle->price_per_day, 2) }} <span class="text-sm">DOP</span></div>
             <flux:modal.trigger :name="'vehicle-detail-'.$vehicle->id" class="relative p-4">
-                <flux:button class="w-full mt-2" variant="primary">Select</flux:button>
+                <flux:button class="w-full mt-2" variant="primary">Seleccionar</flux:button>
             </flux:modal.trigger>
         </div>
     </div>
 
     <!-- Modal -->
-    <flux:modal class="max-w-6xl" :name="'vehicle-detail-'.$vehicle->id">
+    <flux:modal class="max-w-6xl px-6 md:px-12 mx-4 md:mx-8" :name="'vehicle-detail-'.$vehicle->id">
         <div>
             <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $vehicle->name }} - {{ $vehicle->year }}</h3>
             <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $vehicle->make }} {{ $vehicle->model }}</p>
@@ -126,24 +142,24 @@
                     <div class="bg-zinc-50 dark:bg-zinc-800 p-4 rounded-lg">
                         <div class="flex justify-between mb-2">
                             <span class="text-zinc-600 dark:text-zinc-300">Tarifa base</span>
-                            <span class="font-medium">${{ number_format($vehicle->price_per_day - 20, 2) }}</span>
+                            <span class="font-medium">${{ number_format($vehicle->price_per_day - 20, 2) }} DOP</span>
                         </div>
                         <div class="flex justify-between mb-2">
                             <span class="text-zinc-600 dark:text-zinc-300">Impuestos</span>
-                            <span class="font-medium">${{ number_format(5, 2) }}</span>
+                            <span class="font-medium">${{ number_format(5, 2) }} DOP</span>
                         </div>
                         <div class="flex justify-between mb-2">
                             <span class="text-zinc-600 dark:text-zinc-300">Seguro</span>
-                            <span class="font-medium">${{ number_format(10, 2) }}</span>
+                            <span class="font-medium">${{ number_format(10, 2) }} DOP</span>
                         </div>
                         <div class="flex justify-between mb-2">
                             <span class="text-zinc-600 dark:text-zinc-300">Limpieza</span>
-                            <span class="font-medium">${{ number_format(5, 2) }}</span>
+                            <span class="font-medium">${{ number_format(5, 2) }} DOP</span>
                         </div>
                         <div class="border-t border-zinc-200 dark:border-zinc-700 mt-3 pt-3">
                             <div class="flex justify-between">
                                 <span class="font-semibold">Total por día</span>
-                                <span class="font-bold text-lg text-primary">${{ number_format($vehicle->price_per_day, 2) }}</span>
+                                <span class="font-bold text-lg text-primary">${{ number_format($vehicle->price_per_day, 2) }} DOP</span>
                             </div>
                         </div>
                     </div>

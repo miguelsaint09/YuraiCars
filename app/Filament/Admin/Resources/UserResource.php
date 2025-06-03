@@ -237,7 +237,12 @@ class UserResource extends Resource
 
     public function mutateFormDataBeforeSave(array $data): array
     {
-        if ($this->record && isset($data['profile'])) {
+        if ($this->record && isset($data['role'])) {
+            // Verificar si el usuario autenticado está intentando modificar su propio rol
+            if (auth()->id() === $this->record->id) {
+                throw new \Exception('You cannot modify your own role.');
+            }
+
             $this->record->profile()->updateOrCreate(
                 ['user_id' => $this->record->id],
                 $data['profile']

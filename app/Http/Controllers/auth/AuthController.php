@@ -51,4 +51,24 @@ class AuthController extends Controller
         $request->session()->invalidate();
         return redirect()->route('login');
     }
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Verificar si el usuario tiene permisos para actualizar
+        if (Auth::user()->cannot('update', $user)) {
+            abort(403, 'Forbidden');
+        }
+
+        $validatedData = $request->validate([
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|string',
+            'status' => 'required|string',
+        ]);
+
+        $user->update($validatedData);
+
+        return redirect()->back()->with('status', 'User updated successfully.');
+    }
 }

@@ -16,7 +16,7 @@ class RentACar extends Component
 
     #[Validate('required', 'string')]
     #[Url(as: 'drop-off', history: true)]
-    public string $dropoffLocation = "";
+    public string $dropoffLocation = "YuraiCars";
 
     #[Validate('required', 'date', 'after:now')]
     #[Url(as: 'from', history: true)]
