@@ -792,7 +792,7 @@
             <div class="text-center mb-8">
                 <h3 class="modal-title">{{ $vehicle->name }} {{ $vehicle->year }}</h3>
                 <p class="modal-subtitle">{{ $vehicle->make }} {{ $vehicle->model }}</p>
-        </div>
+            </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <!-- Left Column - Image & Specs -->
