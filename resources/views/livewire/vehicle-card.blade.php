@@ -899,9 +899,51 @@
 
 @script
 document.addEventListener('livewire:initialized', () => {
+    console.log('VehicleCard Livewire initialized');
+    
+    // Handle navigation events
     Livewire.on('navigate', ({ url }) => {
+        console.log('Navigation event received:', url);
         if (url) {
             window.location.href = url;
+        }
+    });
+
+    // Handle toast events if they exist
+    Livewire.on('show-toast', (message, type) => {
+        console.log(`Toast: ${type}: ${message}`);
+        // You can implement toast notifications here if needed
+        
+        // Simple alert for now - replace with proper toast later
+        if (type === 'info') {
+            alert(message);
+        }
+    });
+
+    // Add click debugging for buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('[wire\\:click]')) {
+            console.log('Livewire button clicked:', e.target);
+            const wireClick = e.target.getAttribute('wire:click') || e.target.closest('[wire\\:click]').getAttribute('wire:click');
+            console.log('Wire click action:', wireClick);
+        }
+    });
+});
+
+// Also listen for the document ready event
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('VehicleCard DOM loaded');
+    
+    // Ensure modal buttons work even if Livewire hasn't initialized yet
+    document.addEventListener('click', (e) => {
+        const button = e.target.closest('button[wire\\:click*="open-modal"]');
+        if (button) {
+            console.log('Modal button clicked:', button);
+        }
+        
+        const proceedButton = e.target.closest('button[wire\\:click="proceed"]');
+        if (proceedButton) {
+            console.log('Proceed button clicked:', proceedButton);
         }
     });
 });

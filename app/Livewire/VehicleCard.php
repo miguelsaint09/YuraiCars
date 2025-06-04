@@ -32,10 +32,10 @@ class VehicleCard extends Component
 
     public function proceed()
     {
-        if (!Auth::check())
-        {
+        if (!Auth::check()) {
             $this->dispatch('show-toast', 'You need to log in before continue', 'info');
-            return redirect()->route('login');
+            $this->redirect(route('login'));
+            return;
         }
 
         // check profile complete
@@ -47,16 +47,19 @@ class VehicleCard extends Component
             Log::info('Storing redirect URL:', ['url' => $targetUrl]);
             
             session(['redirect_to' => $targetUrl]);
-            return redirect()->route('profile');
+            $this->redirect(route('profile'));
+            return;
         }
 
         if ($this->vehicle->status !== VehicleStatus::AVAILABLE->value) {
-            return redirect()->back();
+            $this->redirect(route('vehicles.index'));
+            return;
         }
 
         // If coming from vehicles index without booking parameters, redirect to rent-a-car
         if (empty($this->startTime) || empty($this->endTime)) {
-            return redirect()->route('rent-a-car.show', ['vehicle' => $this->vehicle]);
+            $this->redirect(route('rent-a-car.show', ['vehicle' => $this->vehicle]));
+            return;
         }
 
         $rental = Rental::firstOrCreate(
@@ -78,7 +81,7 @@ class VehicleCard extends Component
             $rental->update(['dropoff_location' => 'YuraiCars']);
         }
 
-        return redirect()->route('rent-a-car.show', ['vehicle' => $this->vehicle]);
+        $this->redirect(route('rent-a-car.show', ['vehicle' => $this->vehicle]));
     }
 
     public function render()
