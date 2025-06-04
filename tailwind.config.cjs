@@ -5,7 +5,10 @@ module.exports = {
     "./resources/**/*.js",
     "./resources/**/*.vue",
     "./app/Filament/**/*.php",
+    "./vendor/livewire/flux/stubs/**/*.blade.php",
+    "./vendor/livewire/flux/src/**/*.php",
   ],
+  darkMode: 'class',
   theme: {
     extend: {},
   },
@@ -13,4 +16,4 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
   ],
-} 
+}
