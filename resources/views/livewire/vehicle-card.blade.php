@@ -384,8 +384,6 @@
             inset 0 -1px 0 rgba(0, 0, 0, 0.2);
         position: relative;
         overflow: hidden;
-        width: 100%;
-        max-width: 1200px;
     }
 
     .modal-content::before {
@@ -678,12 +676,12 @@
 </style>
 @endpush
 
-<div x-data="{ modalOpen: false }">
+<div>
     <!-- Vehicle Card -->
     <div class="vehicle-card-modern">
         <!-- Info Button -->
         <button class="info-button" 
-                @click="modalOpen = true">
+                wire:click="$dispatch('open-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })">
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
             </svg>
@@ -761,7 +759,7 @@
                 </div>
                 
                 <button class="select-button" 
-                        @click="modalOpen = true">
+                        wire:click="$dispatch('open-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })">
                     Seleccionar Premium
                 </button>
             </div>
@@ -769,30 +767,12 @@
     </div>
 
     <!-- Ultra-Premium Modal -->
-    <div x-show="modalOpen" 
-         x-transition.opacity.duration.300ms
-         @click.self="modalOpen = false"
-         class="fixed inset-0 z-50 flex items-center justify-center modal-backdrop">
-        <div class="modal-content p-10 max-w-6xl mx-4 my-8 relative"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 transform scale-95"
-             x-transition:enter-end="opacity-100 transform scale-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100 transform scale-100"
-             x-transition:leave-end="opacity-0 transform scale-95">
-            
-            <!-- Close Button -->
-            <button @click="modalOpen = false" 
-                    class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all duration-200 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-
+    <flux:modal class="modal-backdrop" :name="'vehicle-detail-'.$vehicle->id">
+        <div class="modal-content p-10">
             <div class="text-center mb-8">
                 <h3 class="modal-title">{{ $vehicle->name }} {{ $vehicle->year }}</h3>
                 <p class="modal-subtitle">{{ $vehicle->make }} {{ $vehicle->model }}</p>
-            </div>
+        </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <!-- Left Column - Image & Specs -->
@@ -914,7 +894,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </flux:modal>
 </div>
 
 @script

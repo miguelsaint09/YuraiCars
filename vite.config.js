@@ -10,18 +10,5 @@ export default defineConfig({
     ],
     build: {
         target: 'esnext',
-        outDir: 'public/build',
-        manifest: true,
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    vendor: ['alpinejs'],
-                }
-            }
-        }
     },
-    server: {
-        host: '0.0.0.0',
-        port: 5173,
-    }
 });
