@@ -11,6 +11,7 @@ export default defineConfig({
     build: {
         target: 'esnext',
         outDir: 'public/build',
+        assetsDir: 'assets',
         rollupOptions: {
             output: {
                 manualChunks: undefined,
