@@ -86,7 +86,17 @@ class Vehicle extends Model
      */
     public function getMileageFormattedAttribute(): string
     {
-        return number_format($this->attributes['mileage']);
+        $mileage = $this->attributes['mileage'] ?? 0;
+        return number_format((float) $mileage);
+    }
+
+    /**
+     * Get the formatted price per day.
+     */
+    public function getPriceFormattedAttribute(): string
+    {
+        $price = $this->attributes['price_per_day'] ?? 0;
+        return '$' . number_format((float) $price, 2);
     }
 
     /**
@@ -94,7 +104,8 @@ class Vehicle extends Model
      */
     public function getColorFormattedAttribute(): string
     {
-        return ucfirst($this->attributes['color']);
+        $color = $this->attributes['color'] ?? '';
+        return ucfirst($color);
     }
 
     /**
@@ -103,5 +114,21 @@ class Vehicle extends Model
     public function setColorAttribute(string $value): void
     {
         $this->attributes['color'] = strtolower($value);
+    }
+
+    /**
+     * Get the year as integer safely.
+     */
+    public function getYearAttribute($value): int
+    {
+        return (int) ($value ?? date('Y'));
+    }
+
+    /**
+     * Get the seats as integer safely.
+     */
+    public function getSeatsAttribute($value): int
+    {
+        return (int) ($value ?? 5);
     }
 }

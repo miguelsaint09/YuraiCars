@@ -14,11 +14,13 @@ Route::get('/about', fn() => view('about'))->name('about');
 Route::middleware('guest')->group(function() {
     Route::get('/sign-in', [AuthController::class, 'showLogin'])->name('login');
     Route::get('/sign-up', [AuthController::class, 'showRegistration'])->name('register');
-    Route::post('/sign-in', [AuthController::class, 'login']);
-    Route::post('/sign-up', [AuthController::class, 'register']);
+    Route::post('/sign-in', [AuthController::class, 'login'])->name('login.store');
+    Route::post('/sign-up', [AuthController::class, 'register'])->name('register.store');
 
-    Route::get('/forgot-password', fn() => view('auth.forgot-password'))->name('password.request');
-    Route::get('/reset-password/{token}', fn() => view('auth.reset-password'))->name('password.reset');
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
 Route::middleware('auth')->group(function() {

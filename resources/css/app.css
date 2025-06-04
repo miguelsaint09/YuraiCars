@@ -1,8 +1,8 @@
+@import "../../vendor/livewire/flux/dist/flux.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import "../../vendor/livewire/flux/dist/flux.css";
 
 @layer base {
     :root {
@@ -11,3 +11,27 @@
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Animaciones para la página de inicio */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeInUp 1s ease-out 0.5s both;
+}
+
+.animate-fade-in-delay {
+    animation: fadeInUp 1s ease-out 1s both;
+}
+
+.animate-fade-in-delay-2 {
+    animation: fadeInUp 1s ease-out 1.5s both;
+}

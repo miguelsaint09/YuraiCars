@@ -29,6 +29,7 @@ class VehiclesIndex extends Component
 
     public function mount(): void
     {
+        $this->vehicles = new Collection();
         $this->filterVehicles();
     }
 

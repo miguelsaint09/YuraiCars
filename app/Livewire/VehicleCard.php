@@ -54,6 +54,11 @@ class VehicleCard extends Component
             return redirect()->back();
         }
 
+        // If coming from vehicles index without booking parameters, redirect to rent-a-car
+        if (empty($this->startTime) || empty($this->endTime)) {
+            return redirect()->route('rent-a-car.show', ['vehicle' => $this->vehicle]);
+        }
+
         $rental = Rental::firstOrCreate(
             [
                 'user_id' => Auth::id(),

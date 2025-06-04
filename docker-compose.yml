@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: yuraicar_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: yuraicar
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_PASSWORD: password
+      MYSQL_USER: sail
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - yuraicar
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: yuraicar_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - yuraicar
+
+  # Mailpit for email testing
+  mailpit:
+    image: axllent/mailpit
+    container_name: yuraicar_mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - yuraicar
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  yuraicar:
+    driver: bridge 

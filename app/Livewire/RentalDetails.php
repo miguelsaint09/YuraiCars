@@ -6,12 +6,11 @@ use App\Models\Rental;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Livewire\Attributes\On;
 
 class RentalDetails extends Component
 {
     public $rental;
-    public $showModal = false;
+    public $showModal = true;
 
     public function mount($rentalId)
     {
@@ -21,17 +20,12 @@ class RentalDetails extends Component
             ->firstOrFail();
     }
 
-    #[On('show-details')]
-    public function showDetails($rentalId)
-    {
-        if ($this->rental->id === $rentalId) {
-            $this->showModal = true;
-        }
-    }
+
 
     public function toggleModal()
     {
-        $this->showModal = !$this->showModal;
+        $this->showModal = false;
+        $this->dispatch('close-modal');
     }
 
     public function downloadInvoice()

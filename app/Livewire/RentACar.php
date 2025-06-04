@@ -32,19 +32,37 @@ class RentACar extends Component
 
     public Collection $availableVehicles;
 
+    public function mount(): void
+    {
+        $this->availableVehicles = new Collection();
+        $this->loadAvailableVehicles();
+    }
+
+    public function loadAvailableVehicles(): void
+    {
+        $this->availableVehicles = Vehicle::where('status', 'available')
+            ->orderBy('price_per_day')
+            ->get();
+    }
+
     public function filterAvailableVehicles()
     {
+        $this->validate();
+        
         if (!$this->pickupLocation || !$this->dropoffLocation || !$this->startTime || !$this->endTime) {
+            session()->flash('error', 'Por favor complete todos los campos requeridos.');
             return;
         }
 
         $this->availableVehicles = Vehicle::where('status', 'available')
             ->orderBy('price_per_day')
             ->get();
+
+        session()->flash('success', 'Búsqueda completada. Se encontraron ' . $this->availableVehicles->count() . ' vehículos disponibles.');
     }
 
     public function render()
     {
         return view('livewire.rent-a-car');
-}
+    }
 }

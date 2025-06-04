@@ -1,7 +1,7 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-700 transition-colors duration-300">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
         <!-- Logo -->
-        <a href="/" class="text-xl font-bold text-gray-900 dark:text-white transition-colors">
+        <a href="{{ route('home') }}" class="text-xl font-bold text-gray-900 dark:text-white transition-colors">
             <flux:icon.car-front class="size-8 text-black dark:text-white" />
         </a>
 
@@ -35,11 +35,11 @@
 
         <!-- Desktop Menu -->
         <ul class="hidden lg:flex space-x-10">
-            <li><a href="/" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Inicio</a></li>
-            <li><a href="/rent-a-car" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Alquilar un Auto</a></li>
-            <li><a href="/vehicles" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehículos</a></li>
-            <li><a href="/about" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Nosotros</a></li>
-            <li><a href="/contact" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contacto</a></li>
+            <li><a href="{{ route('home') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Inicio</a></li>
+            <li><a href="{{ route('rent-a-car.index') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Alquilar un Auto</a></li>
+            <li><a href="{{ route('vehicles.index') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehículos</a></li>
+            <li><a href="{{ route('about') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Nosotros</a></li>
+            <li><a href="#" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contacto</a></li>
         </ul>
 
         <!-- Dark Mode Switcher (Desktop) -->
@@ -86,11 +86,11 @@
     <!-- Mobile Dropdown -->
     <div class="lg:hidden border-t border-neutral-200 dark:border-neutral-700" x-show="open" x-transition>
         <ul class="bg-white dark:bg-black space-y-2 p-4">
-            <li><a href="/" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Inicio</a></li>
-            <li><a href="/rent-a-car" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Alquilar un Auto</a></li>
-            <li><a href="/vehicles" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehículos</a></li>
-            <li><a href="/about" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Nosotros</a></li>
-            <li><a href="/contact" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contacto</a></li>
+            <li><a href="{{ route('home') }}" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Inicio</a></li>
+            <li><a href="{{ route('rent-a-car.index') }}" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Alquilar un Auto</a></li>
+            <li><a href="{{ route('vehicles.index') }}" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehículos</a></li>
+            <li><a href="{{ route('about') }}" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Nosotros</a></li>
+            <li><a href="#" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contacto</a></li>
         </ul>
     </div>
 </nav>

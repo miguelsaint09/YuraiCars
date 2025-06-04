@@ -11,7 +11,7 @@
         @fluxAppearance
         @stack('styles')
     </head>
-    <body class="bg-black text-white antialiased">
+    <body class="bg-white dark:bg-black text-gray-900 dark:text-white antialiased">
         <livewire:navbar />
         <main class="min-h-dvh">
             {{ $slot }}
