@@ -10,5 +10,16 @@ export default defineConfig({
     ],
     build: {
         target: 'esnext',
+        outDir: 'public/build',
+        rollupOptions: {
+            output: {
+                manualChunks: undefined,
+            },
+        },
+    },
+    server: {
+        hmr: {
+            host: 'localhost',
+        },
     },
 });
