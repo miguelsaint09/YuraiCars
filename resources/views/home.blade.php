@@ -82,10 +82,6 @@
             }
         }
 
-
-
-
-
         /* Ground reflection */
         .ground-reflection {
             position: absolute;
@@ -99,8 +95,6 @@
                 transparent 100%);
             opacity: 0.7;
         }
-
-
 
         /* Responsive */
         @media (max-width: 1600px) {
@@ -192,10 +186,6 @@
             <div class="smoke-bg" style="animation-delay: -5s;"></div>
             <div class="smoke-bg" style="animation-delay: -10s;"></div>
 
-
-
-
-
             <!-- Ground Reflection -->
             <div class="ground-reflection"></div>
 
@@ -222,10 +212,10 @@
                     </p>
 
                     <div class="flex flex-wrap justify-center lg:justify-start gap-6 animate-fade-in-delay-2">
-                        <a href="{{ route('rent-a-car.index') }}" class="glass-card neon-glow px-8 py-4 text-white font-bold text-lg transition-all hover:scale-105 inline-block">
+                        <a href="{{ route('rent-a-car.index') }}" class="btn-premium neon-glow">
                             Reservar Ahora
                         </a>
-                        <a href="{{ route('vehicles.index') }}" class="bg-white/10 backdrop-blur px-8 py-4 text-white font-bold text-lg border border-white/20 rounded-xl transition-all hover:bg-white/20 inline-block">
+                        <a href="{{ route('vehicles.index') }}" class="btn-secondary">
                             Explorar Flota
                         </a>
                     </div>

@@ -7,7 +7,10 @@
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900&display=swap" rel="stylesheet" />
         <title>{{ $title ?? 'YuraiCars' }}</title>
         @livewireStyles
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        {{-- Laravel Mix Assets --}}
+        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+        
         @fluxAppearance
         @stack('styles')
     </head>
@@ -18,8 +21,13 @@
         </main>
         <livewire:footer />
         <livewire:ui.toast />
+        
         @livewireScripts
         @fluxScripts
+        
+        {{-- Laravel Mix JavaScript --}}
+        <script src="{{ mix('js/app.js') }}"></script>
+        
         @stack('scripts')
     </body>
 </html>
