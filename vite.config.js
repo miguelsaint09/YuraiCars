@@ -6,13 +6,11 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
-            publicDirectory: 'public',
         }),
     ],
     build: {
         target: 'esnext',
         outDir: 'public/build',
-        assetsDir: '',
         manifest: true,
         rollupOptions: {
             output: {
@@ -22,4 +20,11 @@ export default defineConfig({
             }
         }
     },
+    server: {
+        hmr: {
+            host: '127.0.0.1',
+        },
+        host: '127.0.0.1',
+        port: 5173,
+    }
 });
