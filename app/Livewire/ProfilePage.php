@@ -40,10 +40,10 @@ class ProfilePage extends Component
             ['first_name' => '', 'last_name' => '', 'phone' => '', 'license_number' => '', 'date_of_birth' => null]
         );
 
-        $this->first_name = $this->profile->first_name ?? '';
-        $this->last_name = $this->profile->last_name ?? '';
-        $this->phone = $this->profile->phone ?? '';
-        $this->license_number = $this->profile->license_number ?? '';
+        $this->first_name = $this->profile->first_name;
+        $this->last_name = $this->profile->last_name;
+        $this->phone = $this->profile->phone;
+        $this->license_number = $this->profile->license_number;
         $this->date_of_birth = $this->profile->date_of_birth;
 
         // Get redirect URL from session if exists

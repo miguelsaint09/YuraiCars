@@ -14,14 +14,6 @@ class UserProfile extends Model
 
     protected $guarded = [];
 
-    protected $attributes = [
-        'first_name' => '',
-        'last_name' => '',
-        'phone' => '',
-        'license_number' => '',
-        'is_completed' => false,
-    ];
-
     // relations
     public function user(): BelongsTo
     {

@@ -9,8 +9,6 @@
     "prod": "npm run production",
     "production": "mix --production",
     "build": "npm run production",
-    "vite:dev": "vite",
-    "vite:build": "vite build",
     "prepare": "husky install",
     "format": "prettier --write ."
   },
@@ -27,10 +25,8 @@
   "devDependencies": {
     "husky": "^8.0.3",
     "laravel-mix": "^6.0.49",
-    "laravel-vite-plugin": "^1.0.5",
     "lint-staged": "^15.2.2",
-    "prettier": "^3.2.5",
-    "vite": "^5.3.1"
+    "prettier": "^3.2.5"
   },
   "lint-staged": {
     "*.{js,css,md,html,json}": [

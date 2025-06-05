@@ -2,27 +2,83 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
     .profile-page {
-        background: black;
-        min-height: calc(100vh - 100px);
+        background: linear-gradient(135deg, 
+            #0a0a0a 0%, 
+            #1a1a1a 25%, 
+            #0f0f0f 50%, 
+            #1a1a1a 75%, 
+            #0a0a0a 100%);
+        min-height: 100vh;
         position: relative;
-        padding: 0;
-        margin: 0;
+        overflow-x: hidden;
+    }
+
+    .profile-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.02) 0%, transparent 50%);
+        pointer-events: none;
     }
 
     .profile-container {
-        max-width: 1200px;
+        position: relative;
+        z-index: 2;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 2rem 1rem;
+        padding: 3rem 2rem;
+        opacity: 0;
+        animation: containerReveal 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes containerReveal {
+        0% {
+            opacity: 0;
+            transform: translateY(60px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .profile-card {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 2rem;
-        backdrop-filter: blur(10px);
-        margin-bottom: 2rem;
+        background: linear-gradient(145deg, 
+            rgba(255, 255, 255, 0.02) 0%, 
+            rgba(255, 255, 255, 0.01) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 32px;
+        padding: 3rem;
+        backdrop-filter: blur(20px);
+        box-shadow: 
+            0 20px 60px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(255, 255, 255, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        opacity: 0;
+        animation: cardMaterialize 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
+    }
+
+    @keyframes cardMaterialize {
+        0% {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
     .profile-grid {
@@ -37,6 +93,19 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
+        opacity: 0;
+        animation: slideInLeft 1s ease-out 0.6s forwards;
+    }
+
+    @keyframes slideInLeft {
+        0% {
+            opacity: 0;
+            transform: translateX(-40px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
     }
 
     .profile-avatar {
