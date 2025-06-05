@@ -699,6 +699,19 @@
                             />
                         </div>
                     </div>
+
+                    <!-- Filter Button -->
+                    <button 
+                        wire:click="applyFilters"
+                        class="w-full px-6 py-3 text-lg font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg shadow-lg hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                        <div class="flex items-center justify-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            </svg>
+                            <span>Aplicar Filtros</span>
+                        </div>
+                    </button>
                 </div>
             </div>
 
@@ -714,25 +727,34 @@
                 </div>
 
                 <div class="vehicles-container">
-                @if($vehicles->isEmpty())
+                @if($vehicles->isEmpty() && $isFiltering)
+                        <div class="empty-state">
+                            <div class="empty-icon">❌</div>
+                            <h3 class="empty-title">No se encontraron vehículos</h3>
+                            <p class="empty-description">
+                                No hemos encontrado vehículos que coincidan con los criterios seleccionados. 
+                                Por favor, intente ajustar los filtros para ver más opciones disponibles.
+                            </p>
+                        </div>
+                @elseif($vehicles->isEmpty())
                         <div class="empty-state">
                             <div class="empty-icon">🎯</div>
                             <h3 class="empty-title">Refinando su Selección</h3>
                             <p class="empty-description">
-                                Ajuste los criterios de selección para descubrir vehículos que se alineen perfectamente 
-                                con sus preferencias. Nuestro sistema de filtrado inteligente encontrará opciones 
-                                excepcionales que cumplan con sus estándares más exigentes.
+                                Seleccione sus criterios de preferencia y presione el botón "Aplicar Filtros" 
+                                para encontrar los vehículos que mejor se ajusten a sus necesidades.
                             </p>
                         </div>
                 @else
                         <div class="vehicles-grid">
                             @foreach($vehicles as $index => $vehicle)
                                 <div class="vehicle-card-wrapper" style="animation-delay: {{ ($index * 0.12) + 0.1 }}s;">
-                            <livewire:vehicle-card :key="$vehicle->id" :vehicle="$vehicle" />
+                                    <livewire:vehicle-card :key="$vehicle->id" :vehicle="$vehicle" />
                                 </div>
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
                 @endif
+                </div>
             </div>
         </div>
     </div>

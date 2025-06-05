@@ -26,16 +26,31 @@ class VehiclesIndex extends Component
     public ?float $priceMax = null;
 
     public Collection $vehicles;
+    public bool $isFiltering = false;
 
     public function mount(): void
     {
         $this->vehicles = new Collection();
+        $this->loadAllVehicles();
+    }
+
+    public function loadAllVehicles(): void
+    {
+        $this->vehicles = Vehicle::where('status', 'available')
+            ->orderBy('price_per_day')
+            ->get();
+    }
+
+    public function applyFilters(): void
+    {
+        $this->isFiltering = true;
         $this->filterVehicles();
     }
 
     public function updated($propertyName): void
     {
-        $this->filterVehicles();
+        // Reset isFiltering when any filter changes
+        $this->isFiltering = false;
     }
 
     public function filterVehicles(): void
