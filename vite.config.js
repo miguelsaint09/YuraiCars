@@ -17,15 +17,6 @@ export default defineConfig({
             '@': '/resources/js',
         },
     },
-    build: {
-        commonjsOptions: {
-            include: [/node_modules/],
-            transformMixedEsModules: true
-        }
-    },
-    optimizeDeps: {
-        include: ['laravel-vite-plugin']
-    },
     server: {
         hmr: {
             host: 'localhost',
