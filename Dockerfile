@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    libicu-dev \
     zip \
     unzip \
     nodejs \
@@ -17,7 +16,6 @@ RUN apt-get update && apt-get install -y \
 
 # Install PHP extensions
 RUN docker-php-ext-configure zip && \
-    docker-php-ext-configure intl && \
     docker-php-ext-install -j$(nproc) \
     pdo_mysql \
     mbstring \
@@ -28,8 +26,7 @@ RUN docker-php-ext-configure zip && \
     zip \
     opcache \
     dom \
-    xml \
-    intl
+    xml
 
 # Install additional PHP extensions
 RUN pecl install redis && docker-php-ext-enable redis
