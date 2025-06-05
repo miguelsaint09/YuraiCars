@@ -650,11 +650,11 @@
                         <label class="filter-label">Categoría Premium</label>
                         <select wire:model.live="category" class="filter-select">
                             <option value="">Todas las categorías</option>
-                            <option value="Sedán">Sedán Ejecutivo</option>
+                            <option value="Sedan">Sedán Ejecutivo</option>
                             <option value="SUV">SUV de Lujo</option>
                             <option value="Hatchback">Hatchback Deportivo</option>
                             <option value="Convertible">Convertible Elite</option>
-                            <option value="Camioneta">Camioneta Premium</option>
+                            <option value="Truck">Camioneta Premium</option>
                             <option value="Van">Van Empresarial</option>
                         </select>
                     </div>

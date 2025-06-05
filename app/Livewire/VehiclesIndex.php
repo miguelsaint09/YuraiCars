@@ -45,7 +45,11 @@ class VehiclesIndex extends Component
         if ($this->category !== '') {
             $query->where('category', match(strtolower($this->category)) {
                 'sedán' => 'Sedan',
+                'suv' => 'SUV',
+                'hatchback' => 'Hatchback',
+                'convertible' => 'Convertible',
                 'camioneta' => 'Truck',
+                'van' => 'Van',
                 default => ucfirst($this->category)
             });
         }
