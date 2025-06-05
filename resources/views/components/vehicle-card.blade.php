@@ -1,6 +1,6 @@
 @props(['vehicle'])
 
-<div class="relative group" wire:key="vehicle-{{ $vehicle->id }}">
+<div class="relative group">
     <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-black/20">
         @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
             <img 
@@ -18,8 +18,7 @@
 
         <!-- Info Button -->
         <button 
-            type="button"
-            wire:click="$emitUp('openModal', {{ $vehicle->id }})"
+            wire:click="$parent.openModal({{ $vehicle->id }})"
             class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
         >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,8 +72,7 @@
                 </span>
             </div>
             <button 
-                type="button"
-                wire:click="$emitUp('selectVehicle', {{ $vehicle->id }})"
+                wire:click="$parent.openModal({{ $vehicle->id }})"
                 class="h-12 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
             >
                 <span>Seleccionar</span>
