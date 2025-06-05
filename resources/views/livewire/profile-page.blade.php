@@ -427,7 +427,7 @@
                 @endif
 
                 <!-- Profile Form -->
-                    <div class="form-container">
+                    <form wire:submit.prevent="saveProfile" class="form-container">
                         <div class="form-group">
                             <label class="form-label">Nombre</label>
                             <input 
@@ -437,6 +437,9 @@
                                 placeholder="Ingrese su nombre"
                                 {{ !$isEditing ? 'readonly' : '' }}
                             />
+                            @error('first_name')
+                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -448,6 +451,9 @@
                                 placeholder="Ingrese su apellido"
                                 {{ !$isEditing ? 'readonly' : '' }}
                             />
+                            @error('last_name')
+                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -459,6 +465,9 @@
                                 placeholder="Ingrese su número de teléfono"
                                 {{ !$isEditing ? 'readonly' : '' }}
                             />
+                            @error('phone')
+                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -470,6 +479,9 @@
                                 placeholder="Ingrese su número de licencia"
                                 {{ !$isEditing ? 'readonly' : '' }}
                             />
+                            @error('license_number')
+                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -488,22 +500,23 @@
 
                         <div class="button-group">
                             @if ($isEditing)
-                                <button wire:click="saveProfile" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                     Guardar
                                 </button>
-                                <button wire:click="toggleEdit" class="btn btn-ghost">Cancelar</button>
+                                <button type="button" wire:click="toggleEdit" class="btn btn-ghost">Cancelar</button>
                             @else
-                                <button wire:click="toggleEdit" class="btn btn-subtle">
+                                <button type="button" wire:click="toggleEdit" class="btn btn-subtle">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
                                     Editar Perfil
                                 </button>
-                        @endif
-                    </div>
+                            @endif
+                        </div>
+                    </form>
                 </div>
 
                 <!-- Password Change Section -->

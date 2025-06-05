@@ -29,7 +29,7 @@ class ProfilePage extends Component
     #[Validate('required | string | max:255 ')]
     public string $license_number = '';
 
-    #[Validate('required | date')]
+    #[Validate('nullable | date')]
     public ?string $date_of_birth = null;
 
     public function mount(): void
@@ -86,40 +86,45 @@ class ProfilePage extends Component
 
     public function saveProfile()
     {
-        $this->validate();
+        try {
+            $this->validate();
 
-        Log::info('Profile save - date_of_birth before update:', [
-            'value' => $this->date_of_birth,
-            'type' => gettype($this->date_of_birth)
-        ]);
+            Log::info('Profile save - date_of_birth before update:', [
+                'value' => $this->date_of_birth,
+                'type' => gettype($this->date_of_birth)
+            ]);
 
-        $this->profile->update([
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'phone' => $this->phone,
-            'license_number' => $this->license_number,
-            'date_of_birth' => $this->date_of_birth,
-            'is_completed' => true,
-        ]);
+            $this->profile->update([
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'phone' => $this->phone,
+                'license_number' => $this->license_number,
+                'date_of_birth' => $this->date_of_birth,
+                'is_completed' => true,
+            ]);
 
-        Log::info('Profile save - date_of_birth after update:', [
-            'raw_value' => $this->profile->getRawOriginal('date_of_birth'),
-            'cast_value' => $this->profile->date_of_birth
-        ]);
+            Log::info('Profile save - date_of_birth after update:', [
+                'raw_value' => $this->profile->getRawOriginal('date_of_birth'),
+                'cast_value' => $this->profile->date_of_birth
+            ]);
 
-        $this->isEditing = false;
-        $this->dispatch('show-toast', 'Profile updated successfully', 'success');
+            $this->isEditing = false;
+            session()->flash('status', 'Perfil actualizado exitosamente');
 
-        // If we have a redirect URL, navigate to it
-        if ($this->redirectTo) {
-            Log::info('Attempting to redirect:', ['url' => $this->redirectTo]);
-            
-            // Clear the session before redirecting
-            $redirectUrl = $this->redirectTo;
-            session()->forget('redirect_to');
-            
-            // Try direct navigation first
-            return redirect()->to($redirectUrl);
+            // If we have a redirect URL, navigate to it
+            if ($this->redirectTo) {
+                Log::info('Attempting to redirect:', ['url' => $this->redirectTo]);
+                
+                // Clear the session before redirecting
+                $redirectUrl = $this->redirectTo;
+                session()->forget('redirect_to');
+                
+                // Try direct navigation first
+                return redirect()->to($redirectUrl);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error saving profile:', ['error' => $e->getMessage()]);
+            session()->flash('error', 'Error al guardar el perfil: ' . $e->getMessage());
         }
     }
 
