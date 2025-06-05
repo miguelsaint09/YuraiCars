@@ -11,12 +11,13 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     nodejs \
-    npm \
-    && rm -rf /var/lib/apt/lists/*
+    npm
+
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-configure zip && \
-    docker-php-ext-install -j$(nproc) \
+RUN docker-php-ext-install \
     pdo_mysql \
     mbstring \
     exif \
@@ -24,12 +25,7 @@ RUN docker-php-ext-configure zip && \
     bcmath \
     gd \
     zip \
-    opcache \
-    dom \
-    xml
-
-# Install additional PHP extensions
-RUN pecl install redis && docker-php-ext-enable redis
+    opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -37,34 +33,32 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
-# Copy composer files first
+# Copy composer files
 COPY composer.json composer.lock ./
 
-# Set composer environment
+# Set composer to not run as root
 ENV COMPOSER_ALLOW_SUPERUSER=1
-ENV COMPOSER_PROCESS_TIMEOUT=600
 
 # Install composer dependencies
-RUN composer install \
-    --prefer-dist \
-    --no-interaction \
-    --no-plugins \
-    --no-scripts \
-    --no-dev \
-    --no-autoloader
+RUN composer install --no-scripts --no-autoloader --no-interaction
 
-# Copy the rest of the application code
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install npm dependencies
+RUN npm ci
+
+# Copy application files
 COPY . .
 
-# Generate the autoloader
+# Generate composer autoload files
 RUN composer dump-autoload --optimize
 
-# Install and build frontend assets
-COPY package*.json ./
-RUN npm ci && npm run build
+# Build Vite assets
+RUN npm run build
 
 # PHP configuration
-COPY php.ini-production "$PHP_INI_DIR/php.ini"
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 # Start PHP-FPM
 CMD ["php-fpm"] 
