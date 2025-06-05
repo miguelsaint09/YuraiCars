@@ -476,10 +476,14 @@
                             <label class="form-label">Fecha de Nacimiento</label>
                             <input 
                                 type="date" 
-                                wire:model="date_of_birth" 
+                                wire:model.live="date_of_birth" 
                                 class="form-input"
                                 {{ !$isEditing ? 'readonly' : '' }}
+                                max="{{ date('Y-m-d') }}"
                             />
+                            @error('date_of_birth')
+                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="button-group">

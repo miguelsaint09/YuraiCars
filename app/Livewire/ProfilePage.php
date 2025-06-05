@@ -63,6 +63,12 @@ class ProfilePage extends Component
         $this->license_number = $this->profile->license_number;
         $this->date_of_birth = $this->profile->date_of_birth;
 
+        Log::info('Profile mount - date_of_birth value:', [
+            'raw_value' => $this->profile->getRawOriginal('date_of_birth'),
+            'cast_value' => $this->profile->date_of_birth,
+            'property_value' => $this->date_of_birth,
+        ]);
+
         // Get redirect URL from session if exists
         $this->redirectTo = session('redirect_to');
         Log::info('Redirect URL in mount:', ['url' => $this->redirectTo]);
@@ -82,6 +88,11 @@ class ProfilePage extends Component
     {
         $this->validate();
 
+        Log::info('Profile save - date_of_birth before update:', [
+            'value' => $this->date_of_birth,
+            'type' => gettype($this->date_of_birth)
+        ]);
+
         $this->profile->update([
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -89,6 +100,11 @@ class ProfilePage extends Component
             'license_number' => $this->license_number,
             'date_of_birth' => $this->date_of_birth,
             'is_completed' => true,
+        ]);
+
+        Log::info('Profile save - date_of_birth after update:', [
+            'raw_value' => $this->profile->getRawOriginal('date_of_birth'),
+            'cast_value' => $this->profile->date_of_birth
         ]);
 
         $this->isEditing = false;
