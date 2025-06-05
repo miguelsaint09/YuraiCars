@@ -759,142 +759,88 @@
                 </div>
                 
                 <button class="select-button" 
-                        wire:click="$dispatch('open-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })">
+                        wire:click="proceed">
                     Seleccionar Premium
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Ultra-Premium Modal -->
-    <flux:modal class="modal-backdrop" :name="'vehicle-detail-'.$vehicle->id">
-        <div class="modal-content p-10">
-            <div class="text-center mb-8">
-                <h3 class="modal-title">{{ $vehicle->name }} {{ $vehicle->year }}</h3>
-                <p class="modal-subtitle">{{ $vehicle->make }} {{ $vehicle->model }}</p>
-        </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <!-- Left Column - Image & Specs -->
-                <div>
-                    <div class="vehicle-image-container mb-8">
+    <!-- Vehicle Details Modal -->
+    <x-modal name="vehicle-detail-{{ $vehicle->id }}" :show="false">
+        <div class="p-6 bg-zinc-900 text-white">
+            <h2 class="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">{{ $vehicle->name }} {{ $vehicle->year }}</h2>
+            
+            <!-- Vehicle Image -->
+            <div class="mb-6">
                 @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
-                            <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="vehicle-image" alt="{{ $vehicle->name }}" />
-                @else
-                            <img src="{{ asset('images/sedan.png') }}" class="vehicle-image" alt="{{ $vehicle->name }}" />
+                    <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="w-full h-64 object-cover rounded-lg border border-zinc-700" alt="{{ $vehicle->name }}" />
                 @endif
+            </div>
+            
+            <!-- Vehicle Details -->
+            <div class="space-y-6">
+                <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                    <h3 class="text-lg font-semibold text-purple-400 mb-3">Especificaciones</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-zinc-400">Categoría:</span>
+                            <span class="ml-2 text-white">{{ $vehicle->category }}</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-400">Transmisión:</span>
+                            <span class="ml-2 text-white">{{ ucfirst($vehicle->transmission) }}</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-400">Asientos:</span>
+                            <span class="ml-2 text-white">{{ $vehicle->seats }}</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-400">Combustible:</span>
+                            <span class="ml-2 text-white">{{ ucfirst($vehicle->fuel_type) }}</span>
+                        </div>
                     </div>
-                    
-                    <div class="section-header">
-                        <h4 class="section-title">Especificaciones Premium</h4>
-                        </div>
-                    <div class="specs-grid">
-                        <div class="spec-box">
-                            <div class="spec-label">Placa</div>
-                            <div class="spec-value">{{ $vehicle->license_plate }}</div>
-                        </div>
-                        <div class="spec-box">
-                            <div class="spec-label">Categoría</div>
-                            <div class="spec-value">{{ $vehicle->category }}</div>
-                        </div>
-                        <div class="spec-box">
-                            <div class="spec-label">Color</div>
-                            <div class="spec-value">{{ $vehicle->color_formatted }}</div>
-                        </div>
-                        <div class="spec-box">
-                            <div class="spec-label">Asientos</div>
-                            <div class="spec-value">{{ $vehicle->seats }}</div>
-                        </div>
-                        <div class="spec-box">
-                            <div class="spec-label">Equipaje</div>
-                            <div class="spec-value">{{ $vehicle->luggage_capacity }}L</div>
-                        </div>
-                        <div class="spec-box">
-                            <div class="spec-label">Transmisión</div>
-                            <div class="spec-value">{{ ucfirst($vehicle->transmission) }}</div>
-                        </div>
-                        <div class="spec-box">
-                            <div class="spec-label">Combustible</div>
-                            <div class="spec-value">{{ ucfirst($vehicle->fuel_type) }}</div>
-                        </div>
-                        <div class="spec-box">
-                            <div class="spec-label">Kilometraje</div>
-                            <div class="spec-value">{{ $vehicle->mileage_formatted }} km</div>
+                </div>
+                
+                <!-- Features -->
+                @if($vehicle->features)
+                <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                    <h3 class="text-lg font-semibold text-purple-400 mb-3">Características</h3>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($vehicle->features as $feature)
+                            <span class="px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-sm">
+                                {{ $feature }}
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+                
+                <!-- Description -->
+                @if($vehicle->remarks)
+                <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                    <h3 class="text-lg font-semibold text-purple-400 mb-3">Descripción</h3>
+                    <p class="text-zinc-300">{{ $vehicle->remarks }}</p>
+                </div>
+                @endif
+                
+                <!-- Price -->
+                <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">${{ number_format($vehicle->price_per_day, 2) }} DOP</span>
+                        <span class="text-zinc-400">por día</span>
                     </div>
                 </div>
             </div>
-
-                <!-- Right Column - Features & Pricing -->
-                <div>
-                <!-- Features -->
-                    <div class="mb-10">
-                        <div class="section-header">
-                            <h4 class="section-title">Características Exclusivas</h4>
-                        </div>
-                        <div class="features-container">
-                        @if(is_array($vehicle->features))
-                            @foreach ($vehicle->features as $feature)
-                                @php
-                                    $featureEnum = \App\Enums\VehicleFeatures::tryFrom($feature);
-                                    $featureText = $featureEnum ? $featureEnum->value : $feature;
-                                @endphp
-                                    <span class="feature-badge">{{ $featureText }}</span>
-                            @endforeach
-                        @else
-                                <p class="text-zinc-400">Características premium incluidas</p>
-                        @endif
-                    </div>
-                </div>
-
-                    <!-- Additional Info -->
-                @if($vehicle->remarks)
-                    <div class="mb-10">
-                        <div class="section-header">
-                            <h4 class="section-title">Información Especializada</h4>
-                        </div>
-                        <div class="spec-box">
-                            <p class="text-zinc-300 leading-relaxed text-lg">{{ $vehicle->remarks }}</p>
-                        </div>
-                    </div>
-                    @endif
-
-                    <!-- Pricing Breakdown -->
-                    <div>
-                        <div class="section-header">
-                            <h4 class="section-title">Estructura Tarifaria Premium</h4>
-                        </div>
-                        <div class="pricing-breakdown">
-                            <div class="price-row">
-                                <span>Tarifa base premium</span>
-                                <span class="font-semibold">${{ number_format($vehicle->price_per_day - 20, 2) }} DOP</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Impuestos aplicables</span>
-                                <span class="font-semibold">${{ number_format(5, 2) }} DOP</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Seguro integral premium</span>
-                                <span class="font-semibold">${{ number_format(10, 2) }} DOP</span>
-                            </div>
-                            <div class="price-row">
-                                <span>Servicio de limpieza especializada</span>
-                                <span class="font-semibold">${{ number_format(5, 2) }} DOP</span>
-                        </div>
-                            <div class="price-row">
-                                <span class="text-xl">Total Premium por día</span>
-                                <span class="text-2xl">${{ number_format($vehicle->price_per_day, 2) }} DOP</span>
-                            </div>
-                        </div>
-
-                        <button class="proceed-button" 
-                                wire:click="proceed">
-                            Proceder con Reserva Premium
-                        </button>
-                    </div>
-                </div>
+            
+            <!-- Action Button -->
+            <div class="mt-6">
+                <button class="select-button w-full" wire:click="proceed">
+                    Seleccionar Premium
+                </button>
             </div>
         </div>
-    </flux:modal>
+    </x-modal>
 </div>
 
 @script
