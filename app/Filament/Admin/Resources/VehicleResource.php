@@ -20,247 +20,194 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Toggle;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 
 class VehicleResource extends Resource
 {
     protected static ?string $model = Vehicle::class;
     protected static ?string $navigationIcon = 'heroicon-o-truck';
-    protected static ?string $navigationGroup = 'Fleet Management';
-    protected static ?string $navigationLabel = 'Vehicles';
+    protected static ?string $navigationGroup = 'Gestión de Flota';
+    protected static ?string $navigationLabel = 'Vehículos';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Tabs::make('Vehículo')
-                    ->tabs([
-                        Tabs\Tab::make('Información Básica')
-                            ->icon('heroicon-m-information-circle')
+                Section::make('Información Básica')
+                    ->schema([
+                        Grid::make(2)
                             ->schema([
-                                Section::make()
-                                    ->schema([
-                                        Grid::make(1)
-                                            ->schema([
-                                                TextInput::make('name')
-                                                    ->label('Nombre del Vehículo')
-                                                    ->required(fn(): string => 'El nombre es requerido')
-                                                    ->placeholder('Toyota Camry 2024')
-                                                    ->helperText('Ingrese un nombre descriptivo para el vehículo')
-                                                    ->columnSpan(2),
-                                            ]),
+                                TextInput::make('name')
+                                    ->label('Nombre del Vehículo')
+                                    ->required()
+                                    ->placeholder('Toyota Camry 2024')
+                                    ->maxLength(255),
 
-                                        Grid::make(2)
-                                            ->schema([
-                                                Select::make('make')
-                                                    ->label('Marca')
-                                                    ->options([
-                                                        'Toyota' => 'Toyota',
-                                                        'Honda' => 'Honda',
-                                                        'BMW' => 'BMW',
-                                                        'Mercedes' => 'Mercedes',
-                                                        'Ford' => 'Ford',
-                                                        'Tesla' => 'Tesla',
-                                                    ])
-                                                    ->required(fn(): string => 'La marca es requerida')
-                                                    ->searchable()
-                                                    ->preload(),
-
-                                                TextInput::make('model')
-                                                    ->label('Modelo')
-                                                    ->required(fn(): string => 'El modelo es requerido')
-                                                    ->placeholder('Camry'),
-                                            ]),
-
-                                        Grid::make(3)
-                                            ->schema([
-                                                TextInput::make('year')
-                                                    ->label('Año')
-                                                    ->type('number')
-                                                    ->required(fn(): string => 'El año es requerido')
-                                                    ->default(date('Y'))
-                                                    ->rules(['min:2000', 'max:' . (date('Y') + 1)])
-                                                    ->numeric(),
-
-                                                ColorPicker::make('color')
-                                                    ->required()
-                                                    ->validationMessages([
-                                                        'required' => 'El color es requerido'
-                                                    ])
-                                                    ->label('Color del Vehículo')
-                                                    ->hex(),
-
-                                                TextInput::make('license_plate')
-                                                    ->label('Matrícula')
-                                                    ->required(fn(): string => 'La matrícula es requerida')
-                                                    ->unique(ignoreRecord: true),
-                                            ]),
-
-                                        Grid::make(2)
-                                            ->schema([
-                                                Select::make('category')
-                                                    ->label('Categoría')
-                                                    ->options([
-                                                        'Sedan' => 'Sedán',
-                                                        'SUV' => 'SUV',
-                                                        'Hatchback' => 'Hatchback',
-                                                        'Convertible' => 'Convertible',
-                                                        'Truck' => 'Camioneta',
-                                                        'Van' => 'Van',
-                                                    ])
-                                                    ->required(fn(): string => 'La categoría es requerida')
-                                                    ->searchable()
-                                                    ->preload(),
-                                            ]),
-                                    ]),
+                                TextInput::make('license_plate')
+                                    ->label('Matrícula')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->maxLength(20),
                             ]),
 
-                        Tabs\Tab::make('Especificaciones')
-                            ->icon('heroicon-m-cog')
+                        Grid::make(3)
                             ->schema([
-                                Section::make()
-                                    ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('seats')
-                                                    ->label('Asientos')
-                                                    ->integer()
-                                                    ->required(fn(): string => 'El número de asientos es requerido')
-                                                    ->default(5)
-                                                    ->minValue(2)
-                                                    ->maxValue(15)
-                                                    ->suffix('asientos')
-                                                    ->helperText('Número de asientos para pasajeros'),
+                                Select::make('make')
+                                    ->label('Marca')
+                                    ->options([
+                                        'Toyota' => 'Toyota',
+                                        'Honda' => 'Honda',
+                                        'BMW' => 'BMW',
+                                        'Mercedes' => 'Mercedes',
+                                        'Ford' => 'Ford',
+                                        'Tesla' => 'Tesla',
+                                    ])
+                                    ->required()
+                                    ->searchable(),
 
-                                                TextInput::make('luggage_capacity')
-                                                    ->label('Capacidad de Equipaje')
-                                                    ->type('number')
-                                                    ->required(fn(): string => 'La capacidad de equipaje es requerida')
-                                                    ->default(100)
-                                                    ->minValue(0)
-                                                    ->suffix('L')
-                                                    ->helperText('Capacidad de equipaje en litros'),
-                                            ]),
+                                TextInput::make('model')
+                                    ->label('Modelo')
+                                    ->required()
+                                    ->placeholder('Camry')
+                                    ->maxLength(100),
 
-                                        Grid::make(2)
-                                            ->schema([
-                                                Select::make('transmission')
-                                                    ->label('Transmisión')
-                                                    ->options([
-                                                        'automatic' => 'Automática',
-                                                        'manual' => 'Manual',
-                                                    ])
-                                                    ->required(fn(): string => 'El tipo de transmisión es requerido')
-                                                    ->default('automatic'),
-
-                                                Select::make('fuel_type')
-                                                    ->label('Tipo de Combustible')
-                                                    ->options([
-                                                        'petrol' => 'Gasolina',
-                                                        'diesel' => 'Diesel',
-                                                        'electric' => 'Eléctrico',
-                                                        'hybrid' => 'Híbrido',
-                                                    ])
-                                                    ->required(fn(): string => 'El tipo de combustible es requerido')
-                                                    ->default('petrol'),
-                                            ]),
-
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('mileage')
-                                                    ->label('Kilometraje')
-                                                    ->required()
-                                                    ->suffix('km')
-                                                    ->numeric()
-                                                    ->default(0),
-
-                                                TextInput::make('fuel_efficiency')
-                                                    ->label('Eficiencia de Combustible')
-                                                    ->suffix('km/L')
-                                                    ->numeric()
-                                                    ->nullable(),
-                                            ]),
-                                    ]),
+                                TextInput::make('year')
+                                    ->label('Año')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(2000)
+                                    ->maxValue(date('Y') + 1),
                             ]),
 
-                        Tabs\Tab::make('Características e Imágenes')
-                            ->icon('heroicon-m-photo')
+                        Grid::make(2)
                             ->schema([
-                                Section::make('Características del Vehículo')
-                                    ->schema([
-                                        CheckboxList::make('features')
-                                            ->label('Características')
-                                            ->options(VehicleFeatures::class)
-                                            ->columns(3)
-                                            ->gridDirection('row')
-                                            ->required()
-                                            ->validationMessages([
-                                                'required' => 'Debe seleccionar al menos una característica'
-                                            ])
-                                            ->helperText('Seleccione todas las características disponibles en este vehículo'),
-                                    ]),
+                                ColorPicker::make('color')
+                                    ->label('Color')
+                                    ->required(),
 
-                                Section::make('Imágenes del Vehículo')
-                                    ->schema([
-                                        FileUpload::make('image_url')
-                                            ->label('Imágenes')
-                                            ->multiple()
-                                            ->maxFiles(5)
-                                            ->disk('public')
-                                            ->directory('vehicles')
-                                            ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
-                                            ->rules(['mimes:jpg,jpeg,png'])
-                                            ->validationMessages([
-                                                'mimes' => 'Solo se permiten imágenes en formato JPG o PNG'
-                                            ])
-                                            ->helperText('Suba hasta 5 imágenes del vehículo (formatos permitidos: JPG, PNG)'),
-                                    ]),
+                                Select::make('category')
+                                    ->label('Categoría')
+                                    ->options([
+                                        'Sedan' => 'Sedán',
+                                        'SUV' => 'SUV',
+                                        'Hatchback' => 'Hatchback',
+                                        'Convertible' => 'Convertible',
+                                        'Truck' => 'Camioneta',
+                                        'Van' => 'Van',
+                                    ])
+                                    ->required(),
+                            ]),
+                    ]),
+
+                Section::make('Especificaciones Técnicas')
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                TextInput::make('seats')
+                                    ->label('Asientos')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(5)
+                                    ->minValue(2)
+                                    ->maxValue(15),
+
+                                Select::make('transmission')
+                                    ->label('Transmisión')
+                                    ->options([
+                                        'automatic' => 'Automática',
+                                        'manual' => 'Manual',
+                                    ])
+                                    ->required()
+                                    ->default('automatic'),
+
+                                Select::make('fuel_type')
+                                    ->label('Combustible')
+                                    ->options([
+                                        'petrol' => 'Gasolina',
+                                        'diesel' => 'Diesel',
+                                        'electric' => 'Eléctrico',
+                                        'hybrid' => 'Híbrido',
+                                    ])
+                                    ->required()
+                                    ->default('petrol'),
                             ]),
 
-                        Tabs\Tab::make('Precio y Estado')
-                            ->icon('heroicon-m-currency-dollar')
+                        Grid::make(3)
                             ->schema([
-                                Section::make()
-                                    ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('price_per_day')
-                                                    ->label('Precio por Día')
-                                                    ->type('number')
-                                                    ->required(fn(): string => 'El precio por día es requerido')
-                                                    ->prefix('$')
-                                                    ->numeric()
-                                                    ->default(50)
-                                                    ->step(0.01)
-                                                    ->minValue(0)
-                                                    ->helperText('Tarifa diaria de alquiler en pesos dominicanos'),
+                                TextInput::make('luggage_capacity')
+                                    ->label('Capacidad de Equipaje (L)')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(100)
+                                    ->minValue(0),
 
-                                                Select::make('status')
-                                                    ->label('Estado')
-                                                    ->options([
-                                                        'available' => 'Disponible',
-                                                        'booked' => 'Reservado',
-                                                        'rented' => 'Alquilado',
-                                                        'maintenance' => 'En Mantenimiento',
-                                                    ])
-                                                    ->required(fn(): string => 'El estado es requerido')
-                                                    ->default('available'),
-                                            ]),
+                                TextInput::make('mileage')
+                                    ->label('Kilometraje')
+                                    ->numeric()
+                                    ->required()
+                                    ->default(0),
 
-                                        Textarea::make('remarks')
-                                            ->label('Observaciones Adicionales')
-                                            ->placeholder('Ingrese cualquier información adicional sobre el vehículo')
-                                            ->rows(3)
-                                            ->nullable(),
-                                    ]),
+                                TextInput::make('fuel_efficiency')
+                                    ->label('Eficiencia (km/L)')
+                                    ->numeric()
+                                    ->nullable(),
                             ]),
-                    ])
-                    ->columnSpan('full'),
+                    ]),
+
+                Section::make('Características')
+                    ->schema([
+                        CheckboxList::make('features')
+                            ->label('Características del Vehículo')
+                            ->options(VehicleFeatures::class)
+                            ->columns(3)
+                            ->required(),
+                    ]),
+
+                Section::make('Precio y Estado')
+                    ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                TextInput::make('price_per_day')
+                                    ->label('Precio por Día (DOP)')
+                                    ->numeric()
+                                    ->required()
+                                    ->prefix('$')
+                                    ->default(50)
+                                    ->step(0.01)
+                                    ->minValue(0),
+
+                                Select::make('status')
+                                    ->label('Estado')
+                                    ->options([
+                                        'available' => 'Disponible',
+                                        'booked' => 'Reservado',
+                                        'rented' => 'Alquilado',
+                                        'maintenance' => 'En Mantenimiento',
+                                    ])
+                                    ->required()
+                                    ->default('available'),
+                            ]),
+
+                        Textarea::make('remarks')
+                            ->label('Observaciones')
+                            ->placeholder('Información adicional sobre el vehículo')
+                            ->rows(3)
+                            ->nullable(),
+                    ]),
+
+                Section::make('Imágenes')
+                    ->schema([
+                        FileUpload::make('image_url')
+                            ->label('Imágenes del Vehículo')
+                            ->multiple()
+                            ->maxFiles(5)
+                            ->disk('public')
+                            ->directory('vehicles')
+                            ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
+                            ->helperText('Máximo 5 imágenes (JPG, PNG)'),
+                    ]),
             ]);
     }
 
@@ -268,15 +215,54 @@ class VehicleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('license_plate')->sortable()->searchable(),
-                TextColumn::make('name')->sortable()->searchable()->label('Nombre'),
-                TextColumn::make('make')->sortable()->searchable()->label('Marca'),
-                TextColumn::make('model')->sortable()->label('Modelo'),
-                TextColumn::make('year')->sortable()->label('Año'),
-                TextColumn::make('price_per_day')
-                    ->label('Precio por Día (DOP)')
+                ImageColumn::make('image_url')
+                    ->label('Imagen')
+                    ->circular()
+                    ->defaultImageUrl(url('/images/sedan.png'))
+                    ->size(40),
+
+                TextColumn::make('name')
+                    ->label('Nombre')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('license_plate')
+                    ->label('Matrícula')
+                    ->searchable()
                     ->sortable()
-                    ->money('DOP'),
+                    ->badge(),
+
+                TextColumn::make('make')
+                    ->label('Marca')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('model')
+                    ->label('Modelo')
+                    ->searchable(),
+
+                TextColumn::make('year')
+                    ->label('Año')
+                    ->sortable(),
+
+                TextColumn::make('category')
+                    ->label('Categoría')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Sedan' => 'success',
+                        'SUV' => 'warning',
+                        'Hatchback' => 'info',
+                        'Convertible' => 'danger',
+                        'Truck' => 'gray',
+                        'Van' => 'primary',
+                        default => 'gray',
+                    }),
+
+                TextColumn::make('price_per_day')
+                    ->label('Precio/Día')
+                    ->money('DOP')
+                    ->sortable(),
+
                 BadgeColumn::make('status')
                     ->label('Estado')
                     ->colors([
@@ -284,19 +270,51 @@ class VehicleResource extends Resource
                         'warning' => 'booked',
                         'danger' => 'rented',
                         'gray' => 'maintenance',
-                    ]),
+                    ])
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'available' => 'Disponible',
+                        'booked' => 'Reservado',
+                        'rented' => 'Alquilado',
+                        'maintenance' => 'Mantenimiento',
+                        default => $state,
+                    }),
+
                 TextColumn::make('created_at')
-                    ->label('Agregado el')
+                    ->label('Creado')
+                    ->dateTime()
                     ->sortable()
-                    ->dateTime(),
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('make')
+                    ->label('Marca')
+                    ->options([
+                        'Toyota' => 'Toyota',
+                        'Honda' => 'Honda',
+                        'BMW' => 'BMW',
+                        'Mercedes' => 'Mercedes',
+                        'Ford' => 'Ford',
+                        'Tesla' => 'Tesla',
+                    ]),
+
                 SelectFilter::make('status')
+                    ->label('Estado')
                     ->options([
                         'available' => 'Disponible',
                         'booked' => 'Reservado',
                         'rented' => 'Alquilado',
                         'maintenance' => 'En Mantenimiento',
+                    ]),
+
+                SelectFilter::make('category')
+                    ->label('Categoría')
+                    ->options([
+                        'Sedan' => 'Sedán',
+                        'SUV' => 'SUV',
+                        'Hatchback' => 'Hatchback',
+                        'Convertible' => 'Convertible',
+                        'Truck' => 'Camioneta',
+                        'Van' => 'Van',
                     ]),
             ])
             ->actions([
@@ -304,8 +322,18 @@ class VehicleResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+            ->defaultSort('created_at', 'desc');
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
     }
 
     public static function getPages(): array
@@ -315,5 +343,10 @@ class VehicleResource extends Resource
             'create' => Pages\CreateVehicle::route('/create'),
             'edit' => Pages\EditVehicle::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
