@@ -35,15 +35,32 @@ class ProfilePage extends Component
     public function mount(): void
     {
         $this->user = Auth::user();
+        
+        // Initialize with empty strings first
+        $this->first_name = '';
+        $this->last_name = '';
+        $this->phone = '';
+        $this->license_number = '';
+        $this->date_of_birth = null;
+        
+        // Create or retrieve profile
         $this->profile = UserProfile::firstOrCreate(
             ['user_id' => $this->user->id],
-            ['first_name' => '', 'last_name' => '', 'phone' => '', 'license_number' => '', 'date_of_birth' => null]
+            [
+                'first_name' => '',
+                'last_name' => '',
+                'phone' => '',
+                'license_number' => '',
+                'date_of_birth' => null,
+                'is_completed' => false
+            ]
         );
 
-        $this->first_name = $this->profile->first_name ?? '';
-        $this->last_name = $this->profile->last_name ?? '';
-        $this->phone = $this->profile->phone ?? '';
-        $this->license_number = $this->profile->license_number ?? '';
+        // Now safely assign values from profile
+        $this->first_name = $this->profile->first_name;
+        $this->last_name = $this->profile->last_name;
+        $this->phone = $this->profile->phone;
+        $this->license_number = $this->profile->license_number;
         $this->date_of_birth = $this->profile->date_of_birth;
 
         // Get redirect URL from session if exists
