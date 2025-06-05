@@ -11,21 +11,6 @@ composer install --no-dev --optimize-autoloader --no-interaction
 echo "📦 Installing Node dependencies..."
 npm ci
 
-# Set production environment
-echo "🔧 Setting production environment..."
-if [ ! -f .env ]; then
-    cp .env.example .env || echo "No .env.example found"
-fi
-
-# Ensure key is set
-php artisan key:generate --force
-
-# Set production environment variables
-sed -i "s/APP_ENV=.*/APP_ENV=production/" .env
-sed -i "s/APP_DEBUG=.*/APP_DEBUG=false/" .env
-sed -i "s#APP_URL=.*#APP_URL=${RAILWAY_STATIC_URL}#" .env
-sed -i "s#ASSET_URL=.*#ASSET_URL=${RAILWAY_STATIC_URL}#" .env
-
 # Build assets with Laravel Mix
 echo "🎨 Building premium assets..."
 npm run production
@@ -36,6 +21,7 @@ ls -la public/css/ public/js/
 
 # Laravel optimizations
 echo "🔧 Optimizing Laravel..."
+php artisan key:generate --force
 php artisan storage:link --force
 php artisan config:cache
 php artisan route:cache
