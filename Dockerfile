@@ -64,7 +64,7 @@ COPY package*.json ./
 RUN npm ci && npm run build
 
 # PHP configuration
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY php.ini-production "$PHP_INI_DIR/php.ini"
 
 # Start PHP-FPM
 CMD ["php-fpm"] 
