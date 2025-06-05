@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    libzip-dev \
     zip \
     unzip \
     nodejs \
@@ -17,30 +16,19 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install \
-    pdo_mysql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd \
-    zip \
-    opcache
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Install Composer
+# Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /app
 
-# Copy composer files
+# Copy composer.json and composer.lock
 COPY composer.json composer.lock ./
 
-# Set composer to not run as root
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
 # Install composer dependencies
-RUN composer install --no-scripts --no-autoloader --no-interaction
+RUN composer install --no-scripts --no-autoloader
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -56,9 +44,6 @@ RUN composer dump-autoload --optimize
 
 # Build Vite assets
 RUN npm run build
-
-# PHP configuration
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 # Start PHP-FPM
 CMD ["php-fpm"] 
