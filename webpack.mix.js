@@ -21,7 +21,20 @@ mix.js('resources/js/app.js', 'public/js')
    })
    .version(); // Add versioning for cache busting
 
-// In production, minify assets
+// In production, optimize and minify assets
 if (mix.inProduction()) {
-    mix.version();
+    mix.version()
+       .options({
+           terser: {
+               terserOptions: {
+                   compress: true,
+                   output: {
+                       comments: false
+                   }
+               }
+           },
+           cssNano: {
+               discardComments: {removeAll: true}
+           }
+       });
 } 
