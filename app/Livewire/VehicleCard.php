@@ -30,18 +30,6 @@ class VehicleCard extends Component
     #[Url(as: 'age')]
     public ?string $ageRange = "";
 
-    public bool $showModal = false;
-
-    public function showDetails()
-    {
-        $this->showModal = true;
-    }
-
-    public function hideDetails()
-    {
-        $this->showModal = false;
-    }
-
     public function proceed()
     {
         if (!Auth::check()) {

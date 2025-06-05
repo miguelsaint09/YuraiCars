@@ -363,18 +363,8 @@
 
     /* Ultra-Premium Modal */
     .modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(25px);
-        z-index: 50;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
     }
 
     .modal-content {
@@ -386,8 +376,6 @@
         border-radius: 28px;
         backdrop-filter: blur(30px);
         max-height: 90vh;
-        width: 100%;
-        max-width: 900px;
         overflow-y: auto;
         box-shadow: 
             0 25px 80px rgba(0, 0, 0, 0.7),
@@ -439,30 +427,6 @@
         font-weight: 500;
         margin-bottom: 3rem;
         letter-spacing: 0.02em;
-    }
-
-    .close-button {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.1) 0%, 
-            rgba(255, 255, 255, 0.05) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #ffffff;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        margin-left: 1rem;
-    }
-
-    .close-button:hover {
-        background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.15) 0%, 
-            rgba(255, 255, 255, 0.08) 100%);
-        transform: scale(1.1);
     }
 
     .specs-grid {
@@ -716,19 +680,20 @@
     <!-- Vehicle Card -->
     <div class="vehicle-card-modern">
         <!-- Info Button -->
-        <button class="info-button" wire:click="showDetails">
+        <button class="info-button" 
+                wire:click="$dispatch('open-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })">
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
             </svg>
         </button>
 
-        <!-- Vehicle Image -->
+    <!-- Vehicle Image -->
         <div class="vehicle-image-container">
-            @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
+    @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
                 <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="vehicle-image" alt="{{ $vehicle->name }}" />
             @else
                 <img src="{{ asset('images/sedan.png') }}" class="vehicle-image" alt="{{ $vehicle->name }}" />
-            @endif
+    @endif
         </div>
 
         <!-- Vehicle Content -->
@@ -762,12 +727,12 @@
                         <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
                     </svg>
                     <span>
-                        {{ match($vehicle->transmission) {
+                {{ match($vehicle->transmission) {
                             'automatic' => 'Auto',
-                            'manual' => 'Manual',
-                            default => ucfirst($vehicle->transmission)
-                        } }}
-                    </span>
+                    'manual' => 'Manual',
+                    default => ucfirst($vehicle->transmission)
+                } }}
+            </span>
                 </div>
 
                 <div class="spec-item">
@@ -775,15 +740,15 @@
                         <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/>
                     </svg>
                     <span>
-                        {{ match($vehicle->fuel_type) {
-                            'petrol' => 'Gasolina',
-                            'diesel' => 'Diesel',
-                            'electric' => 'Eléctrico',
-                            'hybrid' => 'Híbrido',
-                            default => ucfirst($vehicle->fuel_type)
-                        } }}
-                    </span>
-                </div>
+                {{ match($vehicle->fuel_type) {
+                    'petrol' => 'Gasolina',
+                    'diesel' => 'Diesel',
+                    'electric' => 'Eléctrico',
+                    'hybrid' => 'Híbrido',
+                    default => ucfirst($vehicle->fuel_type)
+                } }}
+            </span>
+        </div>
             </div>
 
             <!-- Price Section -->
@@ -793,99 +758,193 @@
                     <span class="currency">DOP/día</span>
                 </div>
                 
-                <button class="select-button" wire:click="showDetails">
+                <button class="select-button" 
+                        wire:click="$dispatch('open-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })">
                     Seleccionar Premium
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Vehicle Details Modal -->
-    @if($showModal)
-    <div class="modal-backdrop" wire:click.self="hideDetails">
+    <!-- Ultra-Premium Modal -->
+    <flux:modal class="modal-backdrop" :name="'vehicle-detail-'.$vehicle->id">
         <div class="modal-content p-10">
-            <div class="flex justify-between items-center mb-8">
-                <div class="text-center flex-grow">
-                    <h3 class="modal-title">{{ $vehicle->name }} {{ $vehicle->year }}</h3>
-                    <p class="modal-subtitle">{{ $vehicle->make }} {{ $vehicle->model }}</p>
-                </div>
-                <button wire:click="hideDetails" class="close-button">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
+            <div class="text-center mb-8">
+                <h3 class="modal-title">{{ $vehicle->name }} {{ $vehicle->year }}</h3>
+                <p class="modal-subtitle">{{ $vehicle->make }} {{ $vehicle->model }}</p>
+        </div>
 
-            <div class="specs-grid">
-                <!-- Vehicle Specifications -->
-                <div class="spec-item">
-                    <div class="detail-label">Asientos</div>
-                    <div class="detail-value">{{ $vehicle->seats }}</div>
-                </div>
-                <div class="spec-item">
-                    <div class="detail-label">Capacidad de Equipaje</div>
-                    <div class="detail-value">{{ $vehicle->luggage_capacity }}L</div>
-                </div>
-                <div class="spec-item">
-                    <div class="detail-label">Transmisión</div>
-                    <div class="detail-value">{{ ucfirst($vehicle->transmission) }}</div>
-                </div>
-                <div class="spec-item">
-                    <div class="detail-label">Tipo de Combustible</div>
-                    <div class="detail-value">
-                        {{ match($vehicle->fuel_type) {
-                            'petrol' => 'Gasolina',
-                            'diesel' => 'Diesel',
-                            'electric' => 'Eléctrico',
-                            'hybrid' => 'Híbrido',
-                            default => ucfirst($vehicle->fuel_type)
-                        } }}
-                    </div>
-                </div>
-                <div class="spec-item">
-                    <div class="detail-label">Kilometraje</div>
-                    <div class="detail-value">{{ $vehicle->mileage }} km</div>
-                </div>
-                @if($vehicle->fuel_efficiency)
-                <div class="spec-item">
-                    <div class="detail-label">Eficiencia</div>
-                    <div class="detail-value">{{ $vehicle->fuel_efficiency }} km/L</div>
-                </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Left Column - Image & Specs -->
+                <div>
+                    <div class="vehicle-image-container mb-8">
+                @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
+                            <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="vehicle-image" alt="{{ $vehicle->name }}" />
+                @else
+                            <img src="{{ asset('images/sedan.png') }}" class="vehicle-image" alt="{{ $vehicle->name }}" />
                 @endif
-            </div>
-
-            <!-- Features Section -->
-            @if($vehicle->features && count($vehicle->features) > 0)
-            <div class="mt-8">
-                <h4 class="text-lg font-semibold text-white mb-4">Características</h4>
-                <div class="grid grid-cols-2 gap-4">
-                    @foreach($vehicle->features as $feature)
-                    <div class="spec-item">
-                        <span>{{ $feature }}</span>
                     </div>
-                    @endforeach
+                    
+                    <div class="section-header">
+                        <h4 class="section-title">Especificaciones Premium</h4>
+                        </div>
+                    <div class="specs-grid">
+                        <div class="spec-box">
+                            <div class="spec-label">Placa</div>
+                            <div class="spec-value">{{ $vehicle->license_plate }}</div>
+                        </div>
+                        <div class="spec-box">
+                            <div class="spec-label">Categoría</div>
+                            <div class="spec-value">{{ $vehicle->category }}</div>
+                        </div>
+                        <div class="spec-box">
+                            <div class="spec-label">Color</div>
+                            <div class="spec-value">{{ $vehicle->color_formatted }}</div>
+                        </div>
+                        <div class="spec-box">
+                            <div class="spec-label">Asientos</div>
+                            <div class="spec-value">{{ $vehicle->seats }}</div>
+                        </div>
+                        <div class="spec-box">
+                            <div class="spec-label">Equipaje</div>
+                            <div class="spec-value">{{ $vehicle->luggage_capacity }}L</div>
+                        </div>
+                        <div class="spec-box">
+                            <div class="spec-label">Transmisión</div>
+                            <div class="spec-value">{{ ucfirst($vehicle->transmission) }}</div>
+                        </div>
+                        <div class="spec-box">
+                            <div class="spec-label">Combustible</div>
+                            <div class="spec-value">{{ ucfirst($vehicle->fuel_type) }}</div>
+                        </div>
+                        <div class="spec-box">
+                            <div class="spec-label">Kilometraje</div>
+                            <div class="spec-value">{{ $vehicle->mileage_formatted }} km</div>
+                    </div>
                 </div>
             </div>
-            @endif
 
-            <!-- Price and Action Section -->
-            <div class="mt-8">
-                <div class="price-row mb-4">
-                    <span class="text-xl text-white">Total Premium por día</span>
-                    <span class="text-2xl text-white">${{ number_format($vehicle->price_per_day, 2) }} DOP</span>
+                <!-- Right Column - Features & Pricing -->
+                <div>
+                <!-- Features -->
+                    <div class="mb-10">
+                        <div class="section-header">
+                            <h4 class="section-title">Características Exclusivas</h4>
+                        </div>
+                        <div class="features-container">
+                        @if(is_array($vehicle->features))
+                            @foreach ($vehicle->features as $feature)
+                                @php
+                                    $featureEnum = \App\Enums\VehicleFeatures::tryFrom($feature);
+                                    $featureText = $featureEnum ? $featureEnum->value : $feature;
+                                @endphp
+                                    <span class="feature-badge">{{ $featureText }}</span>
+                            @endforeach
+                        @else
+                                <p class="text-zinc-400">Características premium incluidas</p>
+                        @endif
+                    </div>
                 </div>
 
-                <button class="proceed-button" wire:click="proceed">
-                    Proceder con Reserva Premium
-                </button>
+                    <!-- Additional Info -->
+                @if($vehicle->remarks)
+                    <div class="mb-10">
+                        <div class="section-header">
+                            <h4 class="section-title">Información Especializada</h4>
+                        </div>
+                        <div class="spec-box">
+                            <p class="text-zinc-300 leading-relaxed text-lg">{{ $vehicle->remarks }}</p>
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Pricing Breakdown -->
+                    <div>
+                        <div class="section-header">
+                            <h4 class="section-title">Estructura Tarifaria Premium</h4>
+                        </div>
+                        <div class="pricing-breakdown">
+                            <div class="price-row">
+                                <span>Tarifa base premium</span>
+                                <span class="font-semibold">${{ number_format($vehicle->price_per_day - 20, 2) }} DOP</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Impuestos aplicables</span>
+                                <span class="font-semibold">${{ number_format(5, 2) }} DOP</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Seguro integral premium</span>
+                                <span class="font-semibold">${{ number_format(10, 2) }} DOP</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Servicio de limpieza especializada</span>
+                                <span class="font-semibold">${{ number_format(5, 2) }} DOP</span>
+                        </div>
+                            <div class="price-row">
+                                <span class="text-xl">Total Premium por día</span>
+                                <span class="text-2xl">${{ number_format($vehicle->price_per_day, 2) }} DOP</span>
+                            </div>
+                        </div>
+
+                        <button class="proceed-button" 
+                                wire:click="proceed">
+                            Proceder con Reserva Premium
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    @endif
+    </flux:modal>
 </div>
 
 @script
 document.addEventListener('livewire:initialized', () => {
     console.log('VehicleCard Livewire initialized');
+    
+    // Handle navigation events
+    Livewire.on('navigate', ({ url }) => {
+        console.log('Navigation event received:', url);
+        if (url) {
+            window.location.href = url;
+        }
+    });
+
+    // Handle toast events if they exist
+    Livewire.on('show-toast', (message, type) => {
+        console.log(`Toast: ${type}: ${message}`);
+        // You can implement toast notifications here if needed
+        
+        // Simple alert for now - replace with proper toast later
+        if (type === 'info') {
+            alert(message);
+        }
+    });
+
+    // Add click debugging for buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('[wire\\:click]')) {
+            console.log('Livewire button clicked:', e.target);
+            const wireClick = e.target.getAttribute('wire:click') || e.target.closest('[wire\\:click]').getAttribute('wire:click');
+            console.log('Wire click action:', wireClick);
+        }
+    });
+});
+
+// Also listen for the document ready event
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('VehicleCard DOM loaded');
+    
+    // Ensure modal buttons work even if Livewire hasn't initialized yet
+    document.addEventListener('click', (e) => {
+        const button = e.target.closest('button[wire\\:click*="open-modal"]');
+        if (button) {
+            console.log('Modal button clicked:', button);
+        }
+        
+        const proceedButton = e.target.closest('button[wire\\:click="proceed"]');
+        if (proceedButton) {
+            console.log('Proceed button clicked:', proceedButton);
+        }
+    });
 });
 @endscript
