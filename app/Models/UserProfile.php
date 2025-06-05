@@ -14,6 +14,36 @@ class UserProfile extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'first_name' => 'string',
+        'last_name' => 'string',
+        'phone' => 'string',
+        'license_number' => 'string',
+        'date_of_birth' => 'date',
+        'is_completed' => 'boolean',
+    ];
+
+    // Attribute mutators to ensure string fields are never null
+    protected function getFirstNameAttribute($value): string
+    {
+        return $value ?? '';
+    }
+
+    protected function getLastNameAttribute($value): string
+    {
+        return $value ?? '';
+    }
+
+    protected function getPhoneAttribute($value): string
+    {
+        return $value ?? '';
+    }
+
+    protected function getLicenseNumberAttribute($value): string
+    {
+        return $value ?? '';
+    }
+
     // relations
     public function user(): BelongsTo
     {
