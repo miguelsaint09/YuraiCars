@@ -213,6 +213,11 @@ class VehicleResource extends Resource
                                             ->maxFiles(5)
                                             ->disk('public')
                                             ->directory('vehicles')
+                                            ->visibility('public')
+                                            ->preserveFilenames()
+                                            ->image()
+                                            ->imageEditor()
+                                            ->maxSize(5120)
                                             ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
                                             ->rules(['mimes:jpg,jpeg,png'])
                                             ->validationMessages([
