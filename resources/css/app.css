@@ -8,6 +8,32 @@
     :root {
         --font-sans: Inter, sans-serif;
     }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply antialiased;
+    }
+}
+
+/* Custom Dropdown Styles */
+.flux-menu {
+    @apply bg-black !important;
+}
+
+.flux-menu-item {
+    @apply text-white hover:bg-gray-800 !important;
+}
+
+.flux-menu-item svg {
+    @apply text-white !important;
+}
+
+/* Ensure navbar is visible */
+.navbar-visible {
+    @apply relative z-[100];
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

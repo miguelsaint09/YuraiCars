@@ -1,96 +1,113 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-700 transition-colors duration-300">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <!-- Logo -->
-        <a href="{{ route('home') }}" class="text-xl font-bold text-gray-900 dark:text-white transition-colors">
-            <flux:icon.car-front class="size-8 text-black dark:text-white" />
-        </a>
+<!-- Navbar Component -->
+<div class="relative">
+    <!-- Navbar -->
+    <nav x-data="{ open: false }" class="sticky top-0 left-0 right-0 z-[100] bg-black shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="{{ route('home') }}" class="text-xl font-bold text-white flex items-center gap-2">
+                <flux:icon.car-front class="size-8 text-white" />
+                <span>YuraiCars</span>
+            </a>
 
+            <!-- Menus (Mobile) -->
+            <div class="flex items-center gap-x-4 lg:hidden">
+                @auth
+                <flux:dropdown x-data align="end">
+                    <flux:button variant="subtle" square class="group">
+                        <flux:icon.user-circle class="size-6 text-white" />
+                    </flux:button>
 
-        <!-- Menus (Mobile) -->
-        <div class="flex items-center gap-x-4 lg:hidden">
-            <flux:button x-data x-on:click="$flux.dark = ! $flux.dark" icon="moon" variant="subtle" aria-label="Toggle dark mode" />
-            @auth
-            <flux:dropdown x-data align="end">
-                <flux:button variant="subtle" square class="group">
-                    <flux:icon.user-circle class="size-6 text-gray-700 dark:text-white" />
-                </flux:button>
+                    <flux:menu class="z-[101] bg-black shadow-lg border border-gray-800 rounded-lg mt-2 w-48 flux-menu">
+                        <div class="py-1">
+                            <a href="{{ route('profile') }}" class="flux-menu-item flex items-center px-4 py-2 text-sm">
+                                <flux:icon.user class="mr-3 size-5" />
+                                <span>Perfil</span>
+                            </a>
+                            <a href="{{ route('profile.rents') }}" class="flux-menu-item flex items-center px-4 py-2 text-sm">
+                                <flux:icon.car-front class="mr-3 size-5" />
+                                <span>Alquileres</span>
+                            </a>
+                            <a href="{{ route('logout') }}" 
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
+                               class="flux-menu-item flex items-center px-4 py-2 text-sm">
+                                <flux:icon.log-out class="mr-3 size-5" />
+                                <span>Cerrar Sesión</span>
+                            </a>
+                        </div>
+                    </flux:menu>
+                </flux:dropdown>
 
-                <flux:menu>
-                    <flux:menu.item icon="user" href="{{ route('profile') }}">Perfil</flux:menu.item>
-                    <flux:menu.item icon="car-front" href="{{ route('profile.rents') }}">Alquileres</flux:menu.item>
-                    <flux:menu.item icon="log-out" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Cerrar Sesión</flux:menu.item>
-                </flux:menu>
-            </flux:dropdown>
-
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                @csrf
-            </form>
-            @else
-            <ul>
-                <li><a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Iniciar Sesión</a></li>
-            </ul>
-            @endauth
-            <flux:button x-on:click="open = !open" variant="ghost" icon="menu" />
-        </div>
-
-        <!-- Desktop Menu -->
-        <ul class="hidden lg:flex space-x-10">
-            <li><a href="{{ route('home') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Inicio</a></li>
-            <li><a href="{{ route('rent-a-car.index') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Alquilar un Auto</a></li>
-            <li><a href="{{ route('vehicles.index') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehículos</a></li>
-            <li><a href="{{ route('about') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Nosotros</a></li>
-            <li><a href="#" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contacto</a></li>
-        </ul>
-
-        <!-- Dark Mode Switcher (Desktop) -->
-        <div class="hidden lg:flex lg:items-center lg:gap-x-4">
-            <flux:dropdown x-data align="end">
-                <flux:button variant="subtle" square class="group" aria-label="Preferred color scheme">
-                    <flux:icon.sun x-show="$flux.appearance === 'light'" variant="mini" class="text-zinc-500 dark:text-white transition-colors" />
-                    <flux:icon.moon x-show="$flux.appearance === 'dark'" variant="mini" class="text-zinc-500 dark:text-white transition-colors" />
-                    <flux:icon.moon x-show="$flux.appearance === 'system' && $flux.dark" variant="mini" />
-                    <flux:icon.sun x-show="$flux.appearance === 'system' && ! $flux.dark" variant="mini" />
-                </flux:button>
-
-                <flux:menu>
-                    <flux:menu.item icon="sun" x-on:click="$flux.appearance = 'light'">Light</flux:menu.item>
-                    <flux:menu.item icon="moon" x-on:click="$flux.appearance = 'dark'">Dark</flux:menu.item>
-                    <flux:menu.item icon="computer-desktop" x-on:click="$flux.appearance = 'system'">System</flux:menu.item>
-                </flux:menu>
-            </flux:dropdown>
-
-            @auth
-            <flux:dropdown x-data align="end">
-                <flux:button variant="subtle" square class="group">
-                    <flux:icon.user-circle class="size-6 text-gray-700 dark:text-white" />
-                </flux:button>
-
-                <flux:menu>
-                    <flux:menu.item icon="user" href="{{ route('profile') }}">Perfil</flux:menu.item>
-                    <flux:menu.item icon="car-front" href="{{ route('profile.rents') }}">Alquileres</flux:menu.item>
-                    <flux:menu.item icon="log-out" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form-desktop').submit();">Cerrar Sesión</flux:menu.item>
-                </flux:menu>
-            </flux:dropdown>
-
-            <form id="logout-form-desktop" action="{{ route('logout') }}" method="POST" class="hidden">
-                @csrf
-            </form>
-            @else
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                    @csrf
+                </form>
+                @else
                 <ul>
-                    <li><a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Iniciar Sesión</a></li>
+                    <li><a href="{{ route('login') }}" class="text-white hover:text-gray-300 transition-colors">Iniciar Sesión</a></li>
                 </ul>
-            @endauth
-        </div>
-    </div>
+                @endauth
+                <flux:button x-on:click="open = !open" variant="ghost" icon="menu" class="text-white" />
+            </div>
 
-    <!-- Mobile Dropdown -->
-    <div class="lg:hidden border-t border-neutral-200 dark:border-neutral-700" x-show="open" x-transition>
-        <ul class="bg-white dark:bg-black space-y-2 p-4">
-            <li><a href="{{ route('home') }}" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Inicio</a></li>
-            <li><a href="{{ route('rent-a-car.index') }}" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Alquilar un Auto</a></li>
-            <li><a href="{{ route('vehicles.index') }}" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Vehículos</a></li>
-            <li><a href="{{ route('about') }}" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Nosotros</a></li>
-            <li><a href="#" class="block text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Contacto</a></li>
-        </ul>
-    </div>
-</nav>
+            <!-- Desktop Menu -->
+            <ul class="hidden lg:flex space-x-10">
+                <li><a href="{{ route('home') }}" class="text-white hover:text-gray-300 transition-colors">Inicio</a></li>
+                <li><a href="{{ route('rent-a-car.index') }}" class="text-white hover:text-gray-300 transition-colors">Alquilar un Auto</a></li>
+                <li><a href="{{ route('vehicles.index') }}" class="text-white hover:text-gray-300 transition-colors">Vehículos</a></li>
+                <li><a href="{{ route('about') }}" class="text-white hover:text-gray-300 transition-colors">Nosotros</a></li>
+                <li><a href="#" class="text-white hover:text-gray-300 transition-colors">Contacto</a></li>
+            </ul>
+
+            <!-- User Menu (Desktop) -->
+            <div class="hidden lg:flex lg:items-center lg:gap-x-4">
+                @auth
+                <flux:dropdown x-data align="end">
+                    <flux:button variant="subtle" square class="group">
+                        <flux:icon.user-circle class="size-6 text-white" />
+                    </flux:button>
+
+                    <flux:menu class="z-[101] bg-black shadow-lg border border-gray-800 rounded-lg mt-2 w-48 flux-menu">
+                        <div class="py-1">
+                            <a href="{{ route('profile') }}" class="flux-menu-item flex items-center px-4 py-2 text-sm">
+                                <flux:icon.user class="mr-3 size-5" />
+                                <span>Perfil</span>
+                            </a>
+                            <a href="{{ route('profile.rents') }}" class="flux-menu-item flex items-center px-4 py-2 text-sm">
+                                <flux:icon.car-front class="mr-3 size-5" />
+                                <span>Alquileres</span>
+                            </a>
+                            <a href="{{ route('logout') }}" 
+                               onclick="event.preventDefault(); document.getElementById('logout-form-desktop').submit();" 
+                               class="flux-menu-item flex items-center px-4 py-2 text-sm">
+                                <flux:icon.log-out class="mr-3 size-5" />
+                                <span>Cerrar Sesión</span>
+                            </a>
+                        </div>
+                    </flux:menu>
+                </flux:dropdown>
+
+                <form id="logout-form-desktop" action="{{ route('logout') }}" method="POST" class="hidden">
+                    @csrf
+                </form>
+                @else
+                    <ul>
+                        <li><a href="{{ route('login') }}" class="text-white hover:text-gray-300 transition-colors">Iniciar Sesión</a></li>
+                    </ul>
+                @endauth
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div class="lg:hidden border-t border-gray-800" x-show="open" x-transition>
+            <ul class="bg-black space-y-2 p-4">
+                <li><a href="{{ route('home') }}" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Inicio</a></li>
+                <li><a href="{{ route('rent-a-car.index') }}" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Alquilar un Auto</a></li>
+                <li><a href="{{ route('vehicles.index') }}" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Vehículos</a></li>
+                <li><a href="{{ route('about') }}" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Nosotros</a></li>
+                <li><a href="#" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Spacer to prevent content from hiding under fixed navbar -->
+    <div class="h-20"></div>
+</div>

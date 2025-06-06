@@ -11,15 +11,16 @@
         {{-- Laravel Mix Assets --}}
         <link href="{{ mix('css/app.css') }}" rel="stylesheet">
         
-        @fluxAppearance
         @stack('styles')
     </head>
-    <body class="bg-white dark:bg-black text-gray-900 dark:text-white antialiased">
-        <livewire:navbar />
-        <main class="min-h-dvh">
-            {{ $slot }}
-        </main>
-        <livewire:footer />
+    <body class="min-h-screen bg-white text-gray-900 antialiased relative">
+        <div class="flex min-h-screen flex-col">
+            <livewire:navbar />
+            <main class="flex-1">
+                {{ $slot }}
+            </main>
+            <livewire:footer />
+        </div>
         <livewire:ui.toast />
         
         @livewireScripts
