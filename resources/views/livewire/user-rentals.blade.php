@@ -548,6 +548,36 @@
                                         {{ \Carbon\Carbon::parse($rental->end_time)->format('d M, h:i A') }}
                                     </div>
                                 </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Total de Días</div>
+                                    <div class="detail-value">
+                                        {{ \Carbon\Carbon::parse($rental->start_time)->diffInDays(\Carbon\Carbon::parse($rental->end_time)) }} días
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if($rental->vehicle)
+                                <div class="detail-item">
+                                    <div class="detail-label">Detalles del Vehículo</div>
+                                    <div class="detail-value">
+                                        <div class="vehicle-details">
+                                            <p><strong>Marca y Modelo:</strong> {{ $rental->vehicle->make }} {{ $rental->vehicle->model }}</p>
+                                            <p><strong>Año:</strong> {{ $rental->vehicle->year }}</p>
+                                            <p><strong>Color:</strong> {{ $rental->vehicle->color }}</p>
+                                            <p><strong>Transmisión:</strong> {{ ucfirst($rental->vehicle->transmission) }}</p>
+                                            <p><strong>Combustible:</strong> {{ ucfirst($rental->vehicle->fuel_type) }}</p>
+                                            <p><strong>Asientos:</strong> {{ $rental->vehicle->seats }}</p>
+                                            @if($rental->vehicle->features)
+                                                <p><strong>Características:</strong></p>
+                                                <div class="features-grid">
+                                                    @foreach($rental->vehicle->features as $feature)
+                                                        <span class="feature-tag">{{ $feature }}</span>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
 
                             @if($rental->payment)
@@ -571,29 +601,16 @@
                                     <div class="detail-label">Estado del Pago</div>
                                     <div class="detail-value">{{ match($rental->payment->status) {
                                         'success' => 'Exitoso',
-                                            'pending' => 'Pendiente',
-                                            'failed' => 'Fallido',
+                                        'pending' => 'Pendiente',
+                                        'failed' => 'Fallido',
                                         'cancelled' => 'Cancelado',
-                                            default => ucfirst($rental->payment->status)
+                                        default => ucfirst($rental->payment->status)
                                     } }}</div>
                                 </div>
                             @endif
-                    </div>
+                        </div>
 
                         <div class="rental-actions">
-                            <!-- Botón Ver Detalles Completos - Siempre visible -->
-                            @if($rental->payment)
-                                <button 
-                                    wire:click="showRentalDetails('{{ $rental->id }}')"
-                                    class="btn btn-info">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                    Ver Detalles
-                                </button>
-                            @endif
-
                             @if($rental->status === 'selected')
                                 <button 
                                     wire:click="deleteRental('{{ $rental->id }}')" 
@@ -611,15 +628,27 @@
                                     Continuar Reserva
                                 </button>
                             @endif
+
+                            @if(in_array($rental->status, ['confirmed', 'completed']))
+                                <a href="{{ route('invoice.download', $rental) }}" class="btn btn-primary" target="_blank">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    Descargar Factura
+                                </a>
+                            @endif
+                        </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
         @endif
     </div>
-
-    <!-- Modal de Detalles Global - Un solo componente controlado por el componente padre -->
-    @if($selectedRentalId)
-        <livewire:rental-details :rental-id="$selectedRentalId" :key="'details-'.$selectedRentalId" />
-    @endif
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('close-modal', function() {
+        Livewire.dispatch('close-modal');
+    });
+</script>
+@endpush
