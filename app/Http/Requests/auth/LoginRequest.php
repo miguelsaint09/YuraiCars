@@ -22,7 +22,14 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
+            'email' => [
+                'required',
+                'string',
+                'email:rfc,dns',
+                'max:255',
+                'exists:users,email',
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'
+            ],
             'password' => ['required', 'string', 'min:8']
         ];
     }
@@ -34,7 +41,10 @@ class LoginRequest extends FormRequest
     {
         return [
             'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'El correo electrónico debe ser una dirección válida.',
+            'email.email' => 'El formato del correo electrónico no es válido.',
+            'email.exists' => 'No existe una cuenta con este correo electrónico.',
+            'email.regex' => 'El correo electrónico debe tener un formato válido.',
+            'email.max' => 'El correo electrónico no puede tener más de 255 caracteres.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
         ];
