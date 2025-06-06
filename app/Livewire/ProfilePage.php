@@ -15,8 +15,8 @@ class ProfilePage extends Component
     public User $user;
     public UserProfile $profile;
     public ?string $redirectTo = null;
-
     public bool $isEditing = false;
+    public bool $showCompletionMessage = false;
 
     #[Validate('required | string | max:255 ')]
     public string $first_name = '';
@@ -69,6 +69,7 @@ class ProfilePage extends Component
 
         // Get redirect URL from session if exists
         $this->redirectTo = session('redirect_to');
+        $this->showCompletionMessage = !empty($this->redirectTo);
 
         // Automatically enable editing if profile is not completed
         if (!$this->profile->is_completed) {

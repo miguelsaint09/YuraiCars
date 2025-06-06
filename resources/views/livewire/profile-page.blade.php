@@ -82,6 +82,12 @@
     }
 
     .profile-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .profile-header {
         display: grid;
         grid-template-columns: 1fr 2fr;
         gap: 4rem;
@@ -343,8 +349,8 @@
     }
 
     .password-section {
-        margin-top: 3rem;
-        padding-top: 3rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -398,133 +404,146 @@
     <div class="profile-container">
         <div class="profile-card">
             <div class="profile-grid">
-            <!-- Left: Profile Sidebar -->
-                <div class="profile-sidebar">
-                <!-- Profile Avatar -->
-                    <div class="profile-avatar">
-                    {{ strtoupper(substr($first_name, 0, 1) . substr($last_name, 0, 1)) ?: 'U' }}
-                </div>
-                    <div class="profile-name">
-                        {{ $first_name ? "$first_name $last_name" : '¡Bienvenido!' }}
+                <div class="profile-header">
+                    <!-- Left: Profile Sidebar -->
+                    <div class="profile-sidebar">
+                        <!-- Profile Avatar -->
+                        <div class="profile-avatar">
+                            {{ strtoupper(substr($first_name, 0, 1) . substr($last_name, 0, 1)) ?: 'U' }}
+                        </div>
+                        <div class="profile-name">
+                            {{ $first_name ? "$first_name $last_name" : '¡Bienvenido!' }}
+                        </div>
+                        <div class="profile-email">{{ $user->email }}</div>
                     </div>
-                    <div class="profile-email">{{ $user->email }}</div>
-            </div>
 
-            <!-- Right: Profile Info -->
-                <div class="profile-info">
-                    <h1 class="profile-title">Información del Perfil</h1>
+                    <!-- Right: Profile Info -->
+                    <div class="profile-info">
+                        <h1 class="profile-title">Información del Perfil</h1>
 
-                @if (session('status'))
-                        <div class="status-message status-success">
-                        {{ session('status') }}
+                        @if($showCompletionMessage)
+                            <div class="status-message" style="background: linear-gradient(145deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); border: 1px solid rgba(59, 130, 246, 0.3); color: #3b82f6; margin-bottom: 2rem; text-align: left; display: flex; align-items: center; gap: 1rem;">
+                                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div>
+                                    <p class="font-medium">Por favor, complete su información personal</p>
+                                    <p class="text-sm opacity-80 mt-1">Necesitamos estos datos para procesar su reserva de manera segura.</p>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if (session('status'))
+                            <div class="status-message status-success">
+                                {{ session('status') }}
+                            </div>
+                        @endif
+
+                        @if (session('error'))
+                            <div class="status-message status-error">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+
+                        <!-- Profile Form -->
+                        <form wire:submit.prevent="saveProfile" class="form-container">
+                            <div class="form-group">
+                                <label class="form-label">Nombre</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="first_name" 
+                                    class="form-input" 
+                                    placeholder="Ingrese su nombre"
+                                    {{ !$isEditing ? 'readonly' : '' }}
+                                />
+                                @error('first_name')
+                                    <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Apellido</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="last_name" 
+                                    class="form-input" 
+                                    placeholder="Ingrese su apellido"
+                                    {{ !$isEditing ? 'readonly' : '' }}
+                                />
+                                @error('last_name')
+                                    <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Teléfono</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="phone" 
+                                    class="form-input" 
+                                    placeholder="Ingrese su número de teléfono"
+                                    {{ !$isEditing ? 'readonly' : '' }}
+                                />
+                                @error('phone')
+                                    <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Número de Licencia</label>
+                                <input 
+                                    type="text" 
+                                    wire:model="license_number" 
+                                    class="form-input" 
+                                    placeholder="Ingrese su número de licencia"
+                                    {{ !$isEditing ? 'readonly' : '' }}
+                                />
+                                @error('license_number')
+                                    <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Fecha de Nacimiento</label>
+                                <input 
+                                    type="date" 
+                                    wire:model="date_of_birth" 
+                                    class="form-input"
+                                    {{ !$isEditing ? 'readonly' : '' }}
+                                    max="{{ now()->subYears(18)->format('Y-m-d') }}"
+                                    min="{{ now()->subYears(100)->format('Y-m-d') }}"
+                                />
+                                <div class="text-sm text-gray-500 mt-1">Debes tener al menos 18 años para registrarte</div>
+                                @error('date_of_birth')
+                                    <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="button-group">
+                                @if ($isEditing)
+                                    <button type="submit" class="btn btn-primary">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Guardar
+                                    </button>
+                                    <button type="button" wire:click="toggleEdit" class="btn btn-ghost">Cancelar</button>
+                                @else
+                                    <button type="button" wire:click="toggleEdit" class="btn btn-subtle">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                        Editar Perfil
+                                    </button>
+                                @endif
+                            </div>
+                        </form>
                     </div>
-                @endif
-
-                @if (session('error'))
-                        <div class="status-message status-error">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                <!-- Profile Form -->
-                    <form wire:submit.prevent="saveProfile" class="form-container">
-                        <div class="form-group">
-                            <label class="form-label">Nombre</label>
-                            <input 
-                                type="text" 
-                                wire:model="first_name" 
-                                class="form-input" 
-                                placeholder="Ingrese su nombre"
-                                {{ !$isEditing ? 'readonly' : '' }}
-                            />
-                            @error('first_name')
-                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Apellido</label>
-                            <input 
-                                type="text" 
-                                wire:model="last_name" 
-                                class="form-input" 
-                                placeholder="Ingrese su apellido"
-                                {{ !$isEditing ? 'readonly' : '' }}
-                            />
-                            @error('last_name')
-                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Teléfono</label>
-                            <input 
-                                type="text" 
-                                wire:model="phone" 
-                                class="form-input" 
-                                placeholder="Ingrese su número de teléfono"
-                                {{ !$isEditing ? 'readonly' : '' }}
-                            />
-                            @error('phone')
-                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Número de Licencia</label>
-                            <input 
-                                type="text" 
-                                wire:model="license_number" 
-                                class="form-input" 
-                                placeholder="Ingrese su número de licencia"
-                                {{ !$isEditing ? 'readonly' : '' }}
-                            />
-                            @error('license_number')
-                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Fecha de Nacimiento</label>
-                            <input 
-                                type="date" 
-                                wire:model="date_of_birth" 
-                                class="form-input"
-                                {{ !$isEditing ? 'readonly' : '' }}
-                                max="{{ now()->subYears(18)->format('Y-m-d') }}"
-                                min="{{ now()->subYears(100)->format('Y-m-d') }}"
-                            />
-                            <div class="text-sm text-gray-500 mt-1">Debes tener al menos 18 años para registrarte</div>
-                            @error('date_of_birth')
-                                <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="button-group">
-                            @if ($isEditing)
-                                <button type="submit" class="btn btn-primary">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    Guardar
-                                </button>
-                                <button type="button" wire:click="toggleEdit" class="btn btn-ghost">Cancelar</button>
-                            @else
-                                <button type="button" wire:click="toggleEdit" class="btn btn-subtle">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                    </svg>
-                                    Editar Perfil
-                                </button>
-                            @endif
-                        </div>
-                    </form>
                 </div>
 
                 <!-- Password Change Section -->
-                    <div class="password-section">
-                <livewire:change-password />
-                    </div>
+                <div class="password-section">
+                    <livewire:change-password />
                 </div>
             </div>
         </div>

@@ -40,7 +40,7 @@ class VehicleCard extends Component
 
         // check profile complete
         if (!Auth::user()->profile || !Auth::user()->profile->is_completed) {
-            $this->dispatch('show-toast', 'Please complete the profile', 'info');
+            $this->dispatch('show-toast', 'Por favor, complete su información personal antes de continuar con la reserva. Esto es necesario para procesar su alquiler.', 'info');
             
             // Store the target URL for after profile completion
             $targetUrl = route('rent-a-car.show', ['vehicle' => $this->vehicle]);
