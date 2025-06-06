@@ -545,7 +545,7 @@
                                     max="{{ now()->subYears(18)->format('Y-m-d') }}"
                                     min="{{ now()->subYears(100)->format('Y-m-d') }}"
                                 />
-                                <div class="text-sm text-gray-500 mt-1">Debes tener al menos 18 años para registrarte</div>
+                                <div style="color: #94a3b8; font-size: 0.875rem; margin-top: 0.5rem;">Debes tener al menos 18 años para registrarte</div>
                                 @error('date_of_birth')
                                     <div style="color: #ef4444; font-size: 0.875rem; margin-top: 0.5rem;">{{ $message }}</div>
                                 @enderror

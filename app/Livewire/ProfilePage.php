@@ -18,6 +18,13 @@ class ProfilePage extends Component
     public bool $isEditing = false;
     public bool $showCompletionMessage = false;
 
+    // Original values to restore on cancel
+    private string $original_first_name = '';
+    private string $original_last_name = '';
+    private string $original_phone = '';
+    private string $original_license_number = '';
+    private ?string $original_date_of_birth = null;
+
     #[Validate('required | string | max:255 ')]
     public string $first_name = '';
 
@@ -40,13 +47,6 @@ class ProfilePage extends Component
     {
         $this->user = Auth::user();
         
-        // Initialize with empty strings first
-        $this->first_name = '';
-        $this->last_name = '';
-        $this->phone = '';
-        $this->license_number = '';
-        $this->date_of_birth = null;
-        
         // Create or retrieve profile
         $this->profile = UserProfile::firstOrCreate(
             ['user_id' => $this->user->id],
@@ -60,12 +60,8 @@ class ProfilePage extends Component
             ]
         );
 
-        // Now safely assign values from profile
-        $this->first_name = $this->profile->first_name;
-        $this->last_name = $this->profile->last_name;
-        $this->phone = $this->profile->phone;
-        $this->license_number = $this->profile->license_number;
-        $this->date_of_birth = $this->profile->date_of_birth?->format('Y-m-d');
+        // Store original and current values
+        $this->loadProfileData();
 
         // Get redirect URL from session if exists
         $this->redirectTo = session('redirect_to');
@@ -77,8 +73,33 @@ class ProfilePage extends Component
         }
     }
 
+    private function loadProfileData(): void
+    {
+        // Store original values
+        $this->original_first_name = $this->profile->first_name;
+        $this->original_last_name = $this->profile->last_name;
+        $this->original_phone = $this->profile->phone;
+        $this->original_license_number = $this->profile->license_number;
+        $this->original_date_of_birth = $this->profile->date_of_birth?->format('Y-m-d');
+
+        // Set current values
+        $this->first_name = $this->original_first_name;
+        $this->last_name = $this->original_last_name;
+        $this->phone = $this->original_phone;
+        $this->license_number = $this->original_license_number;
+        $this->date_of_birth = $this->original_date_of_birth;
+    }
+
     public function toggleEdit(): void
     {
+        if ($this->isEditing) {
+            // If we're canceling edit, restore original values
+            $this->first_name = $this->original_first_name;
+            $this->last_name = $this->original_last_name;
+            $this->phone = $this->original_phone;
+            $this->license_number = $this->original_license_number;
+            $this->date_of_birth = $this->original_date_of_birth;
+        }
         $this->isEditing = !$this->isEditing;
     }
 
@@ -95,6 +116,9 @@ class ProfilePage extends Component
                 'date_of_birth' => $this->date_of_birth,
                 'is_completed' => true,
             ]);
+
+            // Update original values after successful save
+            $this->loadProfileData();
 
             $this->isEditing = false;
             session()->flash('status', 'Perfil actualizado exitosamente');
