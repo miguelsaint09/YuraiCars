@@ -795,9 +795,9 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Left Column -->
                 <div class="space-y-6">
-            <!-- Vehicle Image -->
+                    <!-- Vehicle Image -->
                     <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-black/20">
-                @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
+                        @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
                             <img 
                                 src="{{ Storage::url($vehicle->image_url[0]) }}" 
                                 class="w-full aspect-[16/9] object-cover"
@@ -809,9 +809,9 @@
                                 class="w-full aspect-[16/9] object-cover"
                                 alt="{{ $vehicle->name }}"
                             />
-                @endif
-            </div>
-            
+                        @endif
+                    </div>
+
                     <!-- Basic Information -->
                     <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
                         <h3 class="text-xl font-bold text-purple-400 mb-4">Información Básica</h3>
@@ -845,53 +845,53 @@
                 </div>
 
                 <!-- Right Column -->
-            <div class="space-y-6">
+                <div class="space-y-6">
                     <!-- Technical Specifications -->
                     <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
                         <h3 class="text-xl font-bold text-purple-400 mb-4">Especificaciones Técnicas</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
                                 <span class="text-zinc-400 text-sm">Transmisión</span>
                                 <p class="text-white font-medium">
                                     {{ $vehicle->transmission === 'automatic' ? 'Automática' : 'Manual' }}
                                 </p>
-                        </div>
-                        <div>
+                            </div>
+                            <div>
                                 <span class="text-zinc-400 text-sm">Combustible</span>
                                 <p class="text-white font-medium">
                                     {{ $vehicle->fuel_type === 'gasoline' ? 'Gasolina' : 'Diésel' }}
                                 </p>
-                        </div>
-                        <div>
+                            </div>
+                            <div>
                                 <span class="text-zinc-400 text-sm">Asientos</span>
                                 <p class="text-white font-medium">{{ $vehicle->seats }}</p>
-                        </div>
-                        <div>
+                            </div>
+                            <div>
                                 <span class="text-zinc-400 text-sm">Maletas</span>
                                 <p class="text-white font-medium">{{ $vehicle->luggage_capacity }}L</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Features -->
+
+                    <!-- Features -->
                     <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
                         <h3 class="text-xl font-bold text-purple-400 mb-4">Características</h3>
                         <div class="grid grid-cols-2 gap-3">
-                @if($vehicle->features)
-                        @foreach($vehicle->features as $feature)
+                            @if($vehicle->features)
+                                @foreach($vehicle->features as $feature)
                                     <div class="flex items-center gap-2">
                                         <svg class="w-5 h-5 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                         </svg>
                                         <span class="text-white">{{ $feature }}</span>
                                     </div>
-                        @endforeach
+                                @endforeach
                             @else
                                 <p class="text-zinc-400 col-span-2">No hay características especiales registradas.</p>
                             @endif
+                        </div>
                     </div>
-                </div>
-                
+
                     <!-- Price and Rent Button -->
                     <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
                         <div class="flex items-center justify-between mb-6">
@@ -900,9 +900,9 @@
                                 <span class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
                                     ${{ number_format($vehicle->price_per_day, 2) }} DOP
                                 </span>
-                </div>
-            </div>
-            
+                            </div>
+                        </div>
+                        
                         <button 
                             wire:click="proceed"
                             class="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
@@ -911,7 +911,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             <span class="text-lg">Rentar Ahora</span>
-                </button>
+                        </button>
                     </div>
                 </div>
             </div>
