@@ -719,15 +719,15 @@
             <div class="bg-black/20 border border-white/10 rounded-2xl p-6 mb-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Search Fields -->
+                        </div>
                 </div>
-            </div>
 
             <!-- Results Section -->
             <div>
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-white">Encontramos estos resultados para ti</h2>
                     <span class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-400">{{ count($vehicles) }} vehículos premium</span>
-                </div>
+                        </div>
 
                 <!-- Vehicle Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -793,7 +793,7 @@
                                             class="w-full aspect-[16/9] object-cover"
                                             alt="{{ $selectedVehicle->name }}"
                                         />
-                                    @else
+                @else
                                         <img 
                                             src="{{ asset('images/sedan.png') }}" 
                                             class="w-full aspect-[16/9] object-cover"
@@ -1439,7 +1439,7 @@
             <p class="page-subtitle">
                 Descubra nuestra selecta gama de vehículos premium, cada uno meticulosamente elegido para ofrecer una experiencia de conducción incomparable
             </p>
-        </div>
+                                </div>
 
         <div class="main-layout">
             <!-- Filters Panel -->
@@ -1535,8 +1535,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($vehicles as $vehicle)
                         <x-vehicle-card :vehicle="$vehicle" />
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
             </div>
         </div>
     </div>
@@ -1583,8 +1583,8 @@
                                     class="w-full aspect-[16/9] object-cover"
                                     alt="{{ $selectedVehicle->name }}"
                                 />
-                            @endif
-                        </div>
+                @endif
+            </div>
 
                         <!-- Basic Information -->
                         <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
@@ -1593,11 +1593,11 @@
                                 <div>
                                     <span class="text-zinc-400 text-sm">Marca</span>
                                     <p class="text-white font-medium">{{ $selectedVehicle->make }}</p>
-                                </div>
+        </div>
                                 <div>
                                     <span class="text-zinc-400 text-sm">Modelo</span>
                                     <p class="text-white font-medium">{{ $selectedVehicle->model }}</p>
-                                </div>
+    </div>
                                 <div>
                                     <span class="text-zinc-400 text-sm">Año</span>
                                     <p class="text-white font-medium">{{ $selectedVehicle->year }}</p>
@@ -1615,8 +1615,8 @@
                                     <p class="text-white font-medium">{{ $selectedVehicle->category }}</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+</div>
+</div>
 
                     <!-- Right Column -->
                     <div class="space-y-6">
