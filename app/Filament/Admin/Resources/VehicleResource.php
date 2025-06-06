@@ -214,14 +214,10 @@ class VehicleResource extends Resource
                                             ->disk('public')
                                             ->directory('vehicles')
                                             ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
-                                            ->maxSize(5120)
-                                            ->imagePreviewHeight('250')
-                                            ->loadingIndicatorPosition('left')
-                                            ->panelAspectRatio('2:1')
-                                            ->panelLayout('integrated')
-                                            ->removeUploadedFileButtonPosition('right')
-                                            ->uploadButtonPosition('left')
-                                            ->uploadProgressIndicatorPosition('left')
+                                            ->rules(['mimes:jpg,jpeg,png'])
+                                            ->validationMessages([
+                                                'mimes' => 'Solo se permiten imágenes en formato JPG o PNG'
+                                            ])
                                             ->helperText('Suba hasta 5 imágenes del vehículo (formatos permitidos: JPG, PNG)'),
                                     ]),
                             ]),
