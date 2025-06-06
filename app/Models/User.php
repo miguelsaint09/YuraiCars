@@ -101,11 +101,6 @@ class User extends Authenticatable implements HasName, FilamentUser
     {
         return $this->hasOne(UserProfile::class);
     }
-
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
 }
 
 class UserPolicy

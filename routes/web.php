@@ -4,7 +4,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 use App\Livewire\ShowRental;
 use App\Livewire\UserRentals;
-use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('home'))->name('home');
@@ -36,5 +35,3 @@ Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.ind
 Route::middleware('auth')->group(function() {
     Route::get('/rent-a-car/{vehicle:id}', ShowRental::class)->name('rent-a-car.show');
 });
-
-Route::get('/invoice/{rental}', [InvoiceController::class, 'download'])->name('invoice.download');
