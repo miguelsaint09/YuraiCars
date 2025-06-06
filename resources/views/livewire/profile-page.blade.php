@@ -37,19 +37,14 @@
         z-index: 2;
         max-width: 1400px;
         margin: 0 auto;
-        padding: 3rem 2rem;
+        padding: 1.5rem;
         opacity: 0;
         animation: containerReveal 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    @keyframes containerReveal {
-        0% {
-            opacity: 0;
-            transform: translateY(60px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
+    @media (min-width: 640px) {
+        .profile-container {
+            padding: 3rem 2rem;
         }
     }
 
@@ -58,8 +53,8 @@
             rgba(255, 255, 255, 0.02) 0%, 
             rgba(255, 255, 255, 0.01) 100%);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 32px;
-        padding: 3rem;
+        border-radius: 24px;
+        padding: 1.5rem;
         backdrop-filter: blur(20px);
         box-shadow: 
             0 20px 60px rgba(0, 0, 0, 0.3),
@@ -70,14 +65,10 @@
         animation: cardMaterialize 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
     }
 
-    @keyframes cardMaterialize {
-        0% {
-            opacity: 0;
-            transform: translateY(40px) scale(0.95);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
+    @media (min-width: 640px) {
+        .profile-card {
+            padding: 3rem;
+            border-radius: 32px;
         }
     }
 
@@ -88,10 +79,18 @@
     }
 
     .profile-header {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        gap: 4rem;
-        align-items: start;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+        .profile-header {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: start;
+        }
     }
 
     .profile-sidebar {
@@ -99,24 +98,14 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
+        padding: 1rem;
         opacity: 0;
         animation: slideInLeft 1s ease-out 0.6s forwards;
     }
 
-    @keyframes slideInLeft {
-        0% {
-            opacity: 0;
-            transform: translateX(-40px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
     .profile-avatar {
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
         background: linear-gradient(145deg, 
             rgba(255, 255, 255, 0.1) 0%, 
@@ -125,9 +114,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 900;
         color: #ffffff;
+        margin: 0 auto;
         box-shadow: 
             0 15px 40px rgba(0, 0, 0, 0.3),
             inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -158,91 +148,92 @@
             inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
+    @media (min-width: 640px) {
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
+            font-size: 2.5rem;
+        }
+    }
+
     .profile-name {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
         font-weight: 800;
         color: #ffffff;
-        margin-top: 1.5rem;
+        margin-top: 1rem;
         margin-bottom: 0.5rem;
-        letter-spacing: -0.02em;
+    }
+
+    @media (min-width: 640px) {
+        .profile-name {
+            font-size: 1.75rem;
+            margin-top: 1.5rem;
+        }
     }
 
     .profile-email {
         color: #94a3b8;
-        font-size: 1rem;
+        font-size: 0.875rem;
         font-weight: 500;
     }
 
+    @media (min-width: 640px) {
+        .profile-email {
+            font-size: 1rem;
+        }
+    }
+
     .profile-info {
+        flex: 1;
         opacity: 0;
         animation: slideInRight 1s ease-out 0.8s forwards;
     }
 
-    @keyframes slideInRight {
-        0% {
-            opacity: 0;
-            transform: translateX(40px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
     .profile-title {
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 900;
         color: #ffffff;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         letter-spacing: -0.03em;
     }
 
-    .status-message {
-        padding: 1rem 1.5rem;
-        border-radius: 16px;
-        font-weight: 600;
-        text-align: center;
-        margin-bottom: 2rem;
-        backdrop-filter: blur(15px);
-        border: 1px solid;
-    }
-
-    .status-success {
-        background: linear-gradient(145deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
-        border-color: rgba(34, 197, 94, 0.3);
-        color: #10b981;
-    }
-
-    .status-error {
-        background: linear-gradient(145deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.05));
-        border-color: rgba(239, 68, 68, 0.3);
-        color: #ef4444;
+    @media (min-width: 640px) {
+        .profile-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
     }
 
     .form-group {
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .form-group {
+            margin-bottom: 2rem;
+        }
     }
 
     .form-label {
         display: block;
         color: #e2e8f0;
-        font-size: 0.9rem;
+        font-size: 0.875rem;
         font-weight: 600;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
         letter-spacing: 0.025em;
         text-transform: uppercase;
     }
 
     .form-input {
         width: 100%;
-        padding: 1.2rem 1.5rem;
+        padding: 1rem;
         background: linear-gradient(145deg, 
             rgba(255, 255, 255, 0.03) 0%, 
             rgba(255, 255, 255, 0.01) 100%);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        border-radius: 12px;
         color: #ffffff;
-        font-size: 1rem;
+        font-size: 0.875rem;
         font-weight: 500;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         backdrop-filter: blur(15px);
@@ -276,35 +267,40 @@
 
     .button-group {
         display: flex;
-        justify-content: flex-end;
         gap: 1rem;
-        padding-top: 2rem;
-        min-height: 60px;
-        align-items: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
     }
 
     .btn {
-        padding: 0.9rem 2rem;
-        border-radius: 14px;
-        font-weight: 700;
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border: 1px solid;
-        backdrop-filter: blur(15px);
-        text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    @media (min-width: 640px) {
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+    }
+
+    .btn svg {
+        width: 1.25rem;
+        height: 1.25rem;
     }
 
     .btn-primary {
         background: linear-gradient(145deg, 
             rgba(120, 119, 198, 0.8) 0%, 
             rgba(99, 102, 241, 0.7) 100%);
-        border-color: rgba(120, 119, 198, 0.4);
+        border: none;
         color: #ffffff;
         box-shadow: 
             0 10px 30px rgba(120, 119, 198, 0.3),
@@ -323,8 +319,8 @@
 
     .btn-ghost {
         background: transparent;
-        border-color: rgba(255, 255, 255, 0.2);
-        color: #e2e8f0;
+        color: #94a3b8;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .btn-ghost:hover {
@@ -334,17 +330,13 @@
     }
 
     .btn-subtle {
-        background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.05) 0%, 
-            rgba(255, 255, 255, 0.02) 100%);
-        border-color: rgba(255, 255, 255, 0.15);
-        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
     }
 
     .btn-subtle:hover {
-        background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.1) 0%, 
-            rgba(255, 255, 255, 0.05) 100%);
+        background: rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
     }
 
@@ -354,47 +346,87 @@
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    @media (max-width: 1024px) {
-        .profile-grid {
-            grid-template-columns: 1fr;
-            gap: 3rem;
-        }
-        
-        .profile-sidebar {
-            order: 1;
-        }
-        
-        .profile-info {
-            order: 2;
+    .status-message {
+        padding: 1rem;
+        border-radius: 12px;
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(15px);
+        border: 1px solid;
+        animation: messageSlideDown 0.5s ease-out forwards;
+    }
+
+    .status-success {
+        background: linear-gradient(145deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.05));
+        border-color: rgba(34, 197, 94, 0.3);
+        color: #10b981;
+    }
+
+    .status-error {
+        background: linear-gradient(145deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.05));
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+    }
+
+    @media (min-width: 640px) {
+        .status-message {
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
         }
     }
 
-    @media (max-width: 768px) {
-        .profile-container {
-            padding: 2rem 1rem;
+    @keyframes containerReveal {
+        0% {
+            opacity: 0;
+            transform: translateY(60px);
         }
-        
-        .profile-card {
-            padding: 2rem;
+        100% {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            font-size: 2rem;
+    }
+
+    @keyframes cardMaterialize {
+        0% {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
         }
-        
-        .profile-title {
-            font-size: 1.5rem;
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
-        
-        .button-group {
-            flex-direction: column;
-            align-items: stretch;
+    }
+
+    @keyframes slideInLeft {
+        0% {
+            opacity: 0;
+            transform: translateX(-40px);
         }
-        
-        .btn {
-            justify-content: center;
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        0% {
+            opacity: 0;
+            transform: translateX(40px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes messageSlideDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
 </style>
@@ -478,10 +510,10 @@
                             <div class="form-group">
                                 <label class="form-label">Teléfono</label>
                                 <input 
-                                    type="text" 
+                                    type="tel" 
                                     wire:model="phone" 
                                     class="form-input" 
-                                    placeholder="Ingrese su número de teléfono"
+                                    placeholder="Ingrese su teléfono"
                                     {{ !$isEditing ? 'readonly' : '' }}
                                 />
                                 @error('phone')
