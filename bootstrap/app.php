@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\RedirectIfAdmin;
+use App\Http\Middleware\ForceHttps;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('web', [
             RedirectIfAdmin::class,
         ]);
+        
+        // Force HTTPS in production
+        $middleware->append(ForceHttps::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
