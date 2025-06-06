@@ -51,7 +51,6 @@
             <!-- Desktop Menu -->
             <ul class="hidden lg:flex space-x-10">
                 <li><a href="{{ route('home') }}" class="text-white hover:text-gray-300 transition-colors">Inicio</a></li>
-                <li><a href="{{ route('rent-a-car.index') }}" class="text-white hover:text-gray-300 transition-colors">Alquilar un Auto</a></li>
                 <li><a href="{{ route('vehicles.index') }}" class="text-white hover:text-gray-300 transition-colors">Vehículos</a></li>
                 <li><a href="{{ route('about') }}" class="text-white hover:text-gray-300 transition-colors">Nosotros</a></li>
                 <li><a href="#" class="text-white hover:text-gray-300 transition-colors">Contacto</a></li>
@@ -100,7 +99,6 @@
         <div class="lg:hidden border-t border-gray-800" x-show="open" x-transition>
             <ul class="bg-black space-y-2 p-4">
                 <li><a href="{{ route('home') }}" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Inicio</a></li>
-                <li><a href="{{ route('rent-a-car.index') }}" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Alquilar un Auto</a></li>
                 <li><a href="{{ route('vehicles.index') }}" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Vehículos</a></li>
                 <li><a href="{{ route('about') }}" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Nosotros</a></li>
                 <li><a href="#" class="block px-4 py-2 text-white hover:text-gray-300 transition-colors">Contacto</a></li>

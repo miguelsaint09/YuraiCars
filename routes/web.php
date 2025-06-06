@@ -1,8 +1,6 @@
 <?php
- # modificado
 use App\Http\Controllers\auth\AuthController;
-use App\Http\Controllers\ProfileController; # modificado
-use App\Http\Controllers\RentACarController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VehicleController;
 use App\Livewire\ShowRental;
 use App\Livewire\UserRentals;
@@ -33,8 +31,7 @@ Route::middleware('auth')->group(function() {
  * Business Logic Routes
  */
 Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.index');
-Route::get('/rent-a-car', [RentACarController::class, 'index'])->name('rent-a-car.index');
 
 Route::middleware('auth')->group(function() {
-    Route::get('/rent-a-car/{vehicle:id}', ShowRental::class)->name('rent-a-car.show'); # modificado
+    Route::get('/rent-a-car/{vehicle:id}', ShowRental::class)->name('rent-a-car.show');
 });
