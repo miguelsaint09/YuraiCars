@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Carbon\Carbon;
 
 class ProfilePage extends Component
 {
@@ -29,8 +30,11 @@ class ProfilePage extends Component
     #[Validate('required | string | max:255 ')]
     public string $license_number = '';
 
-    #[Validate('nullable | date')]
+    #[Validate('required | date | before_or_equal:' . self::MAX_BIRTH_DATE . ' | after:' . self::MIN_BIRTH_DATE, message: 'Debes tener al menos 18 años y menos de 100 años para registrarte')]
     public ?string $date_of_birth = null;
+
+    private const MAX_BIRTH_DATE = '-18 years';
+    private const MIN_BIRTH_DATE = '-100 years';
 
     public function mount(): void
     {
@@ -61,17 +65,10 @@ class ProfilePage extends Component
         $this->last_name = $this->profile->last_name;
         $this->phone = $this->profile->phone;
         $this->license_number = $this->profile->license_number;
-        $this->date_of_birth = $this->profile->date_of_birth;
-
-        Log::info('Profile mount - date_of_birth value:', [
-            'raw_value' => $this->profile->getRawOriginal('date_of_birth'),
-            'cast_value' => $this->profile->date_of_birth,
-            'property_value' => $this->date_of_birth,
-        ]);
+        $this->date_of_birth = $this->profile->date_of_birth?->format('Y-m-d');
 
         // Get redirect URL from session if exists
         $this->redirectTo = session('redirect_to');
-        Log::info('Redirect URL in mount:', ['url' => $this->redirectTo]);
 
         // Automatically enable editing if profile is not completed
         if (!$this->profile->is_completed) {
@@ -89,11 +86,6 @@ class ProfilePage extends Component
         try {
             $this->validate();
 
-            Log::info('Profile save - date_of_birth before update:', [
-                'value' => $this->date_of_birth,
-                'type' => gettype($this->date_of_birth)
-            ]);
-
             $this->profile->update([
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
@@ -103,18 +95,11 @@ class ProfilePage extends Component
                 'is_completed' => true,
             ]);
 
-            Log::info('Profile save - date_of_birth after update:', [
-                'raw_value' => $this->profile->getRawOriginal('date_of_birth'),
-                'cast_value' => $this->profile->date_of_birth
-            ]);
-
             $this->isEditing = false;
             session()->flash('status', 'Perfil actualizado exitosamente');
 
             // If we have a redirect URL, navigate to it
             if ($this->redirectTo) {
-                Log::info('Attempting to redirect:', ['url' => $this->redirectTo]);
-                
                 // Clear the session before redirecting
                 $redirectUrl = $this->redirectTo;
                 session()->forget('redirect_to');
