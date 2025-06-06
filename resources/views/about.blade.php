@@ -890,7 +890,7 @@
                 Descubra por qué los clientes más exigentes de República Dominicana confían en YuraiCars 
                 para sus necesidades de movilidad premium. Reserve ahora y experimente la excelencia automotriz.
             </p>
-            <a href="{{ route('rent-a-car.index') }}" class="cta-button">
+            <a href="{{ route('vehicles.index') }}" class="cta-button">
                 Iniciar Experiencia Premium
             </a>
         </div>
