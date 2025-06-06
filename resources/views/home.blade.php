@@ -212,7 +212,7 @@
                     </p>
 
                     <div class="flex flex-wrap justify-center lg:justify-start gap-6 animate-fade-in-delay-2">
-                        <a href="{{ route('rent-a-car.index') }}" class="btn-premium neon-glow">
+                        <a href="{{ route('vehicles.index') }}" class="btn-premium neon-glow">
                             Reservar Ahora
                         </a>
                         <a href="{{ route('vehicles.index') }}" class="btn-secondary">
