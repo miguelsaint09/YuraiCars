@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
-use App\Http\Livewire\VehiclesIndex;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Livewire::component('vehicles-index', VehiclesIndex::class);
+        //
     }
 }

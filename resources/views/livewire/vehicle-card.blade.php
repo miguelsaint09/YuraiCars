@@ -124,40 +124,37 @@
 
     .info-button {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
-        width: 2.5rem;
-        height: 2.5rem;
+        top: 20px;
+        right: 20px;
         background: linear-gradient(145deg, 
-            rgba(168, 85, 247, 0.2) 0%, 
-            rgba(99, 102, 241, 0.2) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 9999px;
-        color: white;
+            rgba(255, 255, 255, 0.15) 0%, 
+            rgba(255, 255, 255, 0.08) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 10;
-        backdrop-filter: blur(8px);
+        color: #ffffff;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        backdrop-filter: blur(15px);
+        z-index: 3;
         box-shadow: 
-            0 4px 12px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    .info-button:hover {
-        transform: translateY(-2px) scale(1.05);
-        background: linear-gradient(145deg, 
-            rgba(168, 85, 247, 0.3) 0%, 
-            rgba(99, 102, 241, 0.3) 100%);
-        border-color: rgba(255, 255, 255, 0.2);
-        box-shadow: 
-            0 8px 20px rgba(168, 85, 247, 0.3),
+            0 6px 20px rgba(0, 0, 0, 0.3),
             inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
-    .info-button:active {
-        transform: translateY(0) scale(0.98);
+    .info-button:hover {
+        background: linear-gradient(145deg, 
+            rgba(168, 85, 247, 0.8) 0%, 
+            rgba(120, 119, 198, 0.6) 100%);
+        transform: scale(1.15) translateZ(10px);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 
+            0 10px 30px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            0 0 20px rgba(168, 85, 247, 0.6);
     }
 
     .vehicle-name {
@@ -684,8 +681,7 @@
     <div class="vehicle-card-modern">
         <!-- Info Button -->
         <button class="info-button" 
-                wire:click="$dispatch('open-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })"
-                type="button">
+                wire:click="$dispatch('open-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })">
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
             </svg>
@@ -771,149 +767,77 @@
     </div>
 
     <!-- Vehicle Details Modal -->
-    <x-modal name="vehicle-detail-{{ $vehicle->id }}" maxWidth="4xl">
-        <div class="p-8">
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-8">
-                <div>
-                    <h2 class="text-4xl font-black bg-gradient-to-r from-purple-400 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
-                        {{ $vehicle->name }}
-                    </h2>
-                    <p class="text-xl text-zinc-400 mt-1">{{ $vehicle->year }} {{ $vehicle->make }} {{ $vehicle->model }}</p>
-                </div>
-                <button 
-                    wire:click="$dispatch('close-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })"
-                    class="rounded-full p-2 hover:bg-white/10 transition-colors"
-                >
-                    <svg class="w-6 h-6 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+    <x-modal name="vehicle-detail-{{ $vehicle->id }}" :show="false">
+        <div class="p-6 bg-zinc-900 text-white">
+            <h2 class="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">{{ $vehicle->name }} {{ $vehicle->year }}</h2>
+            
+            <!-- Vehicle Image -->
+            <div class="mb-6">
+                @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
+                    <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="w-full h-64 object-cover rounded-lg border border-zinc-700" alt="{{ $vehicle->name }}" />
+                @endif
             </div>
-
-            <!-- Content Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Left Column -->
-                <div class="space-y-6">
-                    <!-- Vehicle Image -->
-                    <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-black/20">
-                        @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
-                            <img 
-                                src="{{ Storage::url($vehicle->image_url[0]) }}" 
-                                class="w-full aspect-[16/9] object-cover"
-                                alt="{{ $vehicle->name }}"
-                            />
-                        @else
-                            <img 
-                                src="{{ asset('images/sedan.png') }}" 
-                                class="w-full aspect-[16/9] object-cover"
-                                alt="{{ $vehicle->name }}"
-                            />
-                        @endif
-                    </div>
-
-                    <!-- Basic Information -->
-                    <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
-                        <h3 class="text-xl font-bold text-purple-400 mb-4">Información Básica</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <span class="text-zinc-400 text-sm">Marca</span>
-                                <p class="text-white font-medium">{{ $vehicle->make }}</p>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400 text-sm">Modelo</span>
-                                <p class="text-white font-medium">{{ $vehicle->model }}</p>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400 text-sm">Año</span>
-                                <p class="text-white font-medium">{{ $vehicle->year }}</p>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400 text-sm">Color</span>
-                                <p class="text-white font-medium">{{ $vehicle->color }}</p>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400 text-sm">Matrícula</span>
-                                <p class="text-white font-medium">{{ $vehicle->license_plate }}</p>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400 text-sm">Categoría</span>
-                                <p class="text-white font-medium">{{ $vehicle->category }}</p>
-                            </div>
+            
+            <!-- Vehicle Details -->
+            <div class="space-y-6">
+                <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                    <h3 class="text-lg font-semibold text-purple-400 mb-3">Especificaciones</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-zinc-400">Categoría:</span>
+                            <span class="ml-2 text-white">{{ $vehicle->category }}</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-400">Transmisión:</span>
+                            <span class="ml-2 text-white">{{ ucfirst($vehicle->transmission) }}</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-400">Asientos:</span>
+                            <span class="ml-2 text-white">{{ $vehicle->seats }}</span>
+                        </div>
+                        <div>
+                            <span class="text-zinc-400">Combustible:</span>
+                            <span class="ml-2 text-white">{{ ucfirst($vehicle->fuel_type) }}</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Right Column -->
-                <div class="space-y-6">
-                    <!-- Technical Specifications -->
-                    <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
-                        <h3 class="text-xl font-bold text-purple-400 mb-4">Especificaciones Técnicas</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <span class="text-zinc-400 text-sm">Transmisión</span>
-                                <p class="text-white font-medium">
-                                    {{ $vehicle->transmission === 'automatic' ? 'Automática' : 'Manual' }}
-                                </p>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400 text-sm">Combustible</span>
-                                <p class="text-white font-medium">
-                                    {{ $vehicle->fuel_type === 'gasoline' ? 'Gasolina' : 'Diésel' }}
-                                </p>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400 text-sm">Asientos</span>
-                                <p class="text-white font-medium">{{ $vehicle->seats }}</p>
-                            </div>
-                            <div>
-                                <span class="text-zinc-400 text-sm">Maletas</span>
-                                <p class="text-white font-medium">{{ $vehicle->luggage_capacity }}L</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Features -->
-                    <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
-                        <h3 class="text-xl font-bold text-purple-400 mb-4">Características</h3>
-                        <div class="grid grid-cols-2 gap-3">
-                            @if($vehicle->features)
-                                @foreach($vehicle->features as $feature)
-                                    <div class="flex items-center gap-2">
-                                        <svg class="w-5 h-5 text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
-                                        <span class="text-white">{{ $feature }}</span>
-                                    </div>
-                                @endforeach
-                            @else
-                                <p class="text-zinc-400 col-span-2">No hay características especiales registradas.</p>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Price and Rent Button -->
-                    <div class="bg-white/5 rounded-2xl p-6 border border-white/10">
-                        <div class="flex items-center justify-between mb-6">
-                            <div>
-                                <span class="block text-zinc-400 text-sm">Tarifa por día</span>
-                                <span class="text-3xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                                    ${{ number_format($vehicle->price_per_day, 2) }} DOP
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <button 
-                            wire:click="proceed"
-                            class="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
-                        >
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <span class="text-lg">Rentar Ahora</span>
-                        </button>
+                
+                <!-- Features -->
+                @if($vehicle->features)
+                <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                    <h3 class="text-lg font-semibold text-purple-400 mb-3">Características</h3>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($vehicle->features as $feature)
+                            <span class="px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-sm">
+                                {{ $feature }}
+                            </span>
+                        @endforeach
                     </div>
                 </div>
+                @endif
+                
+                <!-- Description -->
+                @if($vehicle->remarks)
+                <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                    <h3 class="text-lg font-semibold text-purple-400 mb-3">Descripción</h3>
+                    <p class="text-zinc-300">{{ $vehicle->remarks }}</p>
+                </div>
+                @endif
+                
+                <!-- Price -->
+                <div class="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
+                    <div class="flex justify-between items-center">
+                        <span class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">${{ number_format($vehicle->price_per_day, 2) }} DOP</span>
+                        <span class="text-zinc-400">por día</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Button -->
+            <div class="mt-6">
+                <button class="select-button w-full" wire:click="proceed">
+                    Seleccionar Premium
+                </button>
             </div>
         </div>
     </x-modal>
