@@ -7,8 +7,14 @@ use Livewire\Component;
 
 class VehiclesIndex extends Component
 {
-    public $showModal = false;
     public $selectedVehicle = null;
+    public $showModal = false;
+    public $vehicles;
+
+    protected $listeners = [
+        'openModal' => 'openModal',
+        'selectVehicle' => 'selectVehicle'
+    ];
 
     public function mount()
     {
@@ -25,6 +31,12 @@ class VehiclesIndex extends Component
     {
         $this->showModal = false;
         $this->selectedVehicle = null;
+    }
+
+    public function selectVehicle($vehicleId)
+    {
+        $this->selectedVehicle = Vehicle::find($vehicleId);
+        $this->showModal = true;
     }
 
     public function render()
