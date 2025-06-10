@@ -59,3 +59,7 @@ Route::post('/contact', function (Request $request) {
 Route::post('/vehicles/{vehicle}/review', [VehicleReviewController::class, 'store'])->name('vehicles.review');
 
 Route::get('/vehicles/{vehicle}/reviews', [App\Http\Controllers\VehicleReviewController::class, 'show'])->name('vehicles.reviews');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/rentals/{rental}', \App\Livewire\RentalDetails::class)->name('rentals.show');
+});

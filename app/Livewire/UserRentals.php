@@ -18,6 +18,11 @@ class UserRentals extends Component
         }
     }
 
+    public function viewRentalDetails($rentalId)
+    {
+        return redirect()->route('rentals.show', ['rental' => $rentalId]);
+    }
+
     public function deleteRental($rentalId)
     {
         try {
