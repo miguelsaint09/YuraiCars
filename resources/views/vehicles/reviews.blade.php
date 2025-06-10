@@ -220,9 +220,6 @@
                     </div>
                 </div>
                 <h2 class="text-2xl font-bold mb-6 text-indigo-400">Reseñas de Clientes</h2>
-                @auth
-                <button class="btn-review" onclick="document.getElementById('review-form').scrollIntoView({behavior: 'smooth'});">Reseñar este vehículo</button>
-                @endauth
                 <div class="reviews-list">
                     @forelse($vehicle->reviews as $review)
                         <div class="review-item">
