@@ -5,6 +5,7 @@ use App\Http\Controllers\VehicleController;
 use App\Livewire\ShowRental;
 use App\Livewire\UserRentals;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 Route::get('/', fn () => view('home'))->name('home');
 Route::get('/about', fn() => view('about'))->name('about');
@@ -35,3 +36,21 @@ Route::get('/vehicles', [VehicleController::class, 'index'])->name('vehicles.ind
 Route::middleware('auth')->group(function() {
     Route::get('/rent-a-car/{vehicle:id}', ShowRental::class)->name('rent-a-car.show');
 });
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+Route::post('/contact', function (Request $request) {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'subject' => 'required|string|max:255',
+        'message' => 'required|string',
+    ]);
+
+    // Here you can add the logic to handle the contact form submission
+    // For example, sending an email, storing in database, etc.
+
+    return redirect()->route('contact')->with('success', '¡Gracias por tu mensaje! Te contactaremos pronto.');
+})->name('contact.submit');
