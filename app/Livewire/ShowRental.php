@@ -31,6 +31,8 @@ class ShowRental extends Component
     public int $totalDays = 1;
     public int $step = 1;
 
+    protected $listeners = ['paymentProcessed' => 'handlePaymentProcessed'];
+
     public function mount($vehicle)
     {
         // Ensure we have a Vehicle model instance
@@ -104,7 +106,7 @@ class ShowRental extends Component
         $this->step = 1;
     }
 
-    public function completeBooking()
+    public function handlePaymentProcessed($paymentId)
     {
         try {
             DB::beginTransaction();
@@ -114,21 +116,32 @@ class ShowRental extends Component
             $this->vehicle->update([
                 'status' => VehicleStatus::BOOKED->value,
             ]);
-            Payment::firstOrCreate(
-                ['rental_id' => $this->onGoingRental->id],
-                [
-                    'amount' => $this->totalPrice,
-                    'payment_method' => PaymentMethod::CREDIT_CARD->value,
-                    'status' => PaymentStatus::SUCCESS->value,
-                ]
-            );
             DB::commit();
-            return redirect()->route('profile.rents')->with('status', 'Booking completed successfully!');
+            return redirect()->route('profile.rents')->with('status', 'Reserva completada exitosamente!');
         } catch (QueryException $e) {
             DB::rollBack();
-            Log::error('Booking Transaction Failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Something went wrong! Please try again.');
+            Log::error('Error al confirmar la reserva: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Ocurrió un error. Por favor intente nuevamente.');
         }
+    }
+
+    public function completeBooking()
+    {
+        $this->validate([
+            'pickupLocation' => ['required', 'string'],
+            'dropoffLocation' => ['required', 'string'],
+            'startTime' => ['required', 'date', 'after:now'],
+            'endTime' => ['required', 'date', 'after:startTime'],
+        ]);
+
+        $this->onGoingRental->update([
+            'pickup_location' => $this->pickupLocation,
+            'dropoff_location' => $this->dropoffLocation,
+            'start_time' => $this->startTime,
+            'end_time' => $this->endTime,
+        ]);
+
+        $this->step = 2;
     }
 
     public function render()

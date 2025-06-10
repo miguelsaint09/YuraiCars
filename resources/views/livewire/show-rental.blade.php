@@ -647,60 +647,7 @@
             @elseif ($step === 2)
                 <!-- Step 2: Payment -->
                 <div>
-                        <h1 class="page-title">Pago y Confirmación</h1>
-                        <p class="payment-subtitle">Complete su reserva ingresando los detalles de pago.</p>
-
-                        <div class="payment-section">
-                            <h3 class="payment-title">Información de Pago</h3>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Número de Tarjeta</label>
-                                <input 
-                                    type="text"
-                                    wire:model="cardNumber" 
-                                    class="form-input" 
-                                    placeholder="1234 5678 9012 3456" 
-                                />
-                            </div>
-
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label">Fecha de Vencimiento</label>
-                                    <input 
-                                        type="text"
-                                        wire:model="expiryDate" 
-                                        class="form-input" 
-                                        placeholder="MM/YY" 
-                                    />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">CVV</label>
-                                    <input 
-                                        type="text"
-                                        wire:model="cvv" 
-                                        class="form-input" 
-                                        placeholder="123" 
-                                    />
-                                </div>
-                            </div>
-                    </div>
-
-                    <!-- Navigation Buttons -->
-                        <div class="navigation-buttons">
-                            <button wire:click="previousStep" class="btn btn-ghost" type="button">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path>
-                                </svg>
-                                <span>Volver</span>
-                            </button>
-                            <button type="submit" wire:click="completeBooking" class="btn btn-primary">
-                                <span>Confirmar Pago</span>
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                            </button>
-                        </div>
+                    <livewire:payment-form :rentalId="$onGoingRental->id" :amount="$totalPrice" />
                 </div>
             @endif
         </form>

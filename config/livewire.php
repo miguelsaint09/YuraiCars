@@ -38,7 +38,7 @@ return [
     |
     */
 
-    'layout' => 'components.layouts.app',
+    'layout' => 'layouts.app',
 
     /*
     |---------------------------------------------------------------------------
@@ -50,7 +50,7 @@ return [
     |
     */
 
-    'lazy_placeholder' => null,
+    'lazy' => false,
 
     /*
     |---------------------------------------------------------------------------
@@ -157,4 +157,18 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
+
+    'middleware_group' => 'web',
+
+    'manifest_path' => null,
+
+    'class_namespaces' => [
+        'App\\Livewire',
+    ],
+
+    'component_path' => app_path('Livewire'),
+
+    'components' => [
+        'payment-form' => App\Livewire\PaymentForm::class,
+    ],
 ];
