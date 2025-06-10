@@ -680,12 +680,11 @@
     <!-- Vehicle Card -->
     <div class="vehicle-card-modern">
         <!-- Info Button -->
-        <button class="info-button" 
-                wire:click="$dispatch('open-modal', { name: 'vehicle-detail-{{ $vehicle->id }}' })">
+        <a class="info-button" href="{{ route('vehicles.reviews', $vehicle) }}">
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
             </svg>
-        </button>
+        </a>
 
     <!-- Vehicle Image -->
         <div class="vehicle-image-container">
@@ -831,6 +830,54 @@
                         <span class="text-zinc-400">por día</span>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Reviews Section -->
+            <div class="mt-8">
+                <h3 class="text-lg font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 9h2v2H9V9zm1-7a9 9 0 100 18A9 9 0 0010 2zm0 16a7 7 0 110-14 7 7 0 010 14zm0-8a1 1 0 100-2 1 1 0 000 2z"/></svg>
+                    Reseñas de Clientes
+                </h3>
+                <div class="space-y-4 max-h-48 overflow-y-auto mb-6">
+                    @forelse($vehicle->reviews as $review)
+                        <div class="border-b border-zinc-700 pb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="font-semibold text-white">{{ $review->user->profile->first_name ?? 'Cliente' }}</span>
+                                <span>
+                                    @for($i = 0; $i < $review->rating; $i++)
+                                        <span class="text-yellow-400">★</span>
+                                    @endfor
+                                </span>
+                            </div>
+                            <p class="text-zinc-300 mt-1">{{ $review->comment }}</p>
+                        </div>
+                    @empty
+                        <p class="text-zinc-400">Este vehículo aún no tiene reseñas.</p>
+                    @endforelse
+                </div>
+                @auth
+                <form action="{{ route('vehicles.review', $vehicle) }}" method="POST" class="space-y-3">
+                    @csrf
+                    <div>
+                        <label class="block text-sm font-medium text-zinc-300">Calificación</label>
+                        <select name="rating" class="form-input mt-1 w-full bg-zinc-800 border-zinc-700 text-white" required>
+                            <option value="">Selecciona</option>
+                            @for($i = 5; $i >= 1; $i--)
+                                <option value="{{ $i }}">{{ $i }} ★</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-zinc-300">Comentario</label>
+                        <textarea name="comment" class="form-input mt-1 w-full bg-zinc-800 border-zinc-700 text-white" rows="2" required></textarea>
+                    </div>
+                    <button type="submit" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded hover:from-purple-700 hover:to-indigo-700 transition w-full font-semibold">Enviar Reseña</button>
+                </form>
+                @else
+                <div class="text-center text-zinc-400 mt-2">
+                    <a href="{{ route('login') }}" class="text-indigo-400 hover:underline">Inicia sesión</a> para dejar una reseña.
+                </div>
+                @endauth
             </div>
             
             <!-- Action Button -->

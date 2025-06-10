@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Rental;
+use App\Models\Review;
 
 /**
  * @property string $license_plate
@@ -79,6 +80,16 @@ class Vehicle extends Model
     public function rentals(): HasMany
     {
         return $this->hasMany(Rental::class);
+    }
+
+    /**
+     * Get the reviews for the vehicle.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Review, \App\Models\Vehicle>
+     */
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
     /**

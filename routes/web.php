@@ -6,6 +6,7 @@ use App\Livewire\ShowRental;
 use App\Livewire\UserRentals;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\VehicleReviewController;
 
 Route::get('/', fn () => view('home'))->name('home');
 Route::get('/about', fn() => view('about'))->name('about');
@@ -54,3 +55,7 @@ Route::post('/contact', function (Request $request) {
 
     return redirect()->route('contact')->with('success', '¡Gracias por tu mensaje! Te contactaremos pronto.');
 })->name('contact.submit');
+
+Route::post('/vehicles/{vehicle}/review', [VehicleReviewController::class, 'store'])->name('vehicles.review');
+
+Route::get('/vehicles/{vehicle}/reviews', [App\Http\Controllers\VehicleReviewController::class, 'show'])->name('vehicles.reviews');

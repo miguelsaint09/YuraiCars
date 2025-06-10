@@ -4,92 +4,214 @@
     <meta charset="utf-8">
     <title>Factura #{{ $rental->id }}</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 40px;
             font-size: 14px;
+            color: #1f2937;
+            background: #ffffff;
         }
+
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 20px;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+            position: relative;
         }
-        .invoice-info {
-            margin-bottom: 30px;
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.5px;
         }
-        .invoice-info table {
-            width: 100%;
+
+        .header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #4f46e5;
+            margin: 0 0 5px 0;
         }
-        .invoice-info td {
-            padding: 5px;
-            vertical-align: top;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        .section h2 {
-            background-color: #f8f9fa;
-            padding: 10px;
-            margin-bottom: 15px;
+
+        .header p {
             font-size: 16px;
+            color: #6b7280;
+            margin: 0;
         }
+
+        .invoice-info {
+            margin-bottom: 40px;
+            background: #f9fafb;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            margin-bottom: 40px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section h2 {
+            background: linear-gradient(to right, #4f46e5, #6366f1);
+            color: white;
+            padding: 15px 25px;
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
         .details-grid {
-            display: table;
-            width: 100%;
-            margin-bottom: 15px;
+            padding: 25px;
         }
+
         .details-row {
-            display: table-row;
+            display: flex;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
         }
+
+        .details-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
         .details-label {
-            display: table-cell;
-            padding: 5px;
-            font-weight: bold;
-            width: 150px;
-            color: #666;
+            width: 200px;
+            font-weight: 500;
+            color: #4b5563;
         }
+
         .details-value {
-            display: table-cell;
-            padding: 5px;
+            flex: 1;
+            color: #111827;
         }
+
         .rental-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 25px 0;
         }
-        .rental-table th, .rental-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
+
         .rental-table th {
-            background-color: #f8f9fa;
+            background: #f3f4f6;
+            padding: 12px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
         }
+
+        .rental-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
+        }
+
+        .rental-table tr:last-child td {
+            border-bottom: none;
+        }
+
         .total {
             text-align: right;
-            margin-top: 20px;
-            font-size: 16px;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
         }
+
+        .total h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+
         .footer {
-            margin-top: 50px;
+            margin-top: 60px;
             text-align: center;
-            font-size: 12px;
-            color: #666;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
+            padding-top: 30px;
+            border-top: 2px solid #e5e7eb;
+            color: #6b7280;
         }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
         .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-top: 10px;
         }
+
         .feature-tag {
-            display: inline-block;
-            background: #f0f0f0;
-            padding: 3px 8px;
-            margin: 2px;
-            border-radius: 3px;
+            background: #eef2ff;
+            color: #4f46e5;
+            padding: 4px 12px;
+            border-radius: 6px;
             font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.cancelled {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .status-badge.refunded {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .payment-method {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .payment-method svg {
+            width: 16px;
+            height: 16px;
         }
     </style>
 </head>
@@ -199,17 +321,21 @@
             </div>
             <div class="details-row">
                 <div class="details-label">Estado:</div>
-                <div class="details-value">{{ match($rental->status) {
-                    'selected' => 'Seleccionado',
-                    'pending' => 'Pendiente',
-                    'confirmed' => 'Confirmado',
-                    'approved' => 'Aprobado',
-                    'rejected' => 'Rechazado',
-                    'active' => 'Activo',
-                    'completed' => 'Completado',
-                    'cancelled' => 'Cancelado',
-                    default => ucfirst($rental->status)
-                } }}</div>
+                <div class="details-value">
+                    <span class="status-badge {{ $rental->status }}">
+                        {{ match($rental->status) {
+                            'selected' => 'Seleccionado',
+                            'pending' => 'Pendiente',
+                            'confirmed' => 'Confirmado',
+                            'approved' => 'Aprobado',
+                            'rejected' => 'Rechazado',
+                            'active' => 'Activo',
+                            'completed' => 'Completado',
+                            'cancelled' => 'Cancelado',
+                            default => ucfirst($rental->status)
+                        } }}
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -223,7 +349,7 @@
             <tr>
                 <td>
                     {{ $vehicle->name }} - {{ $vehicle->year }}<br>
-                    <small>{{ $vehicle->category }} | {{ ucfirst($vehicle->transmission) }}</small>
+                    <small style="color: #6b7280;">{{ $vehicle->category }} | {{ ucfirst($vehicle->transmission) }}</small>
                 </td>
                 <td>{{ \Carbon\Carbon::parse($rental->start_time)->diffInDays(\Carbon\Carbon::parse($rental->end_time)) }}</td>
                 <td>${{ number_format($vehicle->price_per_day, 2) }} DOP</td>
@@ -237,23 +363,44 @@
         <div class="details-grid">
             <div class="details-row">
                 <div class="details-label">Método de Pago:</div>
-                <div class="details-value">{{ match($payment->payment_method) {
-                    'credit_card' => 'Tarjeta de Crédito',
-                    'debit_card' => 'Tarjeta de Débito',
-                    'cash' => 'Efectivo',
-                    default => ucfirst(str_replace('_', ' ', $payment->payment_method))
-                } }}</div>
+                <div class="details-value">
+                    <span class="payment-method">
+                        @if($payment->payment_method === 'credit_card')
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v2h16V6H4zm0 4v8h16v-8H4z"/>
+                            </svg>
+                        @elseif($payment->payment_method === 'debit_card')
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v2h16V6H4zm0 4v8h16v-8H4z"/>
+                            </svg>
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                            </svg>
+                        @endif
+                        {{ match($payment->payment_method) {
+                            'credit_card' => 'Tarjeta de Crédito',
+                            'debit_card' => 'Tarjeta de Débito',
+                            'cash' => 'Efectivo',
+                            default => ucfirst(str_replace('_', ' ', $payment->payment_method))
+                        } }}
+                    </span>
+                </div>
             </div>
             <div class="details-row">
                 <div class="details-label">Estado del Pago:</div>
-                <div class="details-value">{{ match($payment->status) {
-                    'pending' => 'Pendiente',
-                    'success' => 'Pagado',
-                    'failed' => 'Fallido',
-                    'canceled' => 'Cancelado',
-                    'refunded' => 'Reembolsado',
-                    default => ucfirst($payment->status)
-                } }}</div>
+                <div class="details-value">
+                    <span class="status-badge {{ $payment->status }}">
+                        {{ match($payment->status) {
+                            'pending' => 'Pendiente',
+                            'success' => 'Pagado',
+                            'failed' => 'Fallido',
+                            'canceled' => 'Cancelado',
+                            'refunded' => 'Reembolsado',
+                            default => ucfirst($payment->status)
+                        } }}
+                    </span>
+                </div>
             </div>
             <div class="details-row">
                 <div class="details-label">Fecha de Pago:</div>
@@ -273,7 +420,7 @@
     </div>
 
     <div class="footer">
-        <p>¡Gracias por elegir nuestro servicio!</p>
+        <p>¡Gracias por elegir YuraiCars!</p>
         <p>Para cualquier consulta, contacte a nuestro equipo de soporte.</p>
         <p>Generado el: {{ now()->format('d M, Y h:i A') }}</p>
     </div>
