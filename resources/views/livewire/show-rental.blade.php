@@ -251,23 +251,22 @@
         background: linear-gradient(145deg, 
             rgba(120, 119, 198, 0.1) 0%, 
             rgba(99, 102, 241, 0.05) 100%);
-        border: 1px solid rgba(120, 119, 198, 0.3);
+        border: 1px solid rgba(120, 119, 198, 0.2);
         border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        text-align: center;
+        padding: 1.5rem;
+        margin-top: 2rem;
     }
 
     .total-label {
-        color: #ffffff;
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
+        color: #94a3b8;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
     }
 
     .total-amount {
         font-size: 2.5rem;
-        font-weight: 900;
+        font-weight: 800;
         background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -277,12 +276,12 @@
 
     .total-duration {
         color: #94a3b8;
-        font-size: 1rem;
+        font-size: 0.875rem;
         font-weight: 500;
     }
 
     .features-section {
-        margin-bottom: 3rem;
+        margin-top: 2rem;
     }
 
     .features-title {
@@ -300,18 +299,18 @@
 
     .feature-tag {
         background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.1) 0%, 
-            rgba(255, 255, 255, 0.05) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #ffffff;
-        padding: 0.75rem 1.25rem;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        font-weight: 600;
+            rgba(255, 255, 255, 0.05) 0%, 
+            rgba(255, 255, 255, 0.02) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 9999px;
+        padding: 0.5rem 1rem;
+        color: #94a3b8;
+        font-size: 0.875rem;
+        font-weight: 500;
     }
 
     .form-section {
-        margin-bottom: 3rem;
+        margin-top: 3rem;
     }
 
     .form-grid {
@@ -321,145 +320,89 @@
     }
 
     .form-group {
-        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
     .form-label {
-        display: block;
-        color: #e2e8f0;
-        font-size: 0.9rem;
+        color: #ffffff;
+        font-size: 0.875rem;
         font-weight: 600;
-        margin-bottom: 0.75rem;
-        letter-spacing: 0.025em;
-        text-transform: uppercase;
     }
 
     .form-input {
-        width: 100%;
-        padding: 1.2rem 1.5rem;
-        background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.03) 0%, 
-            rgba(255, 255, 255, 0.01) 100%);
+        background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
         color: #ffffff;
         font-size: 1rem;
-        font-weight: 500;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        backdrop-filter: blur(15px);
-        outline: none;
+        transition: all 0.3s ease;
     }
 
     .form-input:focus {
+        outline: none;
         border-color: rgba(120, 119, 198, 0.5);
-        background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.05) 0%, 
-            rgba(255, 255, 255, 0.02) 100%);
-        box-shadow: 
-            0 0 0 3px rgba(120, 119, 198, 0.15),
-            0 8px 25px rgba(0, 0, 0, 0.2);
-        transform: translateY(-2px);
+        box-shadow: 0 0 0 2px rgba(120, 119, 198, 0.2);
     }
 
     .form-input:disabled {
-        background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.01) 0%, 
-            rgba(255, 255, 255, 0.005) 100%);
-        border-color: rgba(255, 255, 255, 0.05);
-        color: #64748b;
+        opacity: 0.7;
         cursor: not-allowed;
     }
 
-    .form-input::placeholder {
-        color: #64748b;
-        font-weight: 400;
-    }
-
-    .payment-section {
-        background: linear-gradient(145deg, 
-            rgba(255, 255, 255, 0.02) 0%, 
-            rgba(255, 255, 255, 0.01) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 24px;
-        padding: 2.5rem;
-        margin-bottom: 3rem;
-    }
-
-    .payment-title {
-        color: #ffffff;
-        font-size: 1.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-    }
-
-    .payment-subtitle {
-        color: #94a3b8;
-        font-size: 1rem;
-        margin-bottom: 2rem;
-    }
-
     .navigation-buttons {
+        margin-top: 3rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .btn {
-        padding: 1rem 2.5rem;
-        border-radius: 16px;
-        font-weight: 700;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        cursor: pointer;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border: 1px solid;
-        backdrop-filter: blur(15px);
-        text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
 
     .btn-primary {
         background: linear-gradient(145deg, 
             rgba(120, 119, 198, 0.8) 0%, 
             rgba(99, 102, 241, 0.7) 100%);
-        border-color: rgba(120, 119, 198, 0.4);
+        border: 1px solid rgba(120, 119, 198, 0.4);
         color: #ffffff;
-        box-shadow: 
-            0 12px 35px rgba(120, 119, 198, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
     .btn-primary:hover {
         background: linear-gradient(145deg, 
             rgba(120, 119, 198, 0.9) 0%, 
             rgba(99, 102, 241, 0.8) 100%);
-        transform: translateY(-3px);
-        box-shadow: 
-            0 18px 50px rgba(120, 119, 198, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(120, 119, 198, 0.3);
     }
 
-    .btn-ghost {
-        background: transparent;
-        border-color: rgba(255, 255, 255, 0.2);
-        color: #e2e8f0;
+    .btn-secondary {
+        background: linear-gradient(145deg, 
+            rgba(255, 255, 255, 0.1) 0%, 
+            rgba(255, 255, 255, 0.05) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #ffffff;
     }
 
-    .btn-ghost:hover {
-        background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(255, 255, 255, 0.3);
+    .btn-secondary:hover {
+        background: linear-gradient(145deg, 
+            rgba(255, 255, 255, 0.15) 0%, 
+            rgba(255, 255, 255, 0.1) 100%);
         transform: translateY(-2px);
     }
 
     @media (max-width: 1024px) {
         .booking-container {
             grid-template-columns: 1fr;
-            gap: 2rem;
             padding: 1.5rem;
         }
         
@@ -511,7 +454,7 @@
 
 <div class="booking-page">
     <div class="booking-container">
-    <!-- Left Sidebar -->
+        <!-- Left Sidebar -->
         <div class="sidebar">
             <h2 class="sidebar-title">Pasos de la Reserva</h2>
             <ul class="steps-list">
@@ -522,7 +465,7 @@
                         </svg>
                     </div>
                     <span class="step-text {{ $step === 1 ? 'active' : '' }}">Detalles de la Reserva</span>
-            </li>
+                </li>
                 <li class="step-item">
                     <div class="step-icon {{ $step === 2 ? 'active' : '' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -530,17 +473,17 @@
                         </svg>
                     </div>
                     <span class="step-text {{ $step === 2 ? 'active' : '' }}">Pago</span>
-            </li>
-        </ul>
-    </div>
+                </li>
+            </ul>
+        </div>
 
-    <!-- Right Content -->
+        <!-- Right Content -->
         <div class="main-content">
-        <form wire:submit.prevent="completeBooking" method="POST">
-            @csrf
-            @if ($step === 1)
-                <!-- Step 1: Booking Details -->
-                <div>
+            <form wire:submit.prevent="completeBooking" method="POST">
+                @csrf
+                @if ($step === 1)
+                    <!-- Step 1: Booking Details -->
+                    <div>
                         <h1 class="page-title">Confirmar tu Reserva</h1>
 
                         <div class="vehicle-showcase">
@@ -569,7 +512,7 @@
                                 <div class="total-price-box">
                                     <div class="total-label">Precio Total</div>
                                     <div class="total-amount">
-                                            ${{ number_format($totalPrice, 2) }} DOP
+                                        ${{ number_format($totalPrice, 2) }} DOP
                                     </div>
                                     <div class="total-duration">Por {{ $totalDays }} {{ Str::plural('día', $totalDays) }}</div>
                                 </div>
@@ -643,15 +586,15 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                                 </svg>
                             </button>
+                        </div>
                     </div>
-                </div>
-            @elseif ($step === 2)
-                <!-- Step 2: Payment -->
-                <div>
-                    <livewire:payment-form :rentalId="$onGoingRental->id" :amount="$totalPrice" />
-                </div>
-            @endif
-        </form>
+                @elseif ($step === 2)
+                    <!-- Step 2: Payment -->
+                    <div>
+                        <livewire:payment-form :rentalId="$onGoingRental->id" :amount="$totalPrice" />
+                    </div>
+                @endif
+            </form>
         </div>
     </div>
 </div>
