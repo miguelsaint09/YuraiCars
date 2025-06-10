@@ -79,6 +79,8 @@ class AppServiceProvider extends ServiceProvider
             Config::set('filament.auth.guard', 'web');
             Config::set('filament.middleware.auth', ['web', 'auth']);
             Config::set('filament.middleware.base', ['web']);
+            Config::set('filament.assets.are_served_by_cdn', false);
+            Config::set('filament.assets.are_loaded_from_cdn', false);
             
             // Configurar URLs de Livewire
             Config::set('livewire.asset_url', $url);
