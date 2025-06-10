@@ -10,20 +10,6 @@ use Livewire\Component;
 
 class UserRentals extends Component
 {
-    public $selectedRentalId = null;
-
-    protected $listeners = ['close-modal' => 'closeModal'];
-
-    public function showRentalDetails($rentalId)
-    {
-        $this->selectedRentalId = $rentalId;
-    }
-
-    public function closeModal()
-    {
-        $this->selectedRentalId = null;
-    }
-
     public function continueBooking($rentalId)
     {
         $rental = Rental::find($rentalId);
