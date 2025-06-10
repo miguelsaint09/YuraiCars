@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('home'))->name('home');
 Route::get('/about', fn() => view('about'))->name('about');
-Route::get('/contact', fn() => view('contact'))->name('contact');
-Route::get('/comments', fn() => view('comments'))->name('comments');
 
 Route::middleware('guest')->group(function() {
     Route::get('/sign-in', [AuthController::class, 'showLogin'])->name('login');
