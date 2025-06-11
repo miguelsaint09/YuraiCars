@@ -8,6 +8,7 @@ use App\Enums\PaymentStatus;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
 
 class PaymentForm extends Component
 {
@@ -24,22 +25,32 @@ class PaymentForm extends Component
     public $errorMessage = '';
 
     protected $rules = [
-        'cardNumber' => 'required',
-        'expiryDate' => 'required',
-        'cvv' => 'required',
-        'cardHolderName' => 'required',
-        'cedula' => 'required',
-        'phone' => 'required',
+        'cardNumber' => 'required|min:19|max:19',
+        'expiryDate' => 'required|regex:/^(0[1-9]|1[0-2])\/([0-9]{2})$/',
+        'cvv' => 'required|numeric|min:3|max:4',
+        'cardHolderName' => 'required|regex:/^[A-ZÁÉÍÓÚÑ\s]+$/u|min:5',
+        'cedula' => 'required|regex:/^\d{3}-\d{7}-\d{1}$/',
+        'phone' => 'required|regex:/^\d{3}-\d{3}-\d{4}$/',
         'email' => 'required|email'
     ];
 
     protected $messages = [
         'cardNumber.required' => 'El número de tarjeta es obligatorio.',
+        'cardNumber.min' => 'El número de tarjeta debe tener 16 dígitos.',
+        'cardNumber.max' => 'El número de tarjeta debe tener 16 dígitos.',
         'expiryDate.required' => 'La fecha de vencimiento es obligatoria.',
+        'expiryDate.regex' => 'La fecha de vencimiento debe tener el formato MM/YY.',
         'cvv.required' => 'El código de seguridad es obligatorio.',
+        'cvv.numeric' => 'El código de seguridad debe ser numérico.',
+        'cvv.min' => 'El código de seguridad debe tener entre 3 y 4 dígitos.',
+        'cvv.max' => 'El código de seguridad debe tener entre 3 y 4 dígitos.',
         'cardHolderName.required' => 'El nombre del titular es obligatorio.',
+        'cardHolderName.regex' => 'El nombre del titular solo debe contener letras y espacios.',
+        'cardHolderName.min' => 'El nombre del titular debe tener al menos 5 caracteres.',
         'cedula.required' => 'La cédula es obligatoria.',
+        'cedula.regex' => 'La cédula debe tener el formato 000-0000000-0.',
         'phone.required' => 'El teléfono es obligatorio.',
+        'phone.regex' => 'El teléfono debe tener el formato 000-000-0000.',
         'email.required' => 'El correo electrónico es obligatorio.',
         'email.email' => 'El correo electrónico debe ser válido.'
     ];
@@ -48,6 +59,12 @@ class PaymentForm extends Component
     {
         $this->rentalId = $rentalId;
         $this->amount = $amount;
+    }
+
+    public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName);
+        $this->errorMessage = '';
     }
 
     public function updatedCardNumber()
@@ -140,7 +157,7 @@ class PaymentForm extends Component
             $this->errorMessage = '';
             
             // Validar los campos básicos
-            $validatedData = $this->validate();
+            $this->validate();
 
             // Simular pago exitoso
             $payment = Payment::create([
@@ -154,10 +171,11 @@ class PaymentForm extends Component
             
         } catch (ValidationException $e) {
             $this->errorMessage = 'Por favor, completa todos los campos requeridos.';
-            throw $e;
+            return;
         } catch (\Exception $e) {
             $this->errorMessage = 'Ocurrió un error al procesar el pago. Por favor, intenta nuevamente.';
-            throw $e;
+            Log::error('Error al procesar el pago: ' . $e->getMessage());
+            return;
         }
     }
 
