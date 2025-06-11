@@ -21,10 +21,11 @@ class PaymentForm extends Component
     public $email = '';
     public $amount = 0;
     public $rentalId = '';
+    public $errorMessage = '';
 
     protected $rules = [
-        'cardNumber' => ['required', 'string', 'regex:/^[0-9]{16}$/'],
-        'expiryDate' => ['required', 'string', 'regex:/^(0[1-9]|1[0-2])\/([0-9]{2})$/', 'after:today'],
+        'cardNumber' => ['required', 'string', 'min:16', 'max:19'],
+        'expiryDate' => ['required', 'string', 'regex:/^(0[1-9]|1[0-2])\/([0-9]{2})$/'],
         'cvv' => ['required', 'string', 'regex:/^[0-9]{3,4}$/'],
         'cardHolderName' => ['required', 'string', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
         'cedula' => ['required', 'string', 'regex:/^[0-9]{11}$/'],
@@ -34,10 +35,10 @@ class PaymentForm extends Component
 
     protected $messages = [
         'cardNumber.required' => 'El número de tarjeta es obligatorio.',
-        'cardNumber.regex' => 'El número de tarjeta debe tener 16 dígitos.',
+        'cardNumber.min' => 'El número de tarjeta debe tener al menos 16 dígitos.',
+        'cardNumber.max' => 'El número de tarjeta no puede tener más de 19 dígitos.',
         'expiryDate.required' => 'La fecha de vencimiento es obligatoria.',
         'expiryDate.regex' => 'La fecha de vencimiento debe tener el formato MM/YY.',
-        'expiryDate.after' => 'La tarjeta está vencida.',
         'cvv.required' => 'El código de seguridad es obligatorio.',
         'cvv.regex' => 'El código de seguridad debe tener 3 o 4 dígitos.',
         'cardHolderName.required' => 'El nombre del titular es obligatorio.',
@@ -71,8 +72,11 @@ class PaymentForm extends Component
             $this->cardType = '';
         }
 
-        // Formatear número de tarjeta
-        $this->cardNumber = implode(' ', str_split($number, 4));
+        // Formatear número de tarjeta para mostrar pero mantener los dígitos para validación
+        if (strlen($number) > 0) {
+            $formatted = implode(' ', str_split($number, 4));
+            $this->cardNumber = $formatted;
+        }
     }
 
     public function updatedExpiryDate()
@@ -95,28 +99,42 @@ class PaymentForm extends Component
 
     public function processPayment()
     {
-        $this->validate();
+        try {
+            $this->errorMessage = '';
+            
+            // Limpiar el número de tarjeta antes de validar
+            $cleanCardNumber = preg_replace('/\D/', '', $this->cardNumber);
+            $this->cardNumber = $cleanCardNumber;
+            
+            $this->validate();
 
-        // Validar fecha de expiración
-        [$month, $year] = explode('/', $this->expiryDate);
-        $expiryDate = \Carbon\Carbon::createFromDate('20' . $year, $month, 1)->endOfMonth();
-        
-        if ($expiryDate->isPast()) {
-            throw ValidationException::withMessages([
-                'expiryDate' => ['La tarjeta está vencida.']
+            // Validar fecha de expiración
+            [$month, $year] = explode('/', $this->expiryDate);
+            $expiryDate = \Carbon\Carbon::createFromDate('20' . $year, $month, 1)->endOfMonth();
+            
+            if ($expiryDate->isPast()) {
+                $this->errorMessage = 'La tarjeta está vencida.';
+                return;
+            }
+
+            // En un entorno real, aquí iría la integración con el procesador de pagos
+            // Por ahora, simulamos un pago exitoso
+            $payment = Payment::create([
+                'rental_id' => $this->rentalId,
+                'amount' => $this->amount,
+                'payment_method' => PaymentMethod::CREDIT_CARD->value,
+                'status' => PaymentStatus::SUCCESS->value,
             ]);
+
+            $this->dispatch('paymentProcessed', paymentId: $payment->id);
+            
+        } catch (ValidationException $e) {
+            $this->errorMessage = 'Por favor, verifica los datos ingresados.';
+            throw $e;
+        } catch (\Exception $e) {
+            $this->errorMessage = 'Ocurrió un error al procesar el pago. Por favor, intenta nuevamente.';
+            throw $e;
         }
-
-        // En un entorno real, aquí iría la integración con el procesador de pagos
-        // Por ahora, simulamos un pago exitoso
-        $payment = Payment::create([
-            'rental_id' => $this->rentalId,
-            'amount' => $this->amount,
-            'payment_method' => PaymentMethod::CREDIT_CARD->value,
-            'status' => PaymentStatus::SUCCESS->value,
-        ]);
-
-        $this->dispatch('paymentProcessed', paymentId: $payment->id);
     }
 
     public function render()
