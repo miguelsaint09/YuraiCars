@@ -24,31 +24,24 @@ class PaymentForm extends Component
     public $errorMessage = '';
 
     protected $rules = [
-        'cardNumber' => 'required|string|min:16|max:19',
-        'expiryDate' => ['required', 'string', 'regex:#^(0[1-9]|1[0-2])/([0-9]{2})$#'],
-        'cvv' => ['required', 'string', 'regex:#^[0-9]{3,4}$#'],
-        'cardHolderName' => ['required', 'string', 'regex:#^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$#'],
-        'cedula' => ['required', 'string', 'regex:#^[0-9]{11}$#'],
-        'phone' => ['required', 'string', 'regex:#^[0-9]{10}$#'],
-        'email' => 'required|email',
+        'cardNumber' => 'required',
+        'expiryDate' => 'required',
+        'cvv' => 'required',
+        'cardHolderName' => 'required',
+        'cedula' => 'required',
+        'phone' => 'required',
+        'email' => 'required|email'
     ];
 
     protected $messages = [
         'cardNumber.required' => 'El número de tarjeta es obligatorio.',
-        'cardNumber.min' => 'El número de tarjeta debe tener al menos 16 dígitos.',
-        'cardNumber.max' => 'El número de tarjeta no puede tener más de 19 dígitos.',
         'expiryDate.required' => 'La fecha de vencimiento es obligatoria.',
-        'expiryDate.regex' => 'La fecha de vencimiento debe tener el formato MM/YY.',
         'cvv.required' => 'El código de seguridad es obligatorio.',
-        'cvv.regex' => 'El código de seguridad debe tener 3 o 4 dígitos.',
         'cardHolderName.required' => 'El nombre del titular es obligatorio.',
-        'cardHolderName.regex' => 'El nombre del titular solo debe contener letras y espacios.',
         'cedula.required' => 'La cédula es obligatoria.',
-        'cedula.regex' => 'La cédula debe tener 11 dígitos.',
         'phone.required' => 'El teléfono es obligatorio.',
-        'phone.regex' => 'El teléfono debe tener 10 dígitos.',
         'email.required' => 'El correo electrónico es obligatorio.',
-        'email.email' => 'El correo electrónico debe ser válido.',
+        'email.email' => 'El correo electrónico debe ser válido.'
     ];
 
     public function mount($rentalId, $amount)
@@ -146,47 +139,8 @@ class PaymentForm extends Component
         try {
             $this->errorMessage = '';
             
-            // Limpiar los campos antes de validar
-            $cleanCardNumber = preg_replace('#\D#', '', $this->cardNumber);
-            $cleanCedula = preg_replace('#\D#', '', $this->cedula);
-            $cleanPhone = preg_replace('#\D#', '', $this->phone);
-            
-            // Validar con los datos limpios
-            $validatedData = $this->validate([
-                'cardHolderName' => $this->rules['cardHolderName'],
-                'email' => $this->rules['email'],
-                'cvv' => $this->rules['cvv'],
-                'expiryDate' => $this->rules['expiryDate'],
-            ]);
-            
-            // Validar los campos formateados
-            if (strlen($cleanCardNumber) < 16 || strlen($cleanCardNumber) > 19) {
-                throw ValidationException::withMessages([
-                    'cardNumber' => ['El número de tarjeta debe tener entre 16 y 19 dígitos.']
-                ]);
-            }
-            
-            if (strlen($cleanCedula) !== 11) {
-                throw ValidationException::withMessages([
-                    'cedula' => ['La cédula debe tener 11 dígitos.']
-                ]);
-            }
-            
-            if (strlen($cleanPhone) !== 10) {
-                throw ValidationException::withMessages([
-                    'phone' => ['El teléfono debe tener 10 dígitos.']
-                ]);
-            }
-
-            // Validar fecha de expiración
-            [$month, $year] = explode('/', $this->expiryDate);
-            $expiryDate = \Carbon\Carbon::createFromDate('20' . $year, $month, 1)->endOfMonth();
-            
-            if ($expiryDate->isPast()) {
-                throw ValidationException::withMessages([
-                    'expiryDate' => ['La tarjeta está vencida.']
-                ]);
-            }
+            // Validar los campos básicos
+            $validatedData = $this->validate();
 
             // Simular pago exitoso
             $payment = Payment::create([
@@ -199,7 +153,7 @@ class PaymentForm extends Component
             $this->dispatch('paymentProcessed', paymentId: $payment->id);
             
         } catch (ValidationException $e) {
-            $this->errorMessage = 'Por favor, verifica los datos ingresados.';
+            $this->errorMessage = 'Por favor, completa todos los campos requeridos.';
             throw $e;
         } catch (\Exception $e) {
             $this->errorMessage = 'Ocurrió un error al procesar el pago. Por favor, intenta nuevamente.';
