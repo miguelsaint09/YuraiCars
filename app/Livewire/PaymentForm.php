@@ -26,7 +26,7 @@ class PaymentForm extends Component
 
     protected $rules = [
         'cardNumber' => 'required|min:19|max:19',
-        'expiryDate' => 'required|regex:/(0[1-9]|1[0-2])\/([0-9]{2})/',
+        'expiryDate' => 'required|regex:/^(0[1-9]|1[0-2])\/([0-9]{2})$/',
         'cvv' => 'required|numeric|min:3|max:4',
         'cardHolderName' => 'required|regex:/^[A-ZÁÉÍÓÚÑ\s]+$/u|min:5',
         'cedula' => 'required|regex:/^\d{3}-\d{7}-\d{1}$/',
@@ -70,14 +70,14 @@ class PaymentForm extends Component
     public function updatedCardNumber()
     {
         // Eliminar cualquier caracter que no sea número
-        $number = preg_replace('/\D/', '', $this->cardNumber);
+        $number = preg_replace('#\D#', '', $this->cardNumber);
         
         // Detectar tipo de tarjeta
-        if (preg_match('/^4/', $number)) {
+        if (preg_match('#^4#', $number)) {
             $this->cardType = 'visa';
-        } elseif (preg_match('/^5[1-5]/', $number)) {
+        } elseif (preg_match('#^5[1-5]#', $number)) {
             $this->cardType = 'mastercard';
-        } elseif (preg_match('/^3[47]/', $number)) {
+        } elseif (preg_match('#^3[47]#', $number)) {
             $this->cardType = 'amex';
         } else {
             $this->cardType = '';
@@ -93,7 +93,7 @@ class PaymentForm extends Component
     public function updatedExpiryDate()
     {
         // Eliminar cualquier caracter que no sea número
-        $date = preg_replace('/\D/', '', $this->expiryDate);
+        $date = preg_replace('#\D#', '', $this->expiryDate);
         
         // Formatear como MM/YY
         if (strlen($date) >= 2) {
@@ -113,7 +113,7 @@ class PaymentForm extends Component
     public function updatedCedula()
     {
         // Eliminar cualquier caracter que no sea número
-        $cedula = preg_replace('/\D/', '', $this->cedula);
+        $cedula = preg_replace('#\D#', '', $this->cedula);
         
         // Formatear como XXX-XXXXXXX-X
         if (strlen($cedula) > 0) {
@@ -130,7 +130,7 @@ class PaymentForm extends Component
     public function updatedPhone()
     {
         // Eliminar cualquier caracter que no sea número
-        $phone = preg_replace('/\D/', '', $this->phone);
+        $phone = preg_replace('#\D#', '', $this->phone);
         
         // Formatear como XXX-XXX-XXXX
         if (strlen($phone) > 0) {
