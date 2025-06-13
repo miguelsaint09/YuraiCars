@@ -26,8 +26,8 @@ class PaymentForm extends Component
 
     protected $rules = [
         'cardNumber' => 'required|min:19|max:19',
-        'expiryDate' => 'required|regex:/(0[1-9]|1[0-2])\/([0-9]{2})/',
-        'cvv' => 'required|numeric|min:3|max:4',
+        'expiryDate' => 'required|regex:/^(0[1-9]|1[0-2])\/\d{2}$/',
+        'cvv' => 'required|numeric|digits_between:3,4',
         'cardHolderName' => 'required|regex:/^[A-ZÁÉÍÓÚÑ\s]+$/u|min:5',
         'cedula' => 'required|regex:/^\d{3}-\d{7}-\d{1}$/',
         'phone' => 'required|regex:/^\d{3}-\d{3}-\d{4}$/',
@@ -35,24 +35,23 @@ class PaymentForm extends Component
     ];
 
     protected $messages = [
-        'cardNumber.required' => 'El número de tarjeta es obligatorio.',
-        'cardNumber.min' => 'El número de tarjeta debe tener 16 dígitos.',
-        'cardNumber.max' => 'El número de tarjeta debe tener 16 dígitos.',
-        'expiryDate.required' => 'La fecha de vencimiento es obligatoria.',
-        'expiryDate.regex' => 'La fecha de vencimiento debe tener el formato MM/YY.',
-        'cvv.required' => 'El código de seguridad es obligatorio.',
-        'cvv.numeric' => 'El código de seguridad debe ser numérico.',
-        'cvv.min' => 'El código de seguridad debe tener entre 3 y 4 dígitos.',
-        'cvv.max' => 'El código de seguridad debe tener entre 3 y 4 dígitos.',
-        'cardHolderName.required' => 'El nombre del titular es obligatorio.',
-        'cardHolderName.regex' => 'El nombre del titular solo debe contener letras y espacios.',
-        'cardHolderName.min' => 'El nombre del titular debe tener al menos 5 caracteres.',
-        'cedula.required' => 'La cédula es obligatoria.',
-        'cedula.regex' => 'La cédula debe tener el formato 000-0000000-0.',
-        'phone.required' => 'El teléfono es obligatorio.',
-        'phone.regex' => 'El teléfono debe tener el formato 000-000-0000.',
-        'email.required' => 'El correo electrónico es obligatorio.',
-        'email.email' => 'El correo electrónico debe ser válido.'
+        'cardNumber.required' => 'El número de tarjeta es obligatorio',
+        'cardNumber.min' => 'El número de tarjeta debe tener 16 dígitos',
+        'cardNumber.max' => 'El número de tarjeta debe tener 16 dígitos',
+        'expiryDate.required' => 'La fecha de vencimiento es obligatoria',
+        'expiryDate.regex' => 'Formato inválido. Use MM/YY (ejemplo: 12/25)',
+        'cvv.required' => 'El código de seguridad es obligatorio',
+        'cvv.numeric' => 'El código de seguridad debe ser numérico',
+        'cvv.digits_between' => 'El código de seguridad debe tener entre 3 y 4 dígitos',
+        'cardHolderName.required' => 'El nombre del titular es obligatorio',
+        'cardHolderName.regex' => 'Solo se permiten letras y espacios',
+        'cardHolderName.min' => 'El nombre debe tener al menos 5 caracteres',
+        'cedula.required' => 'La cédula es obligatoria',
+        'cedula.regex' => 'Formato inválido. Use 000-0000000-0',
+        'phone.required' => 'El teléfono es obligatorio',
+        'phone.regex' => 'Formato inválido. Use 000-000-0000',
+        'email.required' => 'El correo electrónico es obligatorio',
+        'email.email' => 'El correo electrónico no es válido'
     ];
 
     public function mount($rentalId, $amount)
@@ -63,8 +62,21 @@ class PaymentForm extends Component
 
     public function updated($propertyName)
     {
-        $this->validateOnly($propertyName);
-        $this->errorMessage = '';
+        // Limpiar datos antes de validar
+        if ($propertyName === 'cardNumber') {
+            $this->cardNumber = preg_replace('/[^0-9\s]/', '', $this->cardNumber);
+        } elseif ($propertyName === 'cvv') {
+            $this->cvv = preg_replace('/[^0-9]/', '', $this->cvv);
+        } elseif ($propertyName === 'phone') {
+            $this->phone = preg_replace('/[^0-9-]/', '', $this->phone);
+        } elseif ($propertyName === 'cedula') {
+            $this->cedula = preg_replace('/[^0-9-]/', '', $this->cedula);
+        }
+
+        // Solo validar campos que no sean la fecha de vencimiento
+        if ($propertyName !== 'expiryDate') {
+            $this->validateOnly($propertyName);
+        }
     }
 
     public function updatedCardNumber()
@@ -93,20 +105,37 @@ class PaymentForm extends Component
     public function updatedExpiryDate()
     {
         // Eliminar cualquier caracter que no sea número
-        $date = preg_replace('/\D/', '', $this->expiryDate);
+        $date = preg_replace('/[^0-9]/', '', $this->expiryDate);
         
-        // Formatear como MM/YY
-        if (strlen($date) >= 2) {
-            $month = substr($date, 0, 2);
-            $year = substr($date, 2);
-            
-            // Asegurar que el mes esté entre 01 y 12
-            $month = min(max(intval($month), 1), 12);
-            $month = str_pad($month, 2, '0', STR_PAD_LEFT);
-            
-            $this->expiryDate = $month . ($year ? '/' . $year : '');
-        } else if (strlen($date) > 0) {
-            $this->expiryDate = $date;
+        if (strlen($date) > 0) {
+            // Si tenemos al menos 1 dígito
+            if (strlen($date) >= 2) {
+                // Obtener mes y año
+                $month = substr($date, 0, 2);
+                $year = substr($date, 2);
+                
+                // Validar y ajustar el mes
+                $month = min(max(intval($month), 1), 12);
+                $month = str_pad($month, 2, '0', STR_PAD_LEFT);
+                
+                // Formatear la fecha
+                if (strlen($year) > 0) {
+                    $this->expiryDate = $month . '/' . substr($year, 0, 2);
+                    
+                    // Solo validar cuando la fecha está completa (MM/YY)
+                    if (strlen($this->expiryDate) === 5) {
+                        try {
+                            $this->validateOnly('expiryDate');
+                        } catch (\Exception $e) {
+                            // Ignorar errores de validación mientras se escribe
+                        }
+                    }
+                } else {
+                    $this->expiryDate = $month;
+                }
+            } else {
+                $this->expiryDate = $date;
+            }
         }
     }
 
@@ -154,12 +183,10 @@ class PaymentForm extends Component
     public function processPayment()
     {
         try {
-            $this->errorMessage = '';
-            
-            // Validar los campos básicos
+            // Validar todos los campos
             $this->validate();
 
-            // Simular pago exitoso
+            // Si la validación pasa, procesar el pago
             $payment = Payment::create([
                 'rental_id' => $this->rentalId,
                 'amount' => $this->amount,
@@ -169,13 +196,9 @@ class PaymentForm extends Component
 
             $this->dispatch('paymentProcessed', paymentId: $payment->id);
             
-        } catch (ValidationException $e) {
-            $this->errorMessage = 'Por favor, completa todos los campos requeridos.';
-            return;
         } catch (\Exception $e) {
-            $this->errorMessage = 'Ocurrió un error al procesar el pago. Por favor, intenta nuevamente.';
             Log::error('Error al procesar el pago: ' . $e->getMessage());
-            return;
+            $this->addError('payment', 'Ocurrió un error al procesar el pago. Por favor, intenta nuevamente.');
         }
     }
 
