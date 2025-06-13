@@ -52,6 +52,7 @@ class UserRentals extends Component
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('livewire.user-rentals', compact('rentals'));
+        return view('livewire.user-rentals', compact('rentals'))
+            ->layout('components.layouts.app');
     }
 }

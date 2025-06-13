@@ -38,6 +38,7 @@ class RentalDetails extends Component
 
     public function render()
     {
-        return view('livewire.rental-details');
+        return view('livewire.rental-details')
+            ->layout('components.layouts.app');
     }
 } 

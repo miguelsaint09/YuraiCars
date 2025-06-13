@@ -12,51 +12,11 @@
                     wire:model.live="cardHolderName" 
                     class="form-input" 
                     placeholder="Como aparece en la tarjeta"
+                    pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
+                    inputmode="text"
+                    oninput="this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '')"
                 />
                 @error('cardHolderName') 
-                    <span class="error">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">Cédula</label>
-                    <input 
-                        type="text"
-                        wire:model.live="cedula" 
-                        class="form-input" 
-                        placeholder="000-0000000-0"
-                        maxlength="11"
-                    />
-                    @error('cedula') 
-                        <span class="error">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Teléfono</label>
-                    <input 
-                        type="tel"
-                        wire:model.live="phone" 
-                        class="form-input" 
-                        placeholder="809-000-0000"
-                        maxlength="10"
-                    />
-                    @error('phone') 
-                        <span class="error">{{ $message }}</span>
-                    @enderror
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Correo Electrónico</label>
-                <input 
-                    type="email"
-                    wire:model.live="email" 
-                    class="form-input" 
-                    placeholder="ejemplo@correo.com"
-                />
-                @error('email') 
                     <span class="error">{{ $message }}</span>
                 @enderror
             </div>
@@ -64,20 +24,17 @@
             <!-- Información de la tarjeta -->
             <div class="form-group">
                 <label class="form-label">Número de Tarjeta</label>
-                <div class="card-input-wrapper">
-                    <input 
-                        type="text"
-                        wire:model.live="cardNumber" 
-                        class="form-input" 
-                        placeholder="0000 0000 0000 0000"
-                        maxlength="19"
-                    />
-                    @if($cardType)
-                        <div class="card-type">
-                            <img src="{{ asset('images/cards/' . $cardType . '.svg') }}" alt="{{ $cardType }}" class="card-logo"/>
-                        </div>
-                    @endif
-                </div>
+                <input 
+                    id="cardNumberInput"
+                    type="text"
+                    wire:model.live="cardNumber" 
+                    class="form-input" 
+                    placeholder="0000 0000 0000 0000"
+                    maxlength="19"
+                    inputmode="numeric"
+                    pattern="[0-9 ]*"
+                    autocomplete="cc-number"
+                />
                 @error('cardNumber') 
                     <span class="error">{{ $message }}</span>
                 @enderror
@@ -87,11 +44,15 @@
                 <div class="form-group">
                     <label class="form-label">Fecha de Vencimiento</label>
                     <input 
+                        id="expiryDateInput"
                         type="text"
                         wire:model.live="expiryDate" 
                         class="form-input" 
                         placeholder="MM/YY"
                         maxlength="5"
+                        inputmode="numeric"
+                        pattern="[0-9/]*"
+                        autocomplete="cc-exp"
                     />
                     @error('expiryDate') 
                         <span class="error">{{ $message }}</span>
@@ -106,6 +67,10 @@
                         class="form-input" 
                         placeholder="123"
                         maxlength="4"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        autocomplete="cc-csc"
                     />
                     @error('cvv') 
                         <span class="error">{{ $message }}</span>
@@ -127,6 +92,31 @@
             </div>
         </form>
     </div>
+
+    <script>
+        // Formatear número de tarjeta con espacios automáticos
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardInput = document.getElementById('cardNumberInput');
+            if(cardInput) {
+                cardInput.addEventListener('input', function(e) {
+                    let value = cardInput.value.replace(/\D/g, '').substring(0,16);
+                    let formatted = value.replace(/(.{4})/g, '$1 ').trim();
+                    cardInput.value = formatted;
+                });
+            }
+            // Formatear fecha de vencimiento MM/YY
+            const expiryInput = document.getElementById('expiryDateInput');
+            if(expiryInput) {
+                expiryInput.addEventListener('input', function(e) {
+                    let value = expiryInput.value.replace(/[^0-9]/g, '').substring(0,4);
+                    if(value.length > 2) {
+                        value = value.substring(0,2) + '/' + value.substring(2);
+                    }
+                    expiryInput.value = value;
+                });
+            }
+        });
+    </script>
 
     <style>
         .payment-form {
@@ -190,24 +180,6 @@
             box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
         }
 
-        .card-input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .card-type {
-            position: absolute;
-            right: 1rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .card-logo {
-            height: 24px;
-            width: auto;
-        }
-
         .error {
             color: #ef4444;
             font-size: 0.875rem;
@@ -251,19 +223,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(145deg, rgba(99, 102, 241, 0.8) 0%, rgba(79, 70, 229, 0.9) 100%);
-            border: 1px solid rgba(99, 102, 241, 0.4);
-            color: #ffffff;
-            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
+            background: #6366f1;
+            color: white;
+            border: none;
         }
 
         .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 8px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
+            background: #4f46e5;
         }
     </style>
 </div> 
