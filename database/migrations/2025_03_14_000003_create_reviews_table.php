@@ -6,16 +6,12 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up() {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('user_id');
-            $table->uuid('vehicle_id');
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('vehicle_id')->constrained()->onDelete('cascade');
             $table->unsignedTinyInteger('rating');
             $table->text('comment');
             $table->timestamps();
-
-            // references
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
         });
     }
     public function down() {

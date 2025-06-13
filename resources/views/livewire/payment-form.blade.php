@@ -1,10 +1,3 @@
-<!-- Mensaje de error general -->
-@if($errorMessage)
-    <div class="error-message">
-        {{ $errorMessage }}
-    </div>
-@endif
-
 <div class="payment-form">
     <div class="payment-section">
         <h3 class="payment-title">Información de Pago</h3>
@@ -17,7 +10,7 @@
                 <input 
                     type="text"
                     wire:model.live="cardHolderName" 
-                    class="form-input @error('cardHolderName') error @enderror" 
+                    class="form-input" 
                     placeholder="Como aparece en la tarjeta"
                 />
                 @error('cardHolderName') 
@@ -31,7 +24,7 @@
                     <input 
                         type="text"
                         wire:model.live="cedula" 
-                        class="form-input @error('cedula') error @enderror" 
+                        class="form-input" 
                         placeholder="000-0000000-0"
                         maxlength="11"
                     />
@@ -45,7 +38,7 @@
                     <input 
                         type="tel"
                         wire:model.live="phone" 
-                        class="form-input @error('phone') error @enderror" 
+                        class="form-input" 
                         placeholder="809-000-0000"
                         maxlength="10"
                     />
@@ -60,7 +53,7 @@
                 <input 
                     type="email"
                     wire:model.live="email" 
-                    class="form-input @error('email') error @enderror" 
+                    class="form-input" 
                     placeholder="ejemplo@correo.com"
                 />
                 @error('email') 
@@ -75,7 +68,7 @@
                     <input 
                         type="text"
                         wire:model.live="cardNumber" 
-                        class="form-input @error('cardNumber') error @enderror" 
+                        class="form-input" 
                         placeholder="0000 0000 0000 0000"
                         maxlength="19"
                     />
@@ -96,7 +89,7 @@
                     <input 
                         type="text"
                         wire:model.live="expiryDate" 
-                        class="form-input @error('expiryDate') error @enderror" 
+                        class="form-input" 
                         placeholder="MM/YY"
                         maxlength="5"
                     />
@@ -110,7 +103,7 @@
                     <input 
                         type="text"
                         wire:model.live="cvv" 
-                        class="form-input @error('cvv') error @enderror" 
+                        class="form-input" 
                         placeholder="123"
                         maxlength="4"
                     />
@@ -128,9 +121,8 @@
             </div>
 
             <div class="button-group">
-                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
-                    <span wire:loading.remove>Procesar Pago</span>
-                    <span wire:loading>Procesando...</span>
+                <button type="submit" class="btn btn-primary">
+                    Procesar Pago
                 </button>
             </div>
         </form>
@@ -198,27 +190,6 @@
             box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
         }
 
-        .form-input.error {
-            border-color: rgba(239, 68, 68, 0.5);
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            font-weight: 500;
-        }
-
-        .error {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: block;
-        }
-
         .card-input-wrapper {
             position: relative;
             display: flex;
@@ -228,21 +199,27 @@
         .card-type {
             position: absolute;
             right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
         }
 
         .card-logo {
-            width: 40px;
-            height: auto;
+            height: 24px;
+            width: auto;
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: block;
         }
 
         .total-section {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 1.5rem;
             margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
         }
 
         .total-row {
@@ -255,14 +232,13 @@
         }
 
         .total-amount {
-            font-size: 1.25rem;
-            font-weight: 800;
             color: #6366f1;
         }
 
         .button-group {
             display: flex;
             justify-content: flex-end;
+            gap: 1rem;
         }
 
         .btn {
@@ -275,25 +251,19 @@
         }
 
         .btn-primary {
-            background: linear-gradient(145deg, #6366f1 0%, #4f46e5 100%);
+            background: linear-gradient(145deg, rgba(99, 102, 241, 0.8) 0%, rgba(79, 70, 229, 0.9) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.4);
             color: #ffffff;
-            border: none;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
         }
 
         .btn-primary:hover {
-            background: linear-gradient(145deg, #4f46e5 0%, #4338ca 100%);
             transform: translateY(-1px);
+            box-shadow: 0 6px 8px rgba(99, 102, 241, 0.3);
         }
 
-        .btn-primary:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 640px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+        .btn-primary:active {
+            transform: translateY(0);
         }
     </style>
 </div> 

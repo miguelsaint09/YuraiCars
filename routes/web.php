@@ -56,12 +56,9 @@ Route::post('/contact', function (Request $request) {
     return redirect()->route('contact')->with('success', '¡Gracias por tu mensaje! Te contactaremos pronto.');
 })->name('contact.submit');
 
-// Reviews routes
-Route::prefix('vehicles/{vehicle}')->group(function () {
-    Route::get('/reviews', [VehicleReviewController::class, 'show'])->name('vehicles.reviews');
-    Route::get('/review', [VehicleReviewController::class, 'show']); // Alias for reviews
-    Route::post('/review', [VehicleReviewController::class, 'store'])->name('vehicles.review');
-});
+Route::post('/vehicles/{vehicle}/review', [VehicleReviewController::class, 'store'])->name('vehicles.review');
+
+Route::get('/vehicles/{vehicle}/reviews', [App\Http\Controllers\VehicleReviewController::class, 'show'])->name('vehicles.reviews');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/rentals/{rental}', \App\Livewire\RentalDetails::class)->name('rentals.show');

@@ -33,33 +33,22 @@ class ShowRental extends Component
 
     protected $listeners = ['paymentProcessed' => 'handlePaymentProcessed'];
 
-    protected $rules = [
-        'pickupLocation' => 'required|string|min:5',
-        'dropoffLocation' => 'required|string',
-        'startTime' => 'required',
-        'endTime' => 'required',
-    ];
-
-    protected $messages = [
-        'pickupLocation.required' => 'La dirección de recogida es obligatoria.',
-        'pickupLocation.min' => 'La dirección de recogida debe tener al menos 5 caracteres.',
-        'startTime.required' => 'La fecha de inicio es obligatoria.',
-        'endTime.required' => 'La fecha de fin es obligatoria.',
-    ];
-
     public function mount($vehicle)
     {
+        // Ensure we have a Vehicle model instance
         if (!$vehicle instanceof Vehicle) {
             $vehicle = Vehicle::findOrFail($vehicle);
         }
         
         $this->vehicle = $vehicle;
 
+        // Buscar una reserva existente en estado SELECTED o PENDING
         $existingRental = Rental::where('user_id', Auth::id())
             ->where('vehicle_id', $vehicle->id)
             ->whereIn('status', [RentalStatus::SELECTED->value, RentalStatus::PENDING->value])
             ->first();
 
+        // Si no existe una reserva, crear una nueva
         if (!$existingRental) {
             $existingRental = Rental::create([
                 'user_id' => Auth::id(),
@@ -70,13 +59,18 @@ class ShowRental extends Component
                 'start_time' => null,
                 'end_time' => null,
             ]);
+        } else {
+            // Ensure dropoff location is always YuraiCars
+            $existingRental->update(['dropoff_location' => 'YuraiCars']);
         }
 
         $this->onGoingRental = $existingRental;
-        $this->pickupLocation = $existingRental->pickup_location ?? '';
-        $this->dropoffLocation = $existingRental->dropoff_location;
-        $this->startTime = $existingRental->start_time;
-        $this->endTime = $existingRental->end_time;
+        
+        // Cargar los datos de la reserva
+        $this->pickupLocation = $this->onGoingRental->pickup_location ?? '';
+        $this->dropoffLocation = $this->onGoingRental->dropoff_location;
+        $this->startTime = $this->onGoingRental->start_time;
+        $this->endTime = $this->onGoingRental->end_time;
 
         $this->updateTotalPrice();
     }
@@ -90,22 +84,21 @@ class ShowRental extends Component
 
     public function nextStep()
     {
-        $this->validate();
+        $this->validate([
+            'pickupLocation' => ['required', 'string'],
+            'dropoffLocation' => ['required', 'string'],
+            'startTime' => ['required', 'date', 'after:now'],
+            'endTime' => ['required', 'date', 'after:startTime'],
+        ]);
 
-        try {
-            $this->onGoingRental->update([
-                'pickup_location' => $this->pickupLocation,
-                'dropoff_location' => $this->dropoffLocation,
-                'start_time' => $this->startTime,
-                'end_time' => $this->endTime,
-                'status' => RentalStatus::PENDING->value,
-            ]);
+        $this->onGoingRental->update([
+            'pickup_location' => $this->pickupLocation,
+            'dropoff_location' => $this->dropoffLocation,
+            'start_time' => $this->startTime,
+            'end_time' => $this->endTime,
+        ]);
 
-            $this->step = 2;
-        } catch (\Exception $e) {
-            Log::error('Error al avanzar al paso de pago: ' . $e->getMessage());
-            session()->flash('error', 'Ocurrió un error al procesar los datos. Por favor, intenta nuevamente.');
-        }
+        $this->step = 2;
     }
 
     public function previousStep()
@@ -117,23 +110,38 @@ class ShowRental extends Component
     {
         try {
             DB::beginTransaction();
-            
             $this->onGoingRental->update([
                 'status' => RentalStatus::CONFIRMED->value,
             ]);
-            
             $this->vehicle->update([
                 'status' => VehicleStatus::BOOKED->value,
             ]);
-            
             DB::commit();
-            
             return redirect()->route('profile.rents')->with('status', 'Reserva completada exitosamente!');
         } catch (QueryException $e) {
             DB::rollBack();
             Log::error('Error al confirmar la reserva: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Ocurrió un error. Por favor intenta nuevamente.');
+            return redirect()->back()->with('error', 'Ocurrió un error. Por favor intente nuevamente.');
         }
+    }
+
+    public function completeBooking()
+    {
+        $this->validate([
+            'pickupLocation' => ['required', 'string'],
+            'dropoffLocation' => ['required', 'string'],
+            'startTime' => ['required', 'date', 'after:now'],
+            'endTime' => ['required', 'date', 'after:startTime'],
+        ]);
+
+        $this->onGoingRental->update([
+            'pickup_location' => $this->pickupLocation,
+            'dropoff_location' => $this->dropoffLocation,
+            'start_time' => $this->startTime,
+            'end_time' => $this->endTime,
+        ]);
+
+        $this->step = 2;
     }
 
     public function render()
@@ -144,18 +152,12 @@ class ShowRental extends Component
     private function updateTotalPrice()
     {
         if ($this->startTime && $this->endTime) {
-            try {
-                $start = Carbon::parse($this->startTime);
-                $end = Carbon::parse($this->endTime);
-                $this->totalDays = max($start->diffInDays($end), 1);
-                $this->totalPrice = $this->vehicle->price_per_day * $this->totalDays;
-            } catch (\Exception $e) {
-                $this->totalPrice = $this->vehicle->price_per_day;
-                $this->totalDays = 1;
-            }
+            $start = Carbon::parse($this->startTime);
+            $end = Carbon::parse($this->endTime);
+            $this->totalDays = max($start->diffInDays($end), 1);
+            $this->totalPrice = $this->vehicle->price_per_day * $this->totalDays;
         } else {
             $this->totalPrice = $this->vehicle->price_per_day;
-            $this->totalDays = 1;
         }
     }
 }
