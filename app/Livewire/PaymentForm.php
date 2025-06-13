@@ -24,13 +24,13 @@ class PaymentForm extends Component
     public $errorMessage = '';
 
     protected $rules = [
-        'cardNumber' => 'required|string|min:16|max:19',
-        'expiryDate' => ['required', 'string', 'regex:#^(0[1-9]|1[0-2])/([0-9]{2})$#'],
-        'cvv' => ['required', 'string', 'regex:#^[0-9]{3,4}$#'],
-        'cardHolderName' => ['required', 'string', 'regex:#^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$#'],
-        'cedula' => ['required', 'string', 'regex:#^[0-9]{11}$#'],
-        'phone' => ['required', 'string', 'regex:#^[0-9]{10}$#'],
-        'email' => 'required|email',
+        'cardNumber' => ['required', 'string', 'min:16', 'max:19'],
+        'expiryDate' => ['required', 'string', 'regex:/^(0[1-9]|1[0-2])\/([0-9]{2})$/'],
+        'cvv' => ['required', 'string', 'regex:/^[0-9]{3,4}$/'],
+        'cardHolderName' => ['required', 'string', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
+        'cedula' => ['required', 'string', 'regex:/^[0-9]{11}$/'],
+        'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/'],
+        'email' => ['required', 'email'],
     ];
 
     protected $messages = [
@@ -59,21 +59,20 @@ class PaymentForm extends Component
 
     public function updatedCardNumber()
     {
-        // Eliminar cualquier caracter que no sea número
-        $number = preg_replace('#\D#', '', $this->cardNumber);
+        $number = preg_replace('/\D/', '', $this->cardNumber);
         
         // Detectar tipo de tarjeta
-        if (preg_match('#^4#', $number)) {
+        if (preg_match('/^4/', $number)) {
             $this->cardType = 'visa';
-        } elseif (preg_match('#^5[1-5]#', $number)) {
+        } elseif (preg_match('/^5[1-5]/', $number)) {
             $this->cardType = 'mastercard';
-        } elseif (preg_match('#^3[47]#', $number)) {
+        } elseif (preg_match('/^3[47]/', $number)) {
             $this->cardType = 'amex';
         } else {
             $this->cardType = '';
         }
 
-        // Formatear número de tarjeta con espacios cada 4 dígitos
+        // Formatear número de tarjeta para mostrar pero mantener los dígitos para validación
         if (strlen($number) > 0) {
             $formatted = implode(' ', str_split($number, 4));
             $this->cardNumber = $formatted;
@@ -82,63 +81,20 @@ class PaymentForm extends Component
 
     public function updatedExpiryDate()
     {
-        // Eliminar cualquier caracter que no sea número
-        $date = preg_replace('#\D#', '', $this->expiryDate);
-        
-        // Formatear como MM/YY
-        if (strlen($date) >= 2) {
-            $month = substr($date, 0, 2);
-            $year = substr($date, 2);
-            
-            // Asegurar que el mes esté entre 01 y 12
-            $month = min(max(intval($month), 1), 12);
-            $month = str_pad($month, 2, '0', STR_PAD_LEFT);
-            
-            $this->expiryDate = $month . ($year ? '/' . $year : '');
-        } else if (strlen($date) > 0) {
-            $this->expiryDate = $date;
+        $date = preg_replace('/\D/', '', $this->expiryDate);
+        if (strlen($date) > 2) {
+            $this->expiryDate = substr($date, 0, 2) . '/' . substr($date, 2);
         }
     }
 
     public function updatedCedula()
     {
-        // Eliminar cualquier caracter que no sea número
-        $cedula = preg_replace('#\D#', '', $this->cedula);
-        
-        // Formatear como XXX-XXXXXXX-X
-        if (strlen($cedula) > 0) {
-            $parts = [
-                substr($cedula, 0, 3),
-                substr($cedula, 3, 7),
-                substr($cedula, 10, 1)
-            ];
-            $formatted = implode('-', array_filter($parts));
-            $this->cedula = $formatted;
-        }
+        $this->cedula = preg_replace('/\D/', '', $this->cedula);
     }
 
     public function updatedPhone()
     {
-        // Eliminar cualquier caracter que no sea número
-        $phone = preg_replace('#\D#', '', $this->phone);
-        
-        // Formatear como XXX-XXX-XXXX
-        if (strlen($phone) > 0) {
-            $parts = [
-                substr($phone, 0, 3),
-                substr($phone, 3, 3),
-                substr($phone, 6, 4)
-            ];
-            $formatted = implode('-', array_filter($parts));
-            $this->phone = $formatted;
-        }
-    }
-
-    public function updatedCardHolderName()
-    {
-        // Convertir a mayúsculas y eliminar números
-        $name = preg_replace('#[0-9]#', '', $this->cardHolderName);
-        $this->cardHolderName = mb_strtoupper($name, 'UTF-8');
+        $this->phone = preg_replace('/\D/', '', $this->phone);
     }
 
     public function processPayment()
@@ -146,49 +102,23 @@ class PaymentForm extends Component
         try {
             $this->errorMessage = '';
             
-            // Limpiar los campos antes de validar
-            $cleanCardNumber = preg_replace('#\D#', '', $this->cardNumber);
-            $cleanCedula = preg_replace('#\D#', '', $this->cedula);
-            $cleanPhone = preg_replace('#\D#', '', $this->phone);
+            // Limpiar el número de tarjeta antes de validar
+            $cleanCardNumber = preg_replace('/\D/', '', $this->cardNumber);
+            $this->cardNumber = $cleanCardNumber;
             
-            // Validar con los datos limpios
-            $validatedData = $this->validate([
-                'cardHolderName' => $this->rules['cardHolderName'],
-                'email' => $this->rules['email'],
-                'cvv' => $this->rules['cvv'],
-                'expiryDate' => $this->rules['expiryDate'],
-            ]);
-            
-            // Validar los campos formateados
-            if (strlen($cleanCardNumber) < 16 || strlen($cleanCardNumber) > 19) {
-                throw ValidationException::withMessages([
-                    'cardNumber' => ['El número de tarjeta debe tener entre 16 y 19 dígitos.']
-                ]);
-            }
-            
-            if (strlen($cleanCedula) !== 11) {
-                throw ValidationException::withMessages([
-                    'cedula' => ['La cédula debe tener 11 dígitos.']
-                ]);
-            }
-            
-            if (strlen($cleanPhone) !== 10) {
-                throw ValidationException::withMessages([
-                    'phone' => ['El teléfono debe tener 10 dígitos.']
-                ]);
-            }
+            $this->validate();
 
             // Validar fecha de expiración
             [$month, $year] = explode('/', $this->expiryDate);
             $expiryDate = \Carbon\Carbon::createFromDate('20' . $year, $month, 1)->endOfMonth();
             
             if ($expiryDate->isPast()) {
-                throw ValidationException::withMessages([
-                    'expiryDate' => ['La tarjeta está vencida.']
-                ]);
+                $this->errorMessage = 'La tarjeta está vencida.';
+                return;
             }
 
-            // Simular pago exitoso
+            // En un entorno real, aquí iría la integración con el procesador de pagos
+            // Por ahora, simulamos un pago exitoso
             $payment = Payment::create([
                 'rental_id' => $this->rentalId,
                 'amount' => $this->amount,
