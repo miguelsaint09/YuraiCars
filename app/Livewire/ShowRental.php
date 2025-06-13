@@ -118,17 +118,6 @@ class ShowRental extends Component
         try {
             DB::beginTransaction();
             
-            // Verificar que el pago existe y está en estado exitoso
-            $payment = Payment::findOrFail($paymentId);
-            if ($payment->status !== PaymentStatus::SUCCESS->value) {
-                throw new \Exception('El pago no fue exitoso.');
-            }
-
-            // Verificar que la renta existe y está en estado pendiente
-            if (!$this->onGoingRental || $this->onGoingRental->status !== RentalStatus::PENDING->value) {
-                throw new \Exception('La renta no está en estado pendiente.');
-            }
-            
             $this->onGoingRental->update([
                 'status' => RentalStatus::CONFIRMED->value,
             ]);
@@ -143,11 +132,7 @@ class ShowRental extends Component
         } catch (QueryException $e) {
             DB::rollBack();
             Log::error('Error al confirmar la reserva: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Ocurrió un error al guardar la reserva. Por favor intenta nuevamente.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error al confirmar la reserva: ' . $e->getMessage());
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Ocurrió un error. Por favor intenta nuevamente.');
         }
     }
 
