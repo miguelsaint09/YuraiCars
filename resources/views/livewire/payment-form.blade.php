@@ -3,15 +3,18 @@
         <h3 class="payment-title">Información de Pago</h3>
         <p class="payment-subtitle">Complete los detalles de su tarjeta para procesar el pago.</p>
 
-        <form wire:submit.prevent="processPayment">
+        <form wire:submit.prevent="processPayment" autocomplete="off">
             <!-- Información del titular -->
             <div class="form-group">
                 <label class="form-label">Nombre del Titular</label>
                 <input 
                     type="text"
-                    wire:model.live="cardHolderName" 
-                    class="form-input" 
+                    wire:model.defer="cardHolderName"
+                    class="form-input"
                     placeholder="Como aparece en la tarjeta"
+                    maxlength="100"
+                    autocomplete="off"
+                    pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
                 />
                 @error('cardHolderName') 
                     <span class="error">{{ $message }}</span>
@@ -19,29 +22,42 @@
             </div>
 
             <div class="form-grid">
-                <div class="form-group">
+                <!-- Cédula -->
+                <div class="form-group" x-data="{
+                    visual: '',
+                    update(val) {
+                        let real = val.replace(/\D/g, '').slice(0, 11);
+                        if(real.length > 3 && real.length <= 10) val = real.replace(/(\d{3})(\d+)/, '$1-$2');
+                        else if(real.length > 10) val = real.replace(/(\d{3})(\d{7})(\d+)/, '$1-$2-$3');
+                        else val = real;
+                        this.visual = val;
+                        $refs.realInput.value = real;
+                        $refs.realInput.dispatchEvent(new Event('input'));
+                    }
+                }" x-init="update('')">
                     <label class="form-label">Cédula</label>
-                    <input 
-                        type="text"
-                        wire:model.live="cedula" 
-                        class="form-input" 
-                        placeholder="000-0000000-0"
-                        maxlength="11"
-                    />
+                    <input type="text" x-model="visual" @input="update($event.target.value)" maxlength="13" class="form-input" placeholder="000-0000000-0" autocomplete="off" />
+                    <input type="hidden" x-ref="realInput" wire:model.defer="cedula" />
                     @error('cedula') 
                         <span class="error">{{ $message }}</span>
                     @enderror
                 </div>
-
-                <div class="form-group">
+                <!-- Teléfono -->
+                <div class="form-group" x-data="{
+                    visual: '',
+                    update(val) {
+                        let real = val.replace(/\D/g, '').slice(0, 10);
+                        if(real.length > 3 && real.length <= 6) val = real.replace(/(\d{3})(\d+)/, '$1-$2');
+                        else if(real.length > 6) val = real.replace(/(\d{3})(\d{3})(\d+)/, '$1-$2-$3');
+                        else val = real;
+                        this.visual = val;
+                        $refs.realInput.value = real;
+                        $refs.realInput.dispatchEvent(new Event('input'));
+                    }
+                }" x-init="update('')">
                     <label class="form-label">Teléfono</label>
-                    <input 
-                        type="tel"
-                        wire:model.live="phone" 
-                        class="form-input" 
-                        placeholder="809-000-0000"
-                        maxlength="10"
-                    />
+                    <input type="text" x-model="visual" @input="update($event.target.value)" maxlength="12" class="form-input" placeholder="809-000-0000" autocomplete="off" />
+                    <input type="hidden" x-ref="realInput" wire:model.defer="phone" />
                     @error('phone') 
                         <span class="error">{{ $message }}</span>
                     @enderror
@@ -52,9 +68,10 @@
                 <label class="form-label">Correo Electrónico</label>
                 <input 
                     type="email"
-                    wire:model.live="email" 
+                    wire:model.defer="email" 
                     class="form-input" 
                     placeholder="ejemplo@correo.com"
+                    autocomplete="off"
                 />
                 @error('email') 
                     <span class="error">{{ $message }}</span>
@@ -62,16 +79,20 @@
             </div>
 
             <!-- Información de la tarjeta -->
-            <div class="form-group">
+            <div class="form-group" x-data="{
+                visual: '',
+                update(val) {
+                    let real = val.replace(/\D/g, '').slice(0, 16);
+                    val = real.replace(/(.{4})/g, '$1 ').trim();
+                    this.visual = val;
+                    $refs.realInput.value = real;
+                    $refs.realInput.dispatchEvent(new Event('input'));
+                }
+            }" x-init="update('')">
                 <label class="form-label">Número de Tarjeta</label>
                 <div class="card-input-wrapper">
-                    <input 
-                        type="text"
-                        wire:model.live="cardNumber" 
-                        class="form-input" 
-                        placeholder="0000 0000 0000 0000"
-                        maxlength="19"
-                    />
+                    <input type="text" x-model="visual" @input="update($event.target.value)" maxlength="19" class="form-input" placeholder="0000 0000 0000 0000" autocomplete="off" />
+                    <input type="hidden" x-ref="realInput" wire:model.defer="cardNumber" />
                     @if($cardType)
                         <div class="card-type">
                             <img src="{{ asset('images/cards/' . $cardType . '.svg') }}" alt="{{ $cardType }}" class="card-logo"/>
@@ -84,29 +105,38 @@
             </div>
 
             <div class="form-grid">
-                <div class="form-group">
+                <!-- Fecha de Vencimiento -->
+                <div class="form-group" x-data="{
+                    visual: '',
+                    update(val) {
+                        let real = val.replace(/\D/g, '').slice(0, 4);
+                        if(real.length > 2) val = real.replace(/(\d{2})(\d+)/, '$1/$2');
+                        else val = real;
+                        this.visual = val;
+                        $refs.realInput.value = val;
+                        $refs.realInput.dispatchEvent(new Event('input'));
+                    }
+                }" x-init="update('')">
                     <label class="form-label">Fecha de Vencimiento</label>
-                    <input 
-                        type="text"
-                        wire:model.live="expiryDate" 
-                        class="form-input" 
-                        placeholder="MM/YY"
-                        maxlength="5"
-                    />
+                    <input type="text" x-model="visual" @input="update($event.target.value)" maxlength="5" class="form-input" placeholder="MM/YY" autocomplete="off" />
+                    <input type="hidden" x-ref="realInput" wire:model.defer="expiryDate" />
                     @error('expiryDate') 
                         <span class="error">{{ $message }}</span>
                     @enderror
                 </div>
-
-                <div class="form-group">
+                <!-- CVV -->
+                <div class="form-group" x-data="{
+                    visual: '',
+                    update(val) {
+                        let real = val.replace(/\D/g, '').slice(0, 4);
+                        this.visual = real;
+                        $refs.realInput.value = real;
+                        $refs.realInput.dispatchEvent(new Event('input'));
+                    }
+                }" x-init="update('')">
                     <label class="form-label">CVV</label>
-                    <input 
-                        type="text"
-                        wire:model.live="cvv" 
-                        class="form-input" 
-                        placeholder="123"
-                        maxlength="4"
-                    />
+                    <input type="text" x-model="visual" @input="update($event.target.value)" maxlength="4" class="form-input" placeholder="123" autocomplete="off" />
+                    <input type="hidden" x-ref="realInput" wire:model.defer="cvv" />
                     @error('cvv') 
                         <span class="error">{{ $message }}</span>
                     @enderror
@@ -121,8 +151,9 @@
             </div>
 
             <div class="button-group">
-                <button type="submit" class="btn btn-primary">
-                    Procesar Pago
+                <button type="submit" class="btn btn-primary" wire:loading.attr="disabled">
+                    <span wire:loading.remove>Procesar Pago</span>
+                    <span wire:loading>Procesando...</span>
                 </button>
             </div>
         </form>
