@@ -146,7 +146,8 @@ class ShowRental extends Component
 
     public function render()
     {
-        return view('livewire.show-rental');
+        return view('livewire.show-rental')
+            ->layout('layouts.app');
     }
 
     private function updateTotalPrice()
