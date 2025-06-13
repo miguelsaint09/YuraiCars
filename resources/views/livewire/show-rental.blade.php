@@ -1,3 +1,4 @@
+<x-layouts.app>
 @push('styles')
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -451,153 +452,153 @@
 </style>
 @endpush
 
-<div>
-    <div class="booking-page">
-        <div class="booking-container">
-            <!-- Left Sidebar -->
-            <div class="sidebar">
-                <h2 class="sidebar-title">Pasos de la Reserva</h2>
-                <ul class="steps-list">
-                    <li class="step-item">
-                        <div class="step-icon {{ $step === 1 ? 'active' : '' }}">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                        <span class="step-text {{ $step === 1 ? 'active' : '' }}">Detalles de la Reserva</span>
-                    </li>
-                    <li class="step-item">
-                        <div class="step-icon {{ $step === 2 ? 'active' : '' }}">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                            </svg>
-                        </div>
-                        <span class="step-text {{ $step === 2 ? 'active' : '' }}">Pago</span>
-                    </li>
-                </ul>
-            </div>
+<div class="booking-page">
+    <div class="booking-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <h2 class="sidebar-title">Pasos de la Reserva</h2>
+            <ul class="steps-list">
+                <li class="step-item">
+                    <div class="step-icon {{ $step === 1 ? 'active' : '' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="step-text {{ $step === 1 ? 'active' : '' }}">Detalles de la Reserva</span>
+                </li>
+                <li class="step-item">
+                    <div class="step-icon {{ $step === 2 ? 'active' : '' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                        </svg>
+                    </div>
+                    <span class="step-text {{ $step === 2 ? 'active' : '' }}">Pago</span>
+                </li>
+            </ul>
+        </div>
 
-            <!-- Right Content -->
-            <div class="main-content">
-                <form wire:submit.prevent="completeBooking" method="POST">
-                    @csrf
-                    @if ($step === 1)
-                        <!-- Step 1: Booking Details -->
-                        <div>
-                            <h1 class="page-title">Confirmar tu Reserva</h1>
+        <!-- Right Content -->
+        <div class="main-content">
+            <form wire:submit.prevent="completeBooking" method="POST">
+                @csrf
+                @if ($step === 1)
+                    <!-- Step 1: Booking Details -->
+                    <div>
+                        <h1 class="page-title">Confirmar tu Reserva</h1>
 
-                            <div class="vehicle-showcase">
-                                <!-- Vehicle Image -->
-                                @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
-                                    <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="vehicle-image" alt="{{ $vehicle->name }}" />
-                                @else
-                                    <div class="vehicle-image" style="background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); display: flex; align-items: center; justify-content: center; color: #94a3b8;">
-                                        <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                @endif
-
-                                <!-- Vehicle Details -->
-                                <div class="vehicle-info">
-                                    <h3 class="vehicle-name">{{ $vehicle->name }} - {{ $vehicle->year }}</h3>
-                                    <p class="vehicle-details">{{ $vehicle->category }} | {{ ucfirst($vehicle->transmission) }}</p>
-
-                                    <div class="price-info">
-                                        <div class="price-label">Precio de Alquiler</div>
-                                        <div class="price-value">${{ number_format($vehicle->price_per_day, 2) }} DOP/día</div>
-                                    </div>
-
-                                    <!-- Total Price Box -->
-                                    <div class="total-price-box">
-                                        <div class="total-label">Precio Total</div>
-                                        <div class="total-amount">
-                                            ${{ number_format($totalPrice, 2) }} DOP
-                                        </div>
-                                        <div class="total-duration">Por {{ $totalDays }} {{ Str::plural('día', $totalDays) }}</div>
-                                    </div>
-
-                                    <!-- Features -->
-                                    <div class="features-section">
-                                        <h4 class="features-title">Características</h4>
-                                        <div class="features-grid">
-                                            @foreach ($vehicle->features as $feature)
-                                                <span class="feature-tag">{{ $feature }}</span>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Rental Details Form -->
-                            <div class="form-section">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="form-label">Lugar de Recogida</label>
-                                        <input 
-                                            type="text"
-                                            wire:model.live="pickupLocation" 
-                                            class="form-input" 
-                                            placeholder="Ingrese dirección en República Dominicana" 
-                                            required 
-                                        />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Lugar de Devolución</label>
-                                        <input 
-                                            type="text"
-                                            wire:model.live="dropoffLocation" 
-                                            class="form-input" 
-                                            value="YuraiCars" 
-                                            readonly 
-                                            disabled 
-                                        />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Fecha de Inicio</label>
-                                        <input 
-                                            type="datetime-local"
-                                            wire:model.live="startTime" 
-                                            class="form-input" 
-                                            required 
-                                        />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label">Fecha de Fin</label>
-                                        <input 
-                                            type="datetime-local"
-                                            wire:model.live="endTime" 
-                                            class="form-input" 
-                                            required 
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Navigation Buttons -->
-                            <div class="navigation-buttons">
-                                <div></div>
-                                <button wire:click="nextStep" class="btn btn-primary" type="button">
-                                    <span>Proceder al Pago</span>
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        <div class="vehicle-showcase">
+                            <!-- Vehicle Image -->
+                            @if($vehicle->image_url && is_array($vehicle->image_url) && !empty($vehicle->image_url))
+                                <img src="{{ Storage::url($vehicle->image_url[0]) }}" class="vehicle-image" alt="{{ $vehicle->name }}" />
+                            @else
+                                <div class="vehicle-image" style="background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+                                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                     </svg>
-                                </button>
+                                </div>
+                            @endif
+
+                            <!-- Vehicle Details -->
+                            <div class="vehicle-info">
+                                <h3 class="vehicle-name">{{ $vehicle->name }} - {{ $vehicle->year }}</h3>
+                                <p class="vehicle-details">{{ $vehicle->category }} | {{ ucfirst($vehicle->transmission) }}</p>
+
+                                <div class="price-info">
+                                    <div class="price-label">Precio de Alquiler</div>
+                                    <div class="price-value">${{ number_format($vehicle->price_per_day, 2) }} DOP/día</div>
+                                </div>
+
+                                <!-- Total Price Box -->
+                                <div class="total-price-box">
+                                    <div class="total-label">Precio Total</div>
+                                    <div class="total-amount">
+                                        ${{ number_format($totalPrice, 2) }} DOP
+                                    </div>
+                                    <div class="total-duration">Por {{ $totalDays }} {{ Str::plural('día', $totalDays) }}</div>
+                                </div>
+
+                                <!-- Features -->
+                                <div class="features-section">
+                                    <h4 class="features-title">Características</h4>
+                                    <div class="features-grid">
+                                        @foreach ($vehicle->features as $feature)
+                                            <span class="feature-tag">{{ $feature }}</span>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    @elseif ($step === 2)
-                        <!-- Step 2: Payment -->
-                        <div>
-                            <livewire:payment-form :rentalId="$onGoingRental->id" :amount="$totalPrice" />
+
+                        <!-- Rental Details Form -->
+                        <div class="form-section">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Lugar de Recogida</label>
+                                    <input 
+                                        type="text"
+                                        wire:model.live="pickupLocation" 
+                                        class="form-input" 
+                                        placeholder="Ingrese dirección en República Dominicana" 
+                                        required 
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Lugar de Devolución</label>
+                                    <input 
+                                        type="text"
+                                        wire:model.live="dropoffLocation" 
+                                        class="form-input" 
+                                        value="YuraiCars" 
+                                        readonly 
+                                        disabled 
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Fecha de Inicio</label>
+                                    <input 
+                                        type="datetime-local"
+                                        wire:model.live="startTime" 
+                                        class="form-input" 
+                                        required 
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Fecha de Fin</label>
+                                    <input 
+                                        type="datetime-local"
+                                        wire:model.live="endTime" 
+                                        class="form-input" 
+                                        required 
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    @endif
-                </form>
-            </div>
+                        
+                        <!-- Navigation Buttons -->
+                        <div class="navigation-buttons">
+                            <div></div>
+                            <button wire:click="nextStep" class="btn btn-primary" type="button">
+                                <span>Proceder al Pago</span>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @elseif ($step === 2)
+                    <!-- Step 2: Payment -->
+                    <div>
+                        <livewire:payment-form :rentalId="$onGoingRental->id" :amount="$totalPrice" />
+                    </div>
+                @endif
+            </form>
         </div>
     </div>
 </div>
 
 @stack('scripts')
+</body>
+</html>
