@@ -40,7 +40,6 @@ class RentalResource extends Resource
 
                 Forms\Components\TextInput::make('dropoff_location')
                     ->label('Lugar de Devolución')
-                    ->default('YuraiCars')
                     ->required(),
 
                 Forms\Components\DateTimePicker::make('start_time')

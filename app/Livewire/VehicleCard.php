@@ -19,7 +19,7 @@ class VehicleCard extends Component
     public ?string $pickupLocation = null;
 
     #[Url(as: 'drop-off')]
-    public string $dropoffLocation = "YuraiCars";
+    public ?string $dropoffLocation = null;
 
     #[Url(as: 'from')]
     public ?string $startTime = null;
@@ -71,15 +71,10 @@ class VehicleCard extends Component
                 'start_time' => $this->startTime,
                 'end_time' => $this->endTime,
                 'pickup_location' => $this->pickupLocation,
-                'dropoff_location' => 'YuraiCars', // Always set to YuraiCars
+                'dropoff_location' => $this->dropoffLocation,
                 'status' => RentalStatus::SELECTED->value,
             ]
         );
-
-        // Ensure dropoff location is always YuraiCars even for existing rentals
-        if ($rental->dropoff_location !== 'YuraiCars') {
-            $rental->update(['dropoff_location' => 'YuraiCars']);
-        }
 
         $this->redirect(route('rent-a-car.show', ['vehicle' => $this->vehicle]));
     }
