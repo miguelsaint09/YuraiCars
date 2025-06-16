@@ -318,46 +318,107 @@
                 </div>
             </div>
 
-            <!-- Payment Information -->
-            @if($rental->payment)
+            <!-- Financial Summary -->
+            <div class="rental-section">
+                <h2 class="section-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                    </svg>
+                    Resumen Financiero
+                </h2>
+
+                <div class="detail-item">
+                    <div class="detail-label">Monto Total del Alquiler</div>
+                    <div class="detail-value price-value">{{ $rental->formatAmount($rental->total_amount) }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Total Pagado</div>
+                    <div class="detail-value" style="color: {{ $rental->paid_amount > 0 ? '#10b981' : '#6b7280' }};">{{ $rental->formatAmount($rental->paid_amount) }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Monto Pendiente</div>
+                    <div class="detail-value" style="color: {{ $rental->pending_amount > 0 ? '#f59e0b' : '#10b981' }};">{{ $rental->formatAmount($rental->pending_amount) }}</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Estado General de Pagos</div>
+                    <div class="detail-value">
+                        <span style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; 
+                                     background: {{ match($rental->payment_status) {
+                                         'Completamente pagado' => 'rgba(16, 185, 129, 0.1); color: #10b981',
+                                         'Parcialmente pagado' => 'rgba(245, 158, 11, 0.1); color: #f59e0b',
+                                         'Sin pagos' => 'rgba(239, 68, 68, 0.1); color: #ef4444',
+                                         default => 'rgba(107, 114, 128, 0.1); color: #6b7280'
+                                     } }};">
+                            {{ $rental->payment_status }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment History -->
+            @if($rental->payments->count() > 0)
             <div class="rental-section">
                 <h2 class="section-title">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                     </svg>
-                    Información del Pago
+                    Historial de Pagos
                 </h2>
 
-                <div class="detail-item">
-                    <div class="detail-label">Total Pagado</div>
-                    <div class="detail-value price-value">${{ number_format($rental->payment->amount, 2) }} DOP</div>
-                </div>
-
-                <div class="detail-item">
-                    <div class="detail-label">Método de Pago</div>
-                    <div class="detail-value">
-                        {{ match($rental->payment->payment_method) {
-                            'credit_card' => 'Tarjeta de Crédito',
-                            'debit_card' => 'Tarjeta de Débito',
-                            'cash' => 'Efectivo',
-                            'bank_transfer' => 'Transferencia Bancaria',
-                            default => ucfirst($rental->payment->payment_method)
-                        } }}
+                @foreach($rental->payments->sortBy('created_at') as $payment)
+                <div class="payment-item" style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-radius: 16px; margin-bottom: 1rem; border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                <h3 style="color: #ffffff; font-weight: 600; margin: 0;">{{ $payment->formatted_description }}</h3>
+                                <span style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;
+                                             background: {{ match($payment->status) {
+                                                 'success' => 'rgba(16, 185, 129, 0.1); color: #10b981',
+                                                 'pending' => 'rgba(245, 158, 11, 0.1); color: #f59e0b',
+                                                 'failed' => 'rgba(239, 68, 68, 0.1); color: #ef4444',
+                                                 default => 'rgba(107, 114, 128, 0.1); color: #6b7280'
+                                             } }};">
+                                    {{ $payment->formatted_status }}
+                                </span>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; color: #94a3b8; font-size: 0.875rem;">
+                                <div>
+                                    <strong>Monto:</strong> {{ $payment->formatted_amount }}
+                                </div>
+                                <div>
+                                    <strong>Método:</strong> {{ $payment->formatted_payment_method }}
+                                </div>
+                                @if($payment->additional_days)
+                                <div>
+                                    <strong>Días Adicionales:</strong> {{ $payment->additional_days }}
+                                </div>
+                                @endif
+                                <div>
+                                    <strong>Fecha:</strong> {{ $payment->created_at->format('d/m/Y H:i') }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @if($payment->status === 'success')
+                        <div>
+                            <button wire:click="downloadPaymentInvoice('{{ $payment->id }}')" 
+                                    style="background: rgba(99, 102, 241, 0.1); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.2); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;"
+                                    onmouseover="this.style.background='rgba(99, 102, 241, 0.2)'"
+                                    onmouseout="this.style.background='rgba(99, 102, 241, 0.1)'">
+                                <svg style="width: 1rem; height: 1rem; display: inline; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Descargar Factura
+                            </button>
+                        </div>
+                        @endif
                     </div>
                 </div>
-
-                <div class="detail-item">
-                    <div class="detail-label">Estado del Pago</div>
-                    <div class="detail-value">
-                        {{ match($rental->payment->status) {
-                            'success' => 'Exitoso',
-                            'pending' => 'Pendiente',
-                            'failed' => 'Fallido',
-                            'cancelled' => 'Cancelado',
-                            default => ucfirst($rental->payment->status)
-                        } }}
-                    </div>
-                </div>
+                @endforeach
             </div>
             @endif
 
@@ -381,12 +442,12 @@
         </div>
 
         <div class="rental-actions">
-            @if($rental->payment && $rental->payment->status === 'success')
-                <button wire:click="downloadInvoice" class="btn btn-primary">
+            @if($rental->payments()->where('status', 'success')->count() > 0)
+                <button wire:click="downloadCompleteInvoice" class="btn btn-primary">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Descargar Factura
+                    Descargar Factura Completa
                 </button>
             @endif
         </div>
