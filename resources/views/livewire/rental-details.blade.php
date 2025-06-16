@@ -313,7 +313,7 @@
                 <div class="detail-item">
                     <div class="detail-label">Duración</div>
                     <div class="detail-value">
-                        {{ \Carbon\Carbon::parse($rental->start_time)->diffInDays(\Carbon\Carbon::parse($rental->end_time)) }} días
+                        {{ round(\Carbon\Carbon::parse($rental->start_time)->floatDiffInDays(\Carbon\Carbon::parse($rental->end_time))) }} días
                     </div>
                 </div>
             </div>

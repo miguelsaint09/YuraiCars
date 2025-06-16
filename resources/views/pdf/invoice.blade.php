@@ -317,7 +317,7 @@
             </div>
             <div class="details-row">
                 <div class="details-label">Total de Días:</div>
-                <div class="details-value">{{ \Carbon\Carbon::parse($rental->start_time)->diffInDays(\Carbon\Carbon::parse($rental->end_time)) }}</div>
+                <div class="details-value">{{ round(\Carbon\Carbon::parse($rental->start_time)->floatDiffInDays(\Carbon\Carbon::parse($rental->end_time))) }}</div>
             </div>
             <div class="details-row">
                 <div class="details-label">Estado:</div>
@@ -351,7 +351,7 @@
                     {{ $vehicle->name }} - {{ $vehicle->year }}<br>
                     <small style="color: #6b7280;">{{ $vehicle->category }} | {{ ucfirst($vehicle->transmission) }}</small>
                 </td>
-                <td>{{ \Carbon\Carbon::parse($rental->start_time)->diffInDays(\Carbon\Carbon::parse($rental->end_time)) }}</td>
+                <td>{{ round(\Carbon\Carbon::parse($rental->start_time)->floatDiffInDays(\Carbon\Carbon::parse($rental->end_time))) }}</td>
                 <td>${{ number_format($vehicle->price_per_day, 2) }} DOP</td>
                 <td>${{ number_format($payment->amount, 2) }} DOP</td>
             </tr>
