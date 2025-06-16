@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Carbon;
 
 class RentalResource extends Resource
 {
@@ -44,11 +45,27 @@ class RentalResource extends Resource
 
                 Forms\Components\DateTimePicker::make('start_time')
                     ->label('Fecha de Inicio')
-                    ->required(),
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        self::updateAdditionalAmount($set, $get);
+                    }),
 
                 Forms\Components\DateTimePicker::make('end_time')
                     ->label('Fecha de Fin')
-                    ->required(),
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
+                        self::updateAdditionalAmount($set, $get);
+                    }),
+
+                Forms\Components\TextInput::make('additional_amount')
+                    ->label('Monto Adicional')
+                    ->prefix('$')
+                    ->suffix('DOP')
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->visible(fn (Forms\Get $get) => $get('start_time') && $get('end_time')),
 
                 Forms\Components\Select::make('status')
                     ->options([
@@ -60,6 +77,24 @@ class RentalResource extends Resource
                     ->required()
                     ->label('Estado'),
             ]);
+    }
+
+    protected static function updateAdditionalAmount(Forms\Set $set, Forms\Get $get): void
+    {
+        $startTime = $get('start_time');
+        $endTime = $get('end_time');
+        $vehicleId = $get('vehicle_id');
+
+        if ($startTime && $endTime && $vehicleId) {
+            $vehicle = \App\Models\Vehicle::find($vehicleId);
+            if ($vehicle) {
+                $start = Carbon::parse($startTime);
+                $end = Carbon::parse($endTime);
+                $newDays = max($start->diffInDays($end), 1);
+                $totalAmount = $newDays * $vehicle->price_per_day;
+                $set('additional_amount', number_format($totalAmount, 2));
+            }
+        }
     }
 
     public static function table(Table $table): Table
@@ -118,13 +153,17 @@ class RentalResource extends Resource
                 Tables\Actions\EditAction::make()->label('Editar'),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make()->label('Eliminar Seleccionados'),
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            //
+        ];
     }
 
     public static function getPages(): array

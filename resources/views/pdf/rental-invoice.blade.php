@@ -277,9 +277,6 @@
         <div class="footer">
             <p>Gracias por confiar en YuraiCars para su alquiler de vehículos.</p>
             <p>Esta factura fue generada electrónicamente y es válida sin firma.</p>
-            <div class="qr-code">
-                {!! QrCode::size(100)->generate(route('rentals.show', $rental->id)) !!}
-            </div>
         </div>
     </div>
 </body>
