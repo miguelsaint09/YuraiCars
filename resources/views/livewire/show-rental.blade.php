@@ -601,14 +601,27 @@
 
                                 <div class="form-group">
                                     <label class="form-label">Lugar de Devolución</label>
-                                    <input 
-                                        type="text"
-                                        wire:model.live="dropoffLocation" 
-                                        class="form-input" 
-                                        value="YuraiCars" 
-                                        readonly 
-                                        disabled 
-                                    />
+                                    <div class="relative">
+                                        <input 
+                                            type="text"
+                                            wire:model.live="dropoffSearchTerm" 
+                                            class="form-input" 
+                                            placeholder="Buscar lugar de devolución..."
+                                        />
+                                        @if(count($suggestedLocations) > 0 && $dropoffSearchTerm)
+                                            <div class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md">
+                                                <ul class="max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                                                    @foreach($suggestedLocations as $location)
+                                                        <li wire:click="selectLocation('{{ $location }}')" 
+                                                            class="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-indigo-50">
+                                                            {{ $location }}
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    @error('dropoffLocation') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div class="form-group">

@@ -64,16 +64,13 @@ class ShowRental extends Component
                 'start_time' => null,
                 'end_time' => null,
             ]);
-        } else {
-            // Ensure dropoff location is always YuraiCars
-            $existingRental->update(['dropoff_location' => 'YuraiCars']);
         }
 
         $this->onGoingRental = $existingRental;
         
         // Cargar los datos de la reserva
         $this->pickupLocation = $this->onGoingRental->pickup_location ?? '';
-        $this->dropoffLocation = $this->onGoingRental->dropoff_location;
+        $this->dropoffLocation = $this->onGoingRental->dropoff_location ?? '';
         $this->startTime = $this->onGoingRental->start_time;
         $this->endTime = $this->onGoingRental->end_time;
 
@@ -83,10 +80,7 @@ class ShowRental extends Component
     public function updatedPickupSearchTerm()
     {
         if (strlen($this->pickupSearchTerm) >= 2) {
-            $this->suggestedLocations = array_filter(
-                Locations::getLocations(),
-                fn($location) => stripos($location, $this->pickupSearchTerm) !== false
-            );
+            $this->suggestedLocations = Locations::search($this->pickupSearchTerm);
         } else {
             $this->suggestedLocations = [];
         }
@@ -95,24 +89,20 @@ class ShowRental extends Component
     public function updatedDropoffSearchTerm()
     {
         if (strlen($this->dropoffSearchTerm) >= 2) {
-            $this->suggestedLocations = array_filter(
-                Locations::getLocations(),
-                fn($location) => stripos($location, $this->dropoffSearchTerm) !== false
-            );
+            $this->suggestedLocations = Locations::search($this->dropoffSearchTerm);
         } else {
             $this->suggestedLocations = [];
         }
     }
 
-    public function selectLocation($location, $field)
+    public function selectLocation($location)
     {
-        $this->$field = $location;
-        if ($field === 'pickupLocation') {
-            $this->pickupSearchTerm = $location;
-            $this->dropoffSearchTerm = '';
-        } else {
-            $this->dropoffSearchTerm = $location;
+        if ($this->pickupSearchTerm) {
+            $this->pickupLocation = $location;
             $this->pickupSearchTerm = '';
+        } else {
+            $this->dropoffLocation = $location;
+            $this->dropoffSearchTerm = '';
         }
         $this->suggestedLocations = [];
     }
