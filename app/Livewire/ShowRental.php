@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Data\Locations;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Enums\RentalStatus;
@@ -31,6 +32,10 @@ class ShowRental extends Component
     public int $totalDays = 1;
     public int $step = 1;
 
+    public array $suggestedLocations = [];
+    public string $pickupSearchTerm = '';
+    public string $dropoffSearchTerm = '';
+
     protected $listeners = ['paymentProcessed' => 'handlePaymentProcessed'];
 
     public function mount($vehicle)
@@ -55,7 +60,7 @@ class ShowRental extends Component
                 'vehicle_id' => $vehicle->id,
                 'status' => RentalStatus::SELECTED->value,
                 'pickup_location' => '',
-                'dropoff_location' => 'YuraiCars',
+                'dropoff_location' => '',
                 'start_time' => null,
                 'end_time' => null,
             ]);
@@ -73,6 +78,43 @@ class ShowRental extends Component
         $this->endTime = $this->onGoingRental->end_time;
 
         $this->updateTotalPrice();
+    }
+
+    public function updatedPickupSearchTerm()
+    {
+        if (strlen($this->pickupSearchTerm) >= 2) {
+            $this->suggestedLocations = array_filter(
+                Locations::getLocations(),
+                fn($location) => stripos($location, $this->pickupSearchTerm) !== false
+            );
+        } else {
+            $this->suggestedLocations = [];
+        }
+    }
+
+    public function updatedDropoffSearchTerm()
+    {
+        if (strlen($this->dropoffSearchTerm) >= 2) {
+            $this->suggestedLocations = array_filter(
+                Locations::getLocations(),
+                fn($location) => stripos($location, $this->dropoffSearchTerm) !== false
+            );
+        } else {
+            $this->suggestedLocations = [];
+        }
+    }
+
+    public function selectLocation($location, $field)
+    {
+        $this->$field = $location;
+        if ($field === 'pickupLocation') {
+            $this->pickupSearchTerm = $location;
+            $this->dropoffSearchTerm = '';
+        } else {
+            $this->dropoffSearchTerm = $location;
+            $this->pickupSearchTerm = '';
+        }
+        $this->suggestedLocations = [];
     }
 
     public function updated($property)
