@@ -37,10 +37,10 @@ class Rental extends Model
         return $this->hasMany(Payment::class);
     }
 
-    // Mantener compatibilidad con código existente
+    // Relación para el pago inicial (mantener compatibilidad con código existente)
     public function payment()
     {
-        return $this->payments()->where('payment_type', 'initial')->first();
+        return $this->hasOne(Payment::class)->where('payment_type', 'initial');
     }
 
     // Obtener pago inicial

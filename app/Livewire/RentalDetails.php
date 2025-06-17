@@ -72,7 +72,36 @@ class RentalDetails extends Component
 
     public function downloadPaymentInvoice($paymentId)
     {
-        $this->downloadInvoice($paymentId);
+        try {
+            // Buscar el pago específico
+            $payment = $this->rental->payments()->where('id', $paymentId)->first();
+            
+            if (!$payment || $payment->status !== 'success') {
+                session()->flash('error', 'No se puede descargar la factura. El pago debe estar completado.');
+                return;
+            }
+
+            // Generar PDF
+            $pdf = PDF::loadView('pdf.payment-invoice', [
+                'rental' => $this->rental,
+                'vehicle' => $this->rental->vehicle,
+                'payment' => $payment,
+                'user' => $this->rental->user
+            ]);
+
+            $fileName = $payment->is_initial_payment 
+                ? "factura-inicial-{$this->rental->id}.pdf"
+                : "factura-adicional-{$payment->id}.pdf";
+
+            // Usar redirect para descargar el PDF
+            return response()->streamDownload(function() use ($pdf) {
+                echo $pdf->output();
+            }, $fileName);
+
+        } catch (\Exception $e) {
+            session()->flash('error', 'Error al generar la factura. Por favor, intente nuevamente.');
+            \Log::error('Error generating payment invoice: ' . $e->getMessage());
+        }
     }
 
     public function render()

@@ -32,15 +32,25 @@
         }
         
         .invoice-info {
-            display: table;
             width: 100%;
             margin-bottom: 30px;
         }
         
-        .invoice-info div {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
+        .invoice-info .left {
+            float: left;
+            width: 48%;
+        }
+        
+        .invoice-info .right {
+            float: right;
+            width: 48%;
+            text-align: right;
+        }
+        
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
         }
         
         .invoice-number, .invoice-date {
@@ -86,13 +96,17 @@
         }
         
         .rental-period-details {
-            display: table;
             width: 100%;
         }
         
-        .rental-period-details > div {
-            display: table-cell;
-            width: 50%;
+        .rental-period-details .left {
+            float: left;
+            width: 48%;
+        }
+        
+        .rental-period-details .right {
+            float: right;
+            width: 48%;
         }
         
         .payment-details {
@@ -162,21 +176,18 @@
         }
         
         .summary-row {
-            display: table;
             width: 100%;
             margin-bottom: 10px;
             font-size: 16px;
         }
         
         .summary-label {
-            display: table-cell;
-            text-align: left;
+            float: left;
             font-weight: bold;
         }
         
         .summary-value {
-            display: table-cell;
-            text-align: right;
+            float: right;
         }
         
         .total-amount {
@@ -203,12 +214,12 @@
         <div class="invoice-title">Factura Completa del Alquiler</div>
     </div>
 
-    <div class="invoice-info">
-        <div>
+    <div class="invoice-info clearfix">
+        <div class="left">
             <div class="invoice-number"><strong>Factura Nº:</strong> COMP-{{ substr($rental->id, 0, 8) }}</div>
             <div class="invoice-date"><strong>Fecha de Emisión:</strong> {{ now()->format('d/m/Y') }}</div>
         </div>
-        <div style="text-align: right;">
+        <div class="right">
             <div class="invoice-number"><strong>ID del Alquiler:</strong> {{ substr($rental->id, 0, 8) }}</div>
             <div class="invoice-date"><strong>Estado del Alquiler:</strong> {{ ucfirst($rental->status) }}</div>
         </div>
@@ -264,13 +275,13 @@
 
     <div class="rental-period">
         <div class="rental-period-title">Detalles del Alquiler</div>
-        <div class="rental-period-details">
-            <div>
+        <div class="rental-period-details clearfix">
+            <div class="left">
                 <strong>Inicio:</strong> {{ \Carbon\Carbon::parse($rental->start_time)->format('d/m/Y h:i A') }}<br>
                 <strong>Fin:</strong> {{ \Carbon\Carbon::parse($rental->end_time)->format('d/m/Y h:i A') }}<br>
                 <strong>Duración:</strong> {{ $rental->duration_days }} días
             </div>
-            <div>
+            <div class="right">
                 <strong>Lugar de Recogida:</strong> {{ $rental->pickup_location }}<br>
                 <strong>Lugar de Devolución:</strong> {{ $rental->dropoff_location }}
             </div>
@@ -312,23 +323,23 @@
     </table>
 
     <div class="summary-section">
-        <div class="summary-row">
+        <div class="summary-row clearfix">
             <div class="summary-label">Monto Total del Alquiler:</div>
             <div class="summary-value">${{ number_format($rental->total_amount, 2) }} DOP</div>
         </div>
-        <div class="summary-row">
+        <div class="summary-row clearfix">
             <div class="summary-label">Total Pagado:</div>
             <div class="summary-value">${{ number_format($rental->paid_amount, 2) }} DOP</div>
         </div>
-        <div class="summary-row">
+        <div class="summary-row clearfix">
             <div class="summary-label">Monto Pendiente:</div>
             <div class="summary-value">${{ number_format($rental->pending_amount, 2) }} DOP</div>
         </div>
-        <div class="summary-row">
+        <div class="summary-row clearfix">
             <div class="summary-label">Número de Pagos:</div>
             <div class="summary-value">{{ $payments->count() }} pago(s)</div>
         </div>
-        <div class="summary-row total-amount">
+        <div class="summary-row total-amount clearfix">
             <div class="summary-label">Estado de Pagos:</div>
             <div class="summary-value">{{ $rental->payment_status }}</div>
         </div>

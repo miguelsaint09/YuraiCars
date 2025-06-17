@@ -34,16 +34,12 @@ class EditRental extends EditRecord
                         ->disabled()
                         ->default(fn () => number_format($this->record->pending_amount, 2)),
                     
-                    \Filament\Forms\Components\Select::make('payment_method')
+                    \Filament\Forms\Components\Hidden::make('payment_method')
+                        ->default('credit_card'),
+                    
+                    \Filament\Forms\Components\Placeholder::make('payment_method_display')
                         ->label('Método de Pago')
-                        ->options([
-                            'credit_card' => 'Tarjeta de Crédito',
-                            'debit_card' => 'Tarjeta de Débito',
-                            'cash' => 'Efectivo',
-                            'bank_transfer' => 'Transferencia Bancaria',
-                        ])
-                        ->required()
-                        ->live(),
+                        ->content('Tarjeta de Crédito/Débito'),
                     
                     \Filament\Forms\Components\TextInput::make('amount_to_pay')
                         ->label('Monto a Pagar')
@@ -99,7 +95,7 @@ class EditRental extends EditRecord
                                 ->required()
                                 ->rules(['required', 'string', 'max:255']),
                         ])
-                        ->visible(fn (\Filament\Forms\Get $get) => in_array($get('payment_method'), ['credit_card', 'debit_card']))
+                        ->visible(true)
                         ->collapsed(false),
                 ])
                 ->action(function (array $data) {
@@ -166,6 +162,9 @@ class EditRental extends EditRecord
     protected function processAdditionalPayment(array $data): void
     {
         DB::transaction(function () use ($data) {
+            // Asegurar que el método de pago esté definido
+            $paymentMethod = $data['payment_method'] ?? 'credit_card';
+            
             // Buscar el pago pendiente más reciente o crear uno nuevo
             $pendingPayment = $this->record->payments()
                 ->where('status', 'pending')
@@ -185,25 +184,18 @@ class EditRental extends EditRecord
                 $pendingPayment->update([
                     'amount' => $data['amount_to_pay'],
                     'description' => $data['description'],
-                    'payment_method' => $data['payment_method'],
+                    'payment_method' => $paymentMethod,
                 ]);
             }
 
-            // Procesar el pago según el método seleccionado
+            // Procesar el pago con tarjeta (único método disponible)
             $paymentService = new PaymentService();
-            
-            if (in_array($data['payment_method'], ['credit_card', 'debit_card'])) {
-                // Procesar pago con tarjeta
-                $result = $paymentService->processCardPayment($pendingPayment, [
-                    'card_number' => $data['card_number'],
-                    'card_expiry' => $data['card_expiry'],
-                    'card_cvv' => $data['card_cvv'],
-                    'card_name' => $data['card_name'],
-                ]);
-            } else {
-                // Procesar pago manual (efectivo/transferencia)
-                $result = $paymentService->processCashOrTransferPayment($pendingPayment);
-            }
+            $result = $paymentService->processCardPayment($pendingPayment, [
+                'card_number' => $data['card_number'],
+                'card_expiry' => $data['card_expiry'],
+                'card_cvv' => $data['card_cvv'],
+                'card_name' => $data['card_name'],
+            ]);
 
             // Mostrar resultado del pago
             if ($result['success']) {
@@ -212,6 +204,9 @@ class EditRental extends EditRecord
                     ->body($result['message'] . " - Monto: $" . number_format($data['amount_to_pay'], 2) . " DOP")
                     ->success()
                     ->send();
+                
+                // Recargar los datos del record para mostrar cambios
+                $this->record->refresh();
             } else {
                 // Si el pago falló, revertir el estado
                 $pendingPayment->update(['status' => 'failed']);
@@ -221,12 +216,7 @@ class EditRental extends EditRecord
                     ->body($result['message'])
                     ->danger()
                     ->send();
-                
-                return; // No redirigir si hay error
             }
-
-            // Recargar la página para mostrar cambios
-            $this->redirect(static::getUrl('edit', ['record' => $this->record->id]));
         });
     }
 

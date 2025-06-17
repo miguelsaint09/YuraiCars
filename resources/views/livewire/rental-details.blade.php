@@ -404,15 +404,35 @@
                         </div>
                         
                         @if($payment->status === 'success')
-                        <div>
+                        <div style="display: flex; justify-content: flex-end; width: 100%;">
                             <button wire:click="downloadPaymentInvoice('{{ $payment->id }}')" 
-                                    style="background: rgba(99, 102, 241, 0.1); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.2); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease;"
-                                    onmouseover="this.style.background='rgba(99, 102, 241, 0.2)'"
-                                    onmouseout="this.style.background='rgba(99, 102, 241, 0.1)'">
-                                <svg style="width: 1rem; height: 1rem; display: inline; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    class="download-invoice-btn"
+                                    style="background: linear-gradient(145deg, rgba(99, 102, 241, 0.15), rgba(79, 70, 229, 0.1)); 
+                                           color: #6366f1; 
+                                           border: 1px solid rgba(99, 102, 241, 0.3); 
+                                           padding: 0.5rem 0.75rem; 
+                                           border-radius: 8px; 
+                                           font-size: 0.8rem; 
+                                           font-weight: 600; 
+                                           cursor: pointer; 
+                                           transition: all 0.3s ease;
+                                           display: flex;
+                                           align-items: center;
+                                           gap: 0.4rem;
+                                           box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+                                           backdrop-filter: blur(8px);
+                                           white-space: nowrap;
+                                           min-width: fit-content;
+                                           max-width: 140px;"
+                                    onmouseover="this.style.background='linear-gradient(145deg, rgba(99, 102, 241, 0.25), rgba(79, 70, 229, 0.2))'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(99, 102, 241, 0.25)'"
+                                    onmouseout="this.style.background='linear-gradient(145deg, rgba(99, 102, 241, 0.15), rgba(79, 70, 229, 0.1))'; this.style.transform='translateY(0px)'; this.style.boxShadow='0 2px 8px rgba(99, 102, 241, 0.15)'"
+                                    wire:loading.attr="disabled"
+                                    wire:target="downloadPaymentInvoice">
+                                <svg style="width: 0.9rem; height: 0.9rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
-                                Descargar Factura
+                                <span wire:loading.remove wire:target="downloadPaymentInvoice" style="overflow: hidden; text-overflow: ellipsis;">Descargar</span>
+                                <span wire:loading wire:target="downloadPaymentInvoice" style="overflow: hidden; text-overflow: ellipsis;">Generando...</span>
                             </button>
                         </div>
                         @endif

@@ -125,47 +125,51 @@ class PaymentService
     }
 
     /**
-     * Validar datos básicos de la tarjeta
+     * Validar datos básicos de la tarjeta (modo simulación - validaciones relajadas)
      */
     private function validateCardData(array $cardData): void
     {
-        // Validar número de tarjeta
+        // Validar número de tarjeta (solo formato básico para simulación)
         $cardNumber = str_replace(' ', '', $cardData['card_number'] ?? '');
         if (empty($cardNumber) || !is_numeric($cardNumber)) {
-            throw new \InvalidArgumentException('Número de tarjeta inválido');
+            throw new \InvalidArgumentException('Número de tarjeta inválido - debe contener solo números');
         }
 
         if (strlen($cardNumber) < 13 || strlen($cardNumber) > 19) {
             throw new \InvalidArgumentException('El número de tarjeta debe tener entre 13 y 19 dígitos');
         }
 
-        // Validar algoritmo de Luhn (simulado - más básico)
-        if (!$this->isValidLuhn($cardNumber)) {
-            throw new \InvalidArgumentException('Número de tarjeta inválido');
+        // SIMULACIÓN: No validar algoritmo de Luhn para permitir cualquier número
+        // En modo simulación, cualquier número de tarjeta con formato correcto es válido
+        
+        // Validar fecha de expiración (formato básico)
+        if (empty($cardData['card_expiry']) || !$this->isValidExpiryFormat($cardData['card_expiry'])) {
+            throw new \InvalidArgumentException('Fecha de expiración debe tener formato MM/YY');
         }
 
-        // Validar fecha de expiración
-        if (empty($cardData['card_expiry']) || !$this->isValidExpiry($cardData['card_expiry'])) {
-            throw new \InvalidArgumentException('Fecha de expiración inválida');
-        }
-
-        // Validar CVV
+        // Validar CVV (solo formato)
         $cvv = $cardData['card_cvv'] ?? '';
         if (empty($cvv) || !is_numeric($cvv) || strlen($cvv) < 3 || strlen($cvv) > 4) {
-            throw new \InvalidArgumentException('Código CVV inválido');
+            throw new \InvalidArgumentException('Código CVV debe tener 3 o 4 dígitos');
         }
 
         // Validar nombre del titular
-        if (empty($cardData['card_name']) || strlen(trim($cardData['card_name'])) < 3) {
+        if (empty($cardData['card_name']) || strlen(trim($cardData['card_name'])) < 2) {
             throw new \InvalidArgumentException('Nombre del titular requerido');
         }
     }
 
     /**
-     * Validar número de tarjeta usando algoritmo de Luhn (simplificado)
+     * Validar número de tarjeta usando algoritmo de Luhn (deshabilitado para simulación)
+     * Este método no se usa en modo simulación para permitir cualquier número de tarjeta
      */
     private function isValidLuhn(string $number): bool
     {
+        // En modo simulación, siempre retornamos true para permitir cualquier número
+        return true;
+        
+        // Código original comentado para referencia:
+        /*
         $number = strrev($number);
         $sum = 0;
         
@@ -183,10 +187,20 @@ class PaymentService
         }
         
         return $sum % 10 === 0;
+        */
     }
 
     /**
-     * Validar formato de fecha de expiración
+     * Validar formato de fecha de expiración (solo formato, no fecha real - simulación)
+     */
+    private function isValidExpiryFormat(string $expiry): bool
+    {
+        // Solo validar formato MM/YY, no si la fecha es válida o futura
+        return preg_match('/^(0[1-9]|1[0-2])\/\d{2}$/', $expiry);
+    }
+
+    /**
+     * Validar formato de fecha de expiración (método original - no usado en simulación)
      */
     private function isValidExpiry(string $expiry): bool
     {

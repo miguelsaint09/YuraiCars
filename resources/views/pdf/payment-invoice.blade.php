@@ -32,15 +32,25 @@
         }
         
         .invoice-info {
-            display: table;
             width: 100%;
             margin-bottom: 30px;
         }
         
-        .invoice-info div {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
+        .invoice-info .left {
+            float: left;
+            width: 48%;
+        }
+        
+        .invoice-info .right {
+            float: right;
+            width: 48%;
+            text-align: right;
+        }
+        
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
         }
         
         .invoice-number, .invoice-date {
@@ -86,13 +96,17 @@
         }
         
         .rental-period-details {
-            display: table;
             width: 100%;
         }
         
-        .rental-period-details > div {
-            display: table-cell;
-            width: 50%;
+        .rental-period-details .left {
+            float: left;
+            width: 48%;
+        }
+        
+        .rental-period-details .right {
+            float: right;
+            width: 48%;
         }
         
         .payment-details {
@@ -167,12 +181,12 @@
         </div>
     </div>
 
-    <div class="invoice-info">
-        <div>
+    <div class="invoice-info clearfix">
+        <div class="left">
             <div class="invoice-number"><strong>Número de Factura:</strong> {{ $payment->is_initial_payment ? 'INI-' : 'ADD-' }}{{ substr($payment->id, 0, 8) }}</div>
             <div class="invoice-date"><strong>Fecha de Emisión:</strong> {{ $payment->created_at->format('d/m/Y') }}</div>
         </div>
-        <div style="text-align: right;">
+        <div class="right">
             <div class="invoice-number"><strong>ID del Alquiler:</strong> {{ substr($rental->id, 0, 8) }}</div>
             <div class="invoice-date"><strong>Estado del Pago:</strong> {{ $payment->formatted_status }}</div>
         </div>
@@ -216,12 +230,12 @@
 
     <div class="rental-period">
         <div class="rental-period-title">Período de Alquiler</div>
-        <div class="rental-period-details">
-            <div>
+        <div class="rental-period-details clearfix">
+            <div class="left">
                 <strong>Inicio:</strong> {{ \Carbon\Carbon::parse($rental->start_time)->format('d/m/Y h:i A') }}<br>
                 <strong>Fin:</strong> {{ \Carbon\Carbon::parse($rental->end_time)->format('d/m/Y h:i A') }}
             </div>
-            <div>
+            <div class="right">
                 <strong>Duración:</strong> {{ $rental->duration_days }} días<br>
                 @if($payment->additional_days)
                 <strong>Días Adicionales:</strong> {{ $payment->additional_days }} días
