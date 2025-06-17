@@ -200,6 +200,31 @@ class PaymentService
     }
 
     /**
+     * Método público para validar número de tarjeta (usado en pruebas)
+     */
+    public function isValidCardNumber(string $cardNumber): bool
+    {
+        $cardNumber = str_replace(' ', '', $cardNumber);
+        return !empty($cardNumber) && is_numeric($cardNumber) && strlen($cardNumber) >= 13 && strlen($cardNumber) <= 19;
+    }
+
+    /**
+     * Método público para validar CVV (usado en pruebas)
+     */
+    public function isValidCvv(string $cvv): bool
+    {
+        return !empty($cvv) && is_numeric($cvv) && strlen($cvv) >= 3 && strlen($cvv) <= 4;
+    }
+
+    /**
+     * Método público para validar fecha de expiración (usado en pruebas)
+     */
+    public function isValidExpiryDate(string $expiry): bool
+    {
+        return $this->isValidExpiryFormat($expiry);
+    }
+
+    /**
      * Validar formato de fecha de expiración (método original - no usado en simulación)
      */
     private function isValidExpiry(string $expiry): bool
